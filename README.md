@@ -1,53 +1,74 @@
-# feelfem2 — A Beautiful FEM DSL for Education and Research
+# feelfem2
 
-feelfem2 is a next-generation FEM (Finite Element Method) DSL and code generation framework,
-designed to produce **beautiful, readable, and mathematically faithful Fortran codes** directly
-from weak-form problem descriptions.
+**feelfem2** is a modern re-design and re-implementation of the original **feelfem / FEEL** system,  
+a finite element method (FEM) description language and code generation framework developed in the 1990s–2000s.
 
-This project is a spiritual and technical successor to the original *feelfem* system
-(1990s–2000s), reimagined with modern design principles, educational focus, and full openness.
-
-feelfem2 started quietly at a hot-spring inn in Yugawara, early in the morning,
-after a bottle of sake and a long conversation with an AI.
-That origin is not accidental: this project is about **time, memory, mathematics, and beauty**.
+This project aims to:
+- inherit the *conceptual beauty* of FEEL,
+- modernize the DSL, parser, and backend architecture,
+- and provide an **educational, free, and beautiful FEM code generation environment**.
 
 ---
 
-## Philosophy
+## 1. Background
 
-feelfem2 is built on the following principles:
+The original **FEEL / feelfem** system was developed to:
 
-- **Weak form first** — Users write mathematical weak formulations directly.
-- **Separation of concerns** — Problem definition, discretization, assembly, solvers, and post-processing are cleanly separated.
-- **Beautiful generated code** — The output Fortran code is intended to be *educationally exemplary*.
-- **Trial ≠ Test is allowed** — True Petrov-Galerkin experiments are supported.
-- **Numerical truth is visible** — H1 norm, energy norms, and stabilization effects must be directly observable.
-- **Education-oriented, but not toy** — Simple enough for undergraduates, deep enough for researchers.
+- describe FEM problems at a **weak-form / variational level**,
+- generate **vectorized and parallel FEM programs automatically**,
+- integrate with **GiD** for pre/post-processing,
+- and serve as a **problem-solving environment (PSE) mid-layer**.
 
-feelfem2 is **not**:
-- A GUI-centered black box
-- A fluid-only finite-volume solver
-- A performance-at-all-costs industrial product
+### Major Publications
 
-It is a **living mathematical instrument**.
+- H. Fujio, *The feelfem System - A Repository System for the Finite Element Method*, IPDPS 2003  
+- H. Fujio, F. Kikuchi, *Implementation of covariant and contravariant families of finite elements*, 1998  
+- H. Fujio, *FEEL – Numerical Simulation Language for FEM*, 1993–1994  
+- H. Fujio et al., *Development of FEM Code Generator for Vector/Parallel Computation*, NEC Technical Report 2002
+
+By **2003**, the overall architecture of FEEL and feelfem was already conceptually complete.
 
 ---
 
-## Core DSL Concepts (Draft)
+## 2. Why feelfem2?
 
-```text
-fem   u[P2], v[P2], p[P1];
-fem  tu[P2], tv[P2], tp[P1];
-ewise sigma[P2];
+Despite the conceptual maturity, the original implementation suffered from:
 
-solve[u,v,p ; tu,tv,tp] {
-  nonlinear;
-  quadrature gauss3x3;
+- C / C++98 limitations
+- lex / yacc based parsing
+- strongly pointer-based data structures
+- limited portability to modern environments
 
-  weq: integral( dot(grad(u), grad(tu)) );
-  weq: integral( p * div(tu) );
-  weq: integral( div(u) * tp );
+Meanwhile, modern FEM frameworks such as **FEniCS** appeared —  
+but the original goal of **DSL-level mathematical transparency and educational beauty** was never fully achieved elsewhere.
 
-  nbc: g = 10, on top;
-  dbc: u = 0, on left, right, bottom;
-}
+**feelfem2** revives this original vision with modern technology:
+
+- modern parsing frameworks
+- clean IR (intermediate representation)
+- multiple backends (Fortran, C++, GPU, etc.)
+- educational-grade sample codes with **copyright-free beautiful Fortran**
+
+---
+
+## 3. Design Philosophy
+
+- FEM should be described **as mathematics**, not as tangled source code.
+- Weak forms, trial/test functions, and boundary conditions should be **first-class language objects**.
+- Generated codes must be:
+  - readable
+  - modifiable
+  - verifiable
+- FEM education should not be blocked by:
+  - weak-form formal barriers
+  - broken sample codes full of typos
+  - unreadable legacy Fortran
+
+**feelfem2 is designed as a liberation tool for FEM education.**
+
+---
+
+## 4. Legacy Implementation
+
+The historical FEEL / feelfem implementation is preserved under:
+
