@@ -24,7 +24,7 @@ The original **FEEL / feelfem** system was developed to:
 - H. Fujio, *The feelfem System - A Repository System for the Finite Element Method*, IPDPS 2003  
 - H. Fujio, F. Kikuchi, *Implementation of covariant and contravariant families of finite elements*, 1998  
 - H. Fujio, *FEEL – Numerical Simulation Language for FEM*, 1993–1994  
-- H. Fujio et al., *Development of FEM Code Generator for Vector/Parallel Computation*, NEC Technical Report 2002
+- H. Fujio, *Development of FEM Code Generator for Vector/Parallel Computation*, NEC Technical Report 2002
 
 By **2003**, the overall architecture of FEEL and feelfem was already conceptually complete.
 
