@@ -1,0 +1,4 @@
+[2002/05/20]
+Normal calculation program in feelfem90_neumann.cpp
+
+no check for hexahedra case (minus flag)

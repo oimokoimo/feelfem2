@@ -1,0 +1,188 @@
+==============================
+I. Fundamental classes
+==============================
+string.hpp           string class
+
+list.hpp             list data structure
+ptrList.hpp          Pointer list (order is made by value, not address)
+iterator.hpp         list iterator
+orderdlist.hpp
+orderedPtrList.hpp
+
+vector.hpp           vector data structure
+stack.hpp            stack data structure
+
+
+==============================
+II. System 
+==============================
+feeldef.hpp
+feelfem.hpp          externs for parameters (NOTE, doNothingNow is abnormal)
+feelfuncs.hpp        externs for information  feelfemobj, etc.
+feelparse.hpp
+parseExternals.hpp
+
+Procedure.hpp        control for programming model, etc. 
+
+Object.hpp           information repository for variable, element,quadrature,
+Geometry.hpp         Geometry object
+Configure.hpp        Database for implemented models, possible combinations
+
+
+==============================
+II. Geometry
+==============================
+Point.hpp
+GEOpoint.hpp
+Edge.hpp
+Polygon.hpp
+PolygonalRegion.hpp
+
+======================
+Parser family
+======================
+Expression.hpp
+
+
+==============================
+Code generator class
+==============================
+
+===================
+ .a  Language level
+===================
+Source.hpp
+
+Fortran77Generator.hpp
+Fortran77MPI.hpp
+Fortran90Generator.hpp
+CcodeGenerator.hpp
+
+
+========================
+  .b Program Model level
+========================
+PM_feelP2.hpp
+PM_feelP2DRAMA.hpp
+PM_feelfem90.hpp
+PM_feelfem90DRAMA.hpp
+
+========================
+  .c Matrix level 
+========================
+MT_P2CRS.hpp
+MT_P2CRSLOC.hpp
+MT_P2PCG.hpp
+MT_P2SID.hpp
+MT_P2Skyline.hpp
+MT_ff90AMGCRS.hpp
+MT_ff90PAMGCRS.hpp
+
+=========================
+  .c Solver library level
+=========================
+LIB_feelP2Achim.hpp
+LIB_feelP2AchimCG.hpp
+LIB_feelP2AchimLoc.hpp
+LIB_feelP2PCG.hpp
+LIB_feelP2Skyline.hpp
+LIB_feelP2iwashita.hpp
+LIB_feelfem90AMG81.hpp
+LIB_feelfem90AchimCG.hpp
+LIB_feelfem90PAMG.hpp
+LIB_feelfem90PAMG81.hpp
+LIB_feelfem90SAMG20c.hpp
+
+
+
+================================
+FEM procedure components
+================================
+Main.hpp               Main routine information
+
+Assign.hpp
+Solve.hpp
+
+=========================
+FEM Abstract scheme level
+=========================
+MainGeneratorTemplate.hpp
+MainScheme.hpp
+
+SolveGeneratorTemplate.hpp
+SolveScheme.hpp
+
+ElemGeneratorTemplate.hpp
+ElemScheme.hpp
+
+DirichletGeneratorTemplate.hpp
+DirichletScheme.hpp
+
+NeumannGeneratorTemplate.hpp
+NeumannScheme.hpp
+
+
+================================
+FEM discretization components
+================================
+SolveElement.hpp
+Dirichlet.hpp
+Neumann.hpp
+
+
+=============================
+FEM Mathematical components
+=============================
+DiscretizedComponents.hpp
+ElementMatrices.hpp
+
+exprString.hpp
+TermConvert.hpp
+
+
+=============================
+FEM Problem Objects
+=============================
+Quadrature.hpp
+Element.hpp
+
+Variable.hpp
+
+
+==============================
+Source Librarian 
+==============================
+SourceLibrary.hpp
+#FileLibrary.hpp  <-  former class
+
+SL_LIB_feelP2Achim.hpp
+SL_LIB_feelP2Skyline.hpp
+SL_LIB_feelfem90SAMG20c.hpp
+SL_MT_P2CRS.hpp
+SL_MT_P2Skyline.hpp
+SL_MT_ff90AMGCRS.hpp
+SL_MT_ff90PAMGCRS.hpp
+SL_feelP2.hpp
+SL_feelfem90.hpp
+SL_feelfem90DRAMA.hpp
+
+
+=============================
+Mesh generator
+=============================
+Bamg.hpp
+#GID.hpp
+
+=============================
+Formula manipulator
+=============================
+evalPair.hpp
+ginac_funcs.hpp
+meshEvalGinac.hpp
+
+
+===============================
+Service routines
+===============================
+MakefileObject.hpp
+

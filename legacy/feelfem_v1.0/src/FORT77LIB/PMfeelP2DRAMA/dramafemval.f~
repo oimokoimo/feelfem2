@@ -1,0 +1,21 @@
+      real*8 function dramafemval(mypeid, ind,ipe,val,npmax,
+     $                                            valex,
+     $                            ndno,peno,nouter)
+*--------------------------------------------------------------
+*    Get fem value by nd/pe double index pair
+*
+*    val(npmax)  
+*    valex(nouter),ndno(nouter),peno(nouter)
+*--------------------------------------------------------------
+      if(mypeid .eq. ipe) then
+         dramafemval = val(ind)
+      else
+*
+         nd = ndsearch_ex(ind,ipe,ndno,peno,nouter)
+         dramafemval = val_ex(nd)
+      endif
+*
+      return
+      end
+
+

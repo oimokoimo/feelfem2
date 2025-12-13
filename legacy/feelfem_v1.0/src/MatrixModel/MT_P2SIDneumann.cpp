@@ -1,0 +1,92 @@
+/*
+ *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999
+ *                       Programmed by Hidehiro  FUJIO
+ *
+ *  Filename : MT_P2SIDneumann.cpp
+ *  Date     : 2000/11/23
+ *  Modified : 2000/11/23
+ *  Modified : 2001/02/02 orderedPtrList
+ *  
+ *  Purpose  : FEEL P2 program model/CRS storage neumann condition
+ *  
+ */
+
+#include "MT_P2SID.hpp"
+#include "Neumann.hpp"
+
+void MT_P2SID::DoNeumannRoutineHeaderMT(Neumann *nPtr)
+{
+  DoNeumannArgumentSequenceMT( nPtr );
+  SourceStarters();
+  com();
+
+  DoNeumannArgumentVariableDefinitionsPM(nPtr);
+  com();
+  writeMatrixDeclarations();
+  com();
+  
+  return;
+}
+
+void MT_P2SID::DoNeumannArgumentSequenceMT(Neumann *nPtr)
+{
+  pushSource("      subroutine ");
+  pushNeumannRoutineName(nPtr->GetSolveNo(),nPtr->GetNcondNo());
+  pushSource("(x,y,");             // dependent on class
+  flushSource();
+
+  pushSource("     $ ");
+  pushMatrixArgumentsCalled();
+  pushSource(",ielem,matno,neelem,nenode,IPD"); // dependent on class
+  flushSource();
+
+  pushSource("     $ ");
+  orderedPtrList   <Variable *>varPtrLst = nPtr->GetVariablePtrLst();
+  listIterator <Variable *>itr(varPtrLst);
+  for(itr.init(); !itr; ++itr ){
+    string a;
+    pushSource(",");
+    NameVariableInCalled(itr(),a);
+    pushSource(a);
+  }
+  pushSource(")");
+  flushSource();
+
+  return;
+}
+
+void MT_P2SID::DoNeumannApplyMatrixMT(Neumann *nPtr)
+{
+
+  if(nPtr->GetMatNonZero() != 0) {
+    writeSource("      do 600 j=1,NDF");
+    writeSource("       jp   = ikp(j)");
+
+    writeSource("       do 650 k=1,NDF");
+    writeSource("        kp = ikp(k)");
+    writeSource("        do 660 L=1,mj");
+    writeSource("          if(ja(jp,L) .EQ. kp) goto 665");
+    writeSource(" 660    continue");
+    writeSource("*--- err");
+    writeSource("        write(*,*) 'cannot find'");
+    writeSource("        stop 'ncond'");
+    writeSource("*--- err");
+    writeSource(" 665    continue");
+    com();
+    writeSource("        a(jp,L)=a(jp,L)+ba(j,k)");
+    com();
+    writeSource(" 650   continue");
+    writeSource(" 600  continue");
+  }
+  com();
+  
+  writeSource("      do 700 j=1,NDF");
+  writeSource("       jp   = ikp(j)");
+  writeSource("       b(jp)= b(jp) + bb(j)");
+  writeSource(" 700  continue");
+  comment();
+
+  return;
+}
+
+

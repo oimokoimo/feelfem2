@@ -1,0 +1,308 @@
+[Final access]
+
+2002/02/05 (Tue) Disk clashed.  NOTES destroyed.
+2002/01/21 (Mon) add SNperspect.cpp etc.
+2002/01/18 (Fri)
+
+//
+//  FEELFEM DEVELOPMENT NOTICE
+//
+//  Actual development began Oct 1999.
+// 
+//  Program models  : feelP2
+//                  : feelP2DRAMA
+//                  : feelfem90
+//                  : feelfem90DRAMA
+//                  : feelfem90vec
+//  Matrix models
+//                  : P2Skyline
+//                  : P2PCG
+//                  : P2CRS
+//                  : P2SID
+//                  : P2CRSLoc
+//                  : ff90PAMGCRS
+//                  : ff90AMGCRS
+//                  : ff90vecCRS
+// 
+//  Solvers         : Skyline
+//                  : CRS-file
+//                  : CRS loc (CG,Bicgstab,etc)
+//                  : Iwashita solver
+//                  : Parallel AMG (GMD)
+//                  : Single AMG   (GMD)
+//                  : Vector PCG solver (For SX-5,SX-6)
+
+//===============================================================
+//  Class design    
+//
+//  extern declaration of feelfemobj,feelfemgeom,feelfemproc,etc. 
+//  are in feelfuncs.hpp
+//
+//
+//  Object    feelfemobj        parts object         
+//                              declared in Object/initObject.cpp
+//
+//
+//                              Quadrature added in SNquadrature::InfoGenerate
+//
+//
+//
+//  Geometry  feelfemgeom       geometry object
+//                              declared Geometry/Geometry.cpp
+//
+//  Procedure feelfemproc       scheme object
+//                              declared Procedure/Procedure.cpp
+//                              class Main is generated from feelfemproc
+//
+//  feelfemobj,feelgeom,feelfemproc are generated in check family.
+//
+//  feelfemobj  <- Variable 
+//
+//  feelfemgeom <- Geometry
+//
+//  feelfemconf <- Configurations (Solver Program Model correspondance, etc.)
+//
+//  class Main will be generated from feelfemobj and feelfemproc in 
+//  the default constructor (CodeGenerator/code.cpp)
+//
+//===============================================================
+// quadrature class 
+//
+// quadrature_check
+//  |
+//  ||-snqPtr->SetEtype();         // set etype
+//  ||
+//  ||-snqPtr->SetGaussPoints();   // set number of gauss points
+//  ||
+//  ||-snqPtr->CheckGaussPDimension();  // check dimension of each g-point
+//  |
+//  ||-snqPtr->EvalExpressions();
+//  ||             |  allocate evaluator  (ginac/quadratureEvalGinac.cpp)
+//  ||             |  double var, assignment evaluate
+//  ||             |  allocate evaluator
+//  ||
+//  ||
+//  ||
+//  ||-snqPtr->CheckGaussPRange();
+//  ||
+//  ||-snqPtr->CheckConsistency();
+//  ||
+//  |
+//
+//
+// element_check
+//  |
+//  ||- snePtr->setEtype();
+//  |
+//  |-- snePtr->CheckSystemVariables();
+//  |     |
+//  |     ||->snedvPtr->CheckSystemVariables();  check vertex variables usage
+//  |     |
+//  |
+//  ||- snePtr->EvalExpressions();  // not yet(2001/12/29)
+//  |     |
+//  |     |- declare elementEvalGinac evaluation
+//  |     |
+//  |     ||- node coordinates evaluation (node must be pure numeric)
+//  |     ||  evaluator.evalInterpolationNode(SNelementIntp *iPtr)
+//  |     ||   |
+//  |     ||   |- iPtr->evalCoordinate(&evalList);  
+//  |     ||   |   (set xval,yval,zval)
+//  |     ||   |   (evalList used for future func.)
+//
+//
+//===============================================================
+//  Reserved variables
+//
+//  normal unit vector     : nx,ny,nz
+//  tangential unit vector :(tx,ty) (tx1,ty1,tz1),(tx2,ty2,tz2)
+//  
+//  position of vertices   : x1,x2,x3,... y1,y2,y3,... z1,z2,z3,...
+//
+//===============================================================
+
+1999/11/26 Version report restart.
+	   solvegen.c          wrt solve struct in make_ctrl77_sk.c ctrl77.dat
+           ReadCtrl77dat.cpp   read ctrl77.dat
+
+1999/11/30 add string operator <
+.....................
+
+2000/02/10 Bug fix for itr++ -> ++itr
+2000/03/23 Start to make feelfem P2DRAMA functions
+2000/11/22 feelfem90DRAMA model(with ncond)
+2000/11/23 kyoto version 
+2000/11/23 DBG=0 in ReadCtrl77CRS-file.cpp
+2000/12/07 Make amg8.1 solverCRS-fileCRS-file version 8 Dec  
+2000/12/23 exit(1) include <stdlib.h>
+2000/12/26 pushVariableListinCalled( & -> x)
+2000/12/27 strlen->stringLength, exit->abortExit
+           LIB_feelfem90AMG81 (program conversion in Fortran remain)
+2001/01/19 NormalAssembly,DistributedAssembly caution!!!
+
+2001/01/25 ssmake,ssheadmake utilities are made
+           NAMEDATA = { filename prog_class module_name makeFlag }
+           progs are under util section
+
+2001/01/30 ssheadmake is removed
+           ssmake version up with NAMEDATA modification
+
+2001/01/31 makefile generator (modify makefileObject class)
+
+2001/02/01 orderdList and orderedList PROBLEM
+           add function doesnot work!!!
+      
+           If the pointer is compared in ordered list, it seems 
+           not called the operator function........
+
+2001/02/02 orderdList -> orderedPtrList(^^;
+                              ^ ^^^
+
+2001/02/06 Problems in allocation iscale in PAMG81,SAMG20c-> will be FIXED!!!!
+           => fixed.....(for PAMG81 not tested now)
+
+2001/02/08 SAMG20c version?(not debugged)
+2001/02/18 feelfemf77tof90 Makefile modified
+2001/02/18 samg20c several small errors corrected
+
+2001/02/21 parser for expression made  (shift/reduce occures from /*empty*/
+           /* empty in scheme block etc. */
+
+2001/02/27 Fundamental mesh sentences
+
+2001/02/27 Math directory  MATHexpression class
+           GEOpoint etc. class for geometry
+
+2001/03/05 friend int operator !=(const string &, const char *) added
+2001/03/05 solve statement
+
+2001/03/08 *** VAR_EWISE_A  (feelP2 model dimension ew(*,*) change required)
+2001/03/08 parseExternal.hpp  (for external list)
+
+2001/03/08 avsint    -> int with initial value
+           avsdouble -> double with initial value
+
+2001/03/19 ginac linked successfully
+
+           (schedule)
+
+2001/03/22 comment grammar not sure...   // and /* ... */ how to set???
+
+2001/03/23 isDefined... -> howManyNotDefined ...
+           ginacInFeelfem.hpp -> evalPair.hpp
+
+2001/03/25 SNpoint evaluation
+2001/03/26 Element,Quadrature parser
+
+2001/03/29 change  char * Quadrature::name -> string Quadrature::name
+           It may cause terrible errror...............
+
+2001/04/03 in geometry_generate, switch sentence acts strangely....
+          (modified the source file indent, it seems fixed... but....)
+
+2001/04/06 Change policy, own numbering and point/edge data struct in Bamg.
+
+2001/04/17 In parametric edge specification, enable meshDoubleVar is
+           SUSPENDED.
+
+2001/04/23 Variable,Element -> Object    feelfemobj; (Object/initObject.cpp)
+           Geometry         -> Geometry  feelfemgeom;(Geometry/Geometry.cpp)
+	   Procedure        -> Procedure feelfemproc;(Procedure/Procedure.cpp)
+
+2001/04/24 
+
+2001/05/07 Main       -> X
+           Procedure  -> O   (MainGenerateTemplate)
+
+2001/07/09 GiNaC modification (for lst(,,,,,,,) )
+           in ginac directory,  perl container.pl lst 256
+
+           256 is possible???????????
+
+
+2001/07/11 CodeGenerator/cg_functions.hpp    function prototype declaration
+                                             for individual scheme generator
+
+           CodeGenerator/cg_XXXXXXXXX.cpp    XXXXXXXXXX is the Subroutine 
+                                             based scheme name
+         
+
+2001/07/12 Coroutines are generated in   
+
+           YYYYYGeneratorTemplate::YYYYYRoutineTerminate() 
+
+           routines.  (ex. YYYYY = Solve,  coroutine are
+                       elem,ecal,eset, etc. and MT-, LIB- 
+                       depending routines)
+
+2001/07/20 weak term parser...
+           Caution::the difference of expression and Expression
+
+2001/07/27 discretizeSolve.cpp (start to develop)
+
+2001/07/27 SNxXXXXX_CHECK.cpp   <- check routines in Syntax class
+                                   check & setting parameters
+
+2001/07/30 Configure class    1.program model name, solver name, etc.
+                                are stored.
+
+                              2.matching informations
+                                (ex. program model <--> solvers, etc.)
+           
+
+2001/08/22 CodeGenerate() function in SNxxxxx classes
+           void SNxxxxx::CodeGenerate(void)
+
+2001/08/23 VS  Procedure class and Main class  .....
+
+
+2001/10/25 Restart at Miyazakidai
+2001/10/26 
+
+2001/11/05 var_check_defined.cpp/  errWrtData() in Syntax class
+
+2001/12/13 ginac version change memo.
+           This occured fro version 0.9.1 released Jun 27 2001.
+
+           is_ex_of_type(foo, type) -> is_a<type>(foo) 
+
+           ex_to_foobar(baz) -> ex_to<foobar>(baz)
+
+           appeared in labo/sqrt_eval/evaltest.cpp
+ 
+           ref. http://www.ginac.de/News.html
+
+2001/12/17 sqrt problem  -> SNfunction.cpp
+           sqrt(t) -> ((t)^(1/2))   rewrite  (12/19 correct)
+
+2001/12/19 Quadrature_dbgXDisplay.cpp
+
+2001/12/20 Debug Tajima
+
+2001/12/21 initialization problem in SNquadrature_CHECK:: errors...
+
+2001/12/21 Debug mode  -debug -fulldebug mode, 
+           extern feelfem_debug_msglevel   added.  DEBUG_MSG_FULL,etc.
+
+2001/12/21 Element class check routine
+           SNelement::InitialInformationGenerate()
+
+           Emacs. set-language-environment is useful.
+
+2001/12/25 [memo]Addition to feelfemobj is done in InfoGenerate() functions.
+
+2001/12/25 check/isSystemVariable.cpp
+           feeldef.h  NAME_TANGENTIAL_X_3D1  etc.
+
+2002/01/08 SNelement::CheckNodeDimension()
+           SNelement::ParseInterpolates()    <- underconstruction
+
+2002/01/15 DISK CRASH!!!
+
+2002/01/18 Recover, hot start.
+           TermConvert/testroom/Makefile improved
+
+           add String to token.  (from aumc)
+
+2002/01/30 delete info.cpp 
+           class GalerkinMethod added

@@ -1,0 +1,33 @@
+How to add Program Model, Matrix Model, Libraries
+
+
+Program Model 
+==================================================================
+src/class                                  PM_XXXXXX header file
+
+src/ProgramModel                           dirctories
+
+src/ProgramModel/XXXXX.cpp                 general routinesn
+                 XXXXX_main.cpp            main routine
+                 XXXXX_mainSCheme.cpp      main routine (scheme dependent)
+	         XXXXX_solve.cpp           solve subroutine
+	         XXXXX_elem.cpp            elem subroutine
+	         XXXXX_dirichlet.cpp       dirichle subroutine
+	         XXXXX_neumann.cpp         neumann suroutine
+
+parser/Syntax/SNsolve_CodeGenerateMain.cpp  case branches
+
+
+MatrixModel
+=========================================================================
+
+class/
+
+src/MatrixModel/YYYYYY.cpp
+
+
+
+
+DoSchemeVirtuals.cpp
+=========================================================================
+Should be updated if new Scheme Do is defined.
