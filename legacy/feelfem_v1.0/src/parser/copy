@@ -1,0 +1,2 @@
+cp feelfem /usr/local/bin
+mv feelfem ~/bin

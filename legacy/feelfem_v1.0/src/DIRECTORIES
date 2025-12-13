@@ -1,0 +1,33 @@
+Bamg/                Bamg mesh generator
+Configure/           Generatior configuration (name-code correspondance, etc.)
+Element/             Element definition (interpolations)
+FORT77LIB/           Original Fortran Program
+FiniteElement/       FEM mathematical components
+FromP2Interface/     Temporary interfacre to old version
+Geometry/            Geometrical components
+Main/            XXX DELETED
+Math/                Mathematical libraries (calculate area, etc.)
+MatrixModel/         Matrix data structure model
+Mesh/                Interfaces to mesh generators
+Object/              feelfemobj (Storage class of problems)
+Procedure/			   
+ProgramModel/        Program Models
+Quadrature/          Numerical integration
+Scheme/              Numerical schemes (Nonlinear, NormalLinear, Assemble,etc.)
+Solve/               Solve,SolveElement
+SolverLibrary/       Solvers
+Source/              Fundamental file managements, source file comments, etc.
+SourceLibrary/       Source libraries  SL_***
+ToP2Interface/       Temporary interface to P2(This is used in feelP2)
+Xplot++/             C++ version plot library
+basic/               Fundamental C++ components (string, etc.)
+check/	             Check routine, here parsing data generated.
+class/               Header files
+document/            document for coding
+ginac/               GiNaC interface
+lib/                 binary libraries
+main/		     Control routine (feelfem.cpp)		
+parser/              Parser and Syntax classes
+system/              getDate.cpp etc.  (System service functions)
+test/                old test directory
+tmp/                 temporary test

@@ -1,0 +1,6 @@
+      integer*4 function inbctr2search(no,inbctr2,inbctrs)
+*---------------------------------------------------------------
+* Search index number in inbctr2 array for EDAT Number 'no'.
+*---------------------------------------------------------------
+      integer*4 no
+      integer*4 inbctr2(5,*)
