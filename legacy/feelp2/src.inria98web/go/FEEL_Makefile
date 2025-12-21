@@ -1,0 +1,2 @@
+FEEL : feel_main.o 
+	f77 feel_main.o  -lfesl

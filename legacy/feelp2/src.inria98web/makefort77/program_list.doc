@@ -1,0 +1,34 @@
+
+   FORTRAN作成プログラム一覧(makefort77シリ〜ズ)
+ 
+【コントロールプログラム】
+make_feel_fort77.c   もっとも基本のやつ
+
+【共通プログラム
+CommonBlock.c        COMMONブロック生成
+CopyRight.c          Copyrightを書く
+TimeStamp.c          作成時間
+comments.c           コメント区切り
+real8.c              implicit real*8
+
+
+【メインプログラム生成】
+make_main.c          メインプログラム作成ドライブプログラム
+main_declare.c
+main_prepare.c
+main_variable.c
+main_scheme.c        スキーム部分のプログラム
+
+【一般ライブラリの作成】
+fort77lib_make.c
+
+【ファイル入出力関係プログラム】
+data_init.c
+datinp.c
+filset.c
+make_inp_elem.c
+make_inp_node.c
+make_inp_nset.c
+make_inp_num.c
+
+

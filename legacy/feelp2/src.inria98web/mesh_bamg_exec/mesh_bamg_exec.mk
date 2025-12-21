@@ -1,0 +1,3 @@
+mesh_bamg_exec.lib :: make_MESH_REF_bamg.c make_bamg_info.c make_boundary_data_bamg.c make_feel_data_file_bamg.c mesh_bamg_exec.c push_boundary_edat_bamg.c push_boundary_nset_bamg.c push_boundary_plot_data_bamg.c
+	cl /c make_MESH_REF_bamg.c make_bamg_info.c make_boundary_data_bamg.c make_feel_data_file_bamg.c mesh_bamg_exec.c push_boundary_edat_bamg.c push_boundary_nset_bamg.c push_boundary_plot_data_bamg.c
+	lib /OUT:mesh_bamg_exec.lib make_MESH_REF_bamg.obj make_bamg_info.obj make_boundary_data_bamg.obj make_feel_data_file_bamg.obj mesh_bamg_exec.obj push_boundary_edat_bamg.obj push_boundary_nset_bamg.obj push_boundary_plot_data_bamg.obj

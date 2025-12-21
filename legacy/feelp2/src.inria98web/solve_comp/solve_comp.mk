@@ -1,0 +1,3 @@
+solve_comp.lib :: dbg_show_elem_dat.c edat_make.c elem_dat_make.c element_node.c get_femvarinfo.c make_fem_varinfo.c make_mesh_ctrl_data.c make_subdomain_info.c set_boundary_no.c solve.c solve_dat_make.c
+	cl /c dbg_show_elem_dat.c edat_make.c elem_dat_make.c element_node.c get_femvarinfo.c make_fem_varinfo.c make_mesh_ctrl_data.c make_subdomain_info.c set_boundary_no.c solve.c solve_dat_make.c
+	lib /OUT:solve_comp.lib dbg_show_elem_dat.obj edat_make.obj elem_dat_make.obj element_node.obj get_femvarinfo.obj make_fem_varinfo.obj make_mesh_ctrl_data.obj make_subdomain_info.obj set_boundary_no.obj solve.obj solve_dat_make.obj

@@ -1,0 +1,25 @@
+The file contents of 'bamg.feel'
+
+*Premiere block
+
+
+*Boundary information   [***] string  <...> numerical data   <...[]> array
+
+Boundary data for Dirichlet condition (NSET data)
+
+| nsetline [var_name] [from] [to]
+| <unit_points>
+| <eq_plus[...]>
+| <use_flag[...]>
+| 
+| nsetpo [var_name] [name] <iedp>
+| 
+| end <node_set_no>
+
+Boundary data for Neumann condition (EDAT (boundary edat))
+
+| edatline <line_sets> [from] [to]
+| <total_edge_points> <use_points>
+| <use_flag[...]>
+| 
+| end <edatno>  <np>
