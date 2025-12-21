@@ -1,0 +1,211 @@
+C  Fortran AVS/Express module
+C
+      INTEGER function method
+     .(UCD_id, event_mask, seq_num)
+C
+C     change the include path if necessary
+C     some compiler require #include ....
+C
+      include 'avs/omf.inc'
+      include 'avs/fldf.inc'
+C
+      integer UCD_id(OIDSIZ), event_mask, seq_num
+C
+C    Declare variables  
+C
+      INTEGER  start
+C
+      INTEGER  stop
+C
+      INTEGER  step
+C
+      CHARACTER*32 filename
+C
+      DOUBLE PRECISION  param
+C
+      INTEGER output_id(OIDSIZ)
+C
+      INTEGER output_nnodes, output_size, output_nspace
+      INTEGER output_nsets, output_set, output_ncells
+      INTEGER output_cell_nnodes, output_node_connect
+      INTEGER output_crd_off, output_con_off
+      INTEGER output_con_base(1), output_coord
+      REAL output_crd_base(1)
+      CHARACTER*32 output_cell_name
+      INTEGER output_cell_set(OIDSIZ)
+C
+      INTEGER output_ncomp, output_comp, output_veclen
+      INTEGER output_data_type, output_ndata
+      INTEGER output_data, output_data_offset
+C  !!! The type of the output_data_base array should be changed
+C   to the type of node data
+      REAL output_data_base(1)
+C
+
+C
+C  Get input values   
+C
+C    Get start's value 
+      IF (OMFget_name_int_val(UCD_id, 
+     .   OMFstr_to_name('start'),
+     .   start) .NE. 1) 
+     .   start = 0
+C
+C    Get stop's value 
+      IF (OMFget_name_int_val(UCD_id, 
+     .   OMFstr_to_name('stop'),
+     .   stop) .NE. 1) 
+     .   stop = 0
+C
+C    Get step's value 
+      IF (OMFget_name_int_val(UCD_id, 
+     .   OMFstr_to_name('step'),
+     .   step) .NE. 1) 
+     .   step = 0
+C
+C   Get filename's value
+      IF (OMFget_name_str_val(UCD_id, 
+     .   OMFstr_to_name('filename'),
+     .   filename, LEN(filename)) .NE. 1)
+     .       PRINT*,'Error setting filename' 
+C
+C   Get param's value
+      IF (OMFget_name_real8_val(UCD_id, 
+     .   OMFstr_to_name('param'),
+     .   param) .NE. 1)
+     .   param = 0.0
+C
+C
+C
+C  Place your module's source code here
+C
+
+C
+C  Set output values  *
+C
+C     Set stop's value
+      if (OMFset_name_int_val(UCD_id, 
+     .   OMFstr_to_name('stop'),
+     .   stop) .NE.1 )
+     .      PRINT*,'Error setting stop' 
+C
+C     Set step's value
+      if (OMFset_name_int_val(UCD_id, 
+     .   OMFstr_to_name('step'),
+     .   step) .NE.1 )
+     .      PRINT*,'Error setting step' 
+C
+C   Set output mesh
+C  Get mesh id
+      IF (OMFfind_subobj(UCD_id, 
+     .   OMFstr_to_name('output'),
+     .   OM_OBJ_RW, output_id) .NE. 1)
+     .      PRINT*,'Error getting mesh' 
+C  Set mesh nspace, output_nspace can be 1,2 or 3
+      output_nspace = 2 
+      IF (FLDFset_nspace (output_id, output_nspace) .NE. 1)
+     .      PRINT*,'Error getting nspace' 
+C  Set mesh nodes
+      output_nnodes = 1
+      IF (FLDFset_nnodes (output_id, output_nnodes) .NE. 1)
+     .      PRINT*,'Error getting nnodes' 
+C  Now, that nspace and nnodes are set, 
+C  just get pointer to coordinate array
+      IF (FLDFget_coord(output_id, output_coord, 
+     .   output_nnodes, OM_GET_ARRAY_RW) .NE. 1)
+     .      PRINT*,'Error getting coordinates'  
+      output_crd_off = ARRFoffset(output_coord,
+     .   output_crd_base,DTYPE_FLOAT)
+C  Fill in output_cnt_base array with coordinates x,y,z,x,y,z....
+C  starting with output_cnt_base(1+output_crd_off)
+C
+C  Set number of cell sets output_nsets variable
+      output_nsets = 1
+      IF (FLDFset_ncell_sets(output_id, output_nsets) .NE. 1)
+     .      PRINT*,'Error getting ncell sets' 
+C   For each cell_set set information  about cells 
+C   do it for each output_set from 0 to output_nsets-1
+      output_set = 0
+      IF (FLDFget_cell_set(output_id, output_set, 
+     .  output_cell_set) .NE. 1)
+     .      PRINT*,'Error getting cell set'      
+C   Set cell set to say, Tri
+      output_cell_name = 'Tri'
+      IF (FLDFset_cell_set(output_cell_set, 
+     .  output_cell_name) .NE. 1)
+     .      PRINT*,'Error setting cell set'
+C   Set number of cells
+      output_ncells = 1
+      IF (FLDFset_ncells(output_cell_set, output_ncells)
+     .    .NE. 1)
+     .      PRINT*,'Error getting ncells' 
+C   Get node connectivity list
+      IF (FLDFget_node_connect(output_cell_set, 
+     .      output_node_connect,output_size,OM_GET_ARRAY_RW)
+     .    .NE. 1)
+     .      PRINT*,'Error getting node connectivity' 
+      output_con_off = ARRFoffset(output_node_connect,
+     .   output_con_base,DTYPE_INT)
+C   Fill in  output_con_base array with node indecies for each cell
+C  starting with output_con_base(1+output_con_off)
+C
+C   NOTE: for POLY cell_sets such as Polyline, Polytri and Polhedron,
+C       if you want to get non-tesselated cells 
+C       use:
+C     FLDFset_npolys ()         instead of  FLDFset_ncells ()
+C     FLDFget_poly_connect ()   instead of  FLDFget_node_connect ()
+C     
+C       To check if a cell set is POLY type 
+C       use:
+C     FLDFget_poly_flag(output_cell_set, poly_flag)
+
+C
+C  Set output's node data
+C  Get field id
+      IF (OMFfind_subobj(UCD_id, 
+     .   OMFstr_to_name('output'),
+     .   OM_OBJ_RW, output_id) .NE. 1)
+     .      PRINT*,'Error getting data'
+C  Get number of node data components
+      output_ncomp = 1
+      IF (FLDFset_node_data_ncomp (output_id, output_ncomp) .NE. 1)
+     .      PRINT*,'Error setting ndata comp'
+C  For each node data component set veclen, type and data arry itself
+C  do it for each output_comp from 0 to output_ncomp-1
+      output_comp = 0
+C  Set veclen
+      output_veclen = 1
+      IF (FLDFset_node_data_veclen (output_id, 
+     .   output_comp, output_veclen) .NE. 1)
+     .      PRINT*,'Error setting data veclen'
+C  Set data array and data_type which is one of the following: 
+C         DTYPE_BYTE, DTYPE_CHAR, DTYPE_SHORT, 
+C         DTYPE_INT, DTYPE_FLOAT, DTYPE_DOUBLE 
+      output_data_type = DTYPE_FLOAT
+      IF (FLDFget_node_data (output_id, output_comp, 
+     .   output_data_type, output_data,
+     .   output_ndata, OM_GET_ARRAY_WR) .NE. 1)
+     .      PRINT*,'Error setting data'
+      output_data_offset = ARRFoffset(output_data,
+     .   output_data_base,output_data_type)
+C  Fill in output_data_base array with values
+C  starting with output_data_base(1+output_data_offset)
+C  Other useful calls:
+C          CALL FLDFset_node_data_id()
+C          CALL FLDFset_node_null_data()
+C          CALL FLDFset_node_data_minmax()
+   
+C
+C
+C
+C  Free output variables 
+C
+      CALL ARRFfree(output_coord)
+      CALL ARRFfree(output_node_connect)
+C
+      CALL ARRFfree(output_data)
+C
+      method = 1
+      return
+      end
+

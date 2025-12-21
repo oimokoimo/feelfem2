@@ -1,0 +1,21 @@
+csle53>  f77 -c p_read_prdat.f
+203 Warning on line 12 of p_read_prdat.f: Dummy procedure not declared EXTERNAL. Code may be wrong.
+326 Error on line 12 of p_read_prdat.f: non-left side in READ list
+csle53>  f77 -c p_read_rdat.f
+  5 Error on line 25 of p_read_rdat.f: syntax error
+257 Warning on line 35 of p_read_rdat.f: local variable idat never used
+257 Warning on line 35 of p_read_rdat.f: local variable nbase never used
+257 Warning on line 35 of p_read_rdat.f: local variable nrecvtable never used
+csle53> f77 -c p_read_sdat.f
+257 Warning on line 35 of p_read_sdat.f: local variable idat never used
+257 Warning on line 35 of p_read_sdat.f: local variable nbase never used
+csle53> f77 -c p_make_sreq.f
+231 Error on line 54 of p_make_sreq.f: Declaration error for nrecvkaz: adjustable automatic array
+170 Error on line 82 of p_make_sreq.f: Declaration error for nrecvkaz: adjustable dimension on non-argument
+257 Warning on line 82 of p_make_sreq.f: local variable nsendtable never used
+257 Warning on line 82 of p_make_sreq.f: local variable nrecvtable never used
+csle53> ls *.o
+p_calc_eqno.o   p_read_d_nset.o p_read_ndat.o   p_read_pedatB.o p_read_sdat.o
+p_make_eqno.o   p_read_n_edat.o p_read_peda
+
+

@@ -1,0 +1,2 @@
+CFLAGS =  $(ADDITIONALCFLAGS)
+mesh_exec.a :mesh_exec.a(boundary_data.o) mesh_exec.a(get_mesh_data.o) mesh_exec.a(get_midpoints.o) mesh_exec.a(make_MESH_REF.o) mesh_exec.a(make_boundary_edat.o) mesh_exec.a(make_boundary_nset.o) mesh_exec.a(make_boundary_plot_data.o) mesh_exec.a(make_feel_data_file.o) mesh_exec.a(make_ip_data.o) mesh_exec.a(mesh_book_exec.o) mesh_exec.a(mesh_info_for_meshbook.o) mesh_exec.a(mid_info_for_meshbook.o) 

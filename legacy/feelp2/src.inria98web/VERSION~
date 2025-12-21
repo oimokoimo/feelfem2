@@ -1,0 +1,97 @@
+1997/04/04
+1997/06/20  INRIA version
+1997/06/27  adaptmesh making start
+1997/07/29  BAMG mesh, complete except adaptation in detail
+            plot data and ip data added
+1997/08/27  BUG FIX for add_corner_point_bamg...
+
+web version
+1998/07/28  change in make_ctrl77_*method*  (English message Not Implemented)
+1998/07/28  add ncond_element_parameter.c for PK type element in neumann cond.
+
+1998/08/25  correct duplication between shinzan
+
+1998/08/27  add plus directory to support new version
+1998/09/03  AVS subroutine version development start
+1998/09/10  add closefil, fix AVS output modules
+1998/09/17  win32 development  (flag win extension)
+
+1998/09/28  Modulef extention begin to develop
+1998/10/06  Bug fix in ReverseIntArray.c
+
+1998/11/02  AVS version (Macro output)
+
+1998/12/14  Modulef limited version
+            LIMITATION: several nopo extension is future extension
+            Depends on: mf_make_main_scheme (NOPO READ)
+                        mf_make_scheme_femalloc.c (for many NOPOs)
+1999/01/14  Linux version
+1999/02/22  AVS update(Macro fix)
+1999/03/10  AVS update(FLDFset_node_data_veclen => FLDFset_node_data_comp)
+            This is for putting label name
+
+1999/03/12  nodes,mesh generate botton in avs panel
+1999/03/15  bamg interface from AVS version
+1999/03/17  avsnetwork extension
+1999/03/18  fix bamg.feel.exe for VertexOnSupportVertex
+            avsnetwork(update)  make_avs_network_file.c
+1999/03/20  enable option specification in adaptmesh
+
+1999/03/23  meshonly option added / -Mbb bamg.mesh -> -Mbb bamg.mesh.1
+                                   (for multiple adaption)
+1999/03/25  add parse modul in feelmacro.v
+            updateMode,UIfield node,fem, ewise variable initialize
+1999/03/29  node.value bug fix
+1999/03/30  closefil routine bug fix(repeated call) with main_prepare.c
+            Add cptime.c getdate.c to feelmesh.c (for UNIX) 
+            
+1999/03/31  Bug fix in feel.c for pdeargno (if nothing with pde, it was burst!)
+            addition to char *AVSExpress_dir, *current_dir  
+            f_alloc change(for avs, not stop)
+            message box for avs mode
+1999/04/01  rep_last  character*16 -> 17  (Incroyable!)
+            f_alloc modified(calculate all required for matrix storage)
+1999/04/02  Newton giveup functionality
+1999/04/05  newton-times add
+1999/04/08  add avsnetwork keyword [offset,probe,vect] make_avs_network_file.c
+1999/04/09  fix FEEL_ARRAY_SIZE in exec/feel.c ,makefile in BAMG_BTOF
+            add $(ADDITIONALCFLAGS) to Makefile
+1999/04/12  add legend/minmax/extract_component module in v file
+            begin to implement quadrilateral in bamg_util
+1999/04/20* TEMPORARY BUG PATCH VERSION
+            For Windows95/98 closefil-feelavsoutput error ->doclosefil
+
+1999/04/21  -avs64 option add (for sg6 memory allocation in feelavsout)
+1999/04/23  make_avs_output_routine.c (fixed at cc.tohoku)
+            integer*8 for o_con_base is error.
+1999/04/30  -bamg for rect complete???
+            make_new_edat.c  (for making mid-node)
+            bamg_geometric_edge.c (Need to be sorted for VertexOnGeometricEdge)
+            make_avs_def_file.c  (for rect mesh generation) 
+          ? use avs_mesh_ref in mesh_bamg_exec.c
+
+1999/06/01  make_main_adapt_call/make_adapt_called (var_name not use, and
+            not defined)
+1999/06/02  fix double and int with initial value (add to main_const_let.c)
+1999/06/03  add -machine linux in feel.c
+1999/06/30  add xplot directory
+1999/11/29  fix make_bamg_info.c (set_bamg_info_etype(avs_...)
+            avs... is regards rect as 4 but RECT is 3!!!!!
+	    update feel.showdat4 (to skip to read 4th of edat data)
+
+1999/12/06  change solveStructWriter place from sk linear to make fort77 main
+2000/01/24  nconvgen.c
+2000/01/25  util/metis/BAMG_METIS,util/metis/SHOW_DIVIDE
+2000/01/26  BAMG_BTOF_COMMAND (make original elem ordering file) metisbamg.feel
+2000/01/26  util/metis/GODIVIDE/godivide command script
+2000/01/28  BAMG_BTOF_COMMAND/WEBEXTENTION(now only 3) change to etype
+2000/03/09  -nbv option activated (more than 50000 nodes available)
+2000/04/17  Fix an error in dcondgen.c (no initialize for terms)
+2000/04/25  Additional information for solv_dat(make_solv_dat directory,
+            and main/feel_exec_main.c
+2000/11/03  scheme_if_check.c  scheme is not initialized!!!!!
+
+2001/01/27  try to version up f_alloc function (hide np_work)
+            parallel in feelP2 is no longer valid.(didn't fix np_work in para)
+            report.c fixed in makefort77 then transfered into f77_lib
+            eigen is not made.
