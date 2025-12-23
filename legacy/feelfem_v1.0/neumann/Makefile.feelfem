@@ -1,0 +1,48 @@
+#------------------------------------------------
+#  feelfem makefile
+#  Date : 2025/12/23 06:08
+#
+#------------------------------------------------
+F90      = ifc
+
+LINKER   = $(F90)
+
+FFLAGS   =
+
+LIBDIR =
+LIBS   = 
+
+
+.SUFFIXES: .f90 .o
+
+.f90.o:
+	$(F90) $(FFLAGS) $(INCLUDES) -c $<
+
+
+
+PROGRAM  = feelgo
+
+F90_BASIC_OBJS  = abortmodule.o numeric.o zero.o \
+                  femDataType.o feelP2data.o fileread.o \
+                  report90.o subsolveff90p2.o
+F90_LIBRARY_OBJS= mat_skyline.o
+F90_MODEL_OBJS  = skyline_scal.o skyline_solver.o
+F90_PROBLEM_OBJS= eset1_1_1.o ecal1.o elem1.o dcond1_1.o \
+                  edev1_1.o ipdinfo1_1.o ncond1_1.o solve1.o
+F90_MAIN_OBJS   = feelfem.o
+F90_MOD_OBJS    = $(F90_BASIC_OBJS) $(F90_LIBRARY_OBJS) \
+                  $(F90_MODEL_OBJS) $(F90_PROBLEM_OBJS)
+
+
+MOD_OBJS        = $(F90_MOD_OBJS)
+
+MAIN_OBJS       = $(F90_MAIN_OBJS)
+
+all  : feelgo
+
+feelgo : $(MOD_OBJS) $(MAIN_OBJS)
+	$(LINKER) -o feelgo $(MOD_OBJS) $(MAIN_OBJS) $(LIBDIR) $(LIBS)
+
+
+clean :
+	rm -r *.o feelgo *.d work.pc work.pcl
