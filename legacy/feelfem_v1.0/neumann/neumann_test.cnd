@@ -1,0 +1,18 @@
+NUMBER: 1 CONDITION: outer
+CONDTYPE: over surfaces
+CONDMESHTYPE: over nodes
+QUESTION: solve_1__dcond_1:#CB#(u=x*x+y*y+z*z)
+VALUE: u=x*x+y*y+z*z
+END CONDITION
+NUMBER: 2 CONDITION: koimo(d)
+CONDTYPE: over surfaces
+CONDMESHTYPE: over nodes
+QUESTION: solve_1__dcond_1:#CB#(u=x*x+y*y+z*z)
+VALUE: u=x*x+y*y+z*z
+END CONDITION
+NUMBER: 3 CONDITION: koimo(n)
+CONDTYPE: over surfaces
+CONDMESHTYPE: over elems
+QUESTION: solve_1__ncond_1:#CB#(g=v*nx*x*d-u)
+VALUE: g=v*nx*x*d-u
+END CONDITION
