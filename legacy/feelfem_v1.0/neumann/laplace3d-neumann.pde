@@ -33,8 +33,8 @@ scheme {
    solver skyline;
    parametric T2;
 
-   weq: integral(v*dx(u)*dx(tu)+dy(u)*dy(tu)+dz(u)*dz(tu)) = integral(-6 * tu)+bintegral(g*tu*s);
-   weq: integral(v*dx(u)*dx(tv)+dy(u)*dy(tv)+dz(u)*dz(tv)) = integral(-6 * tu)+bintegral(g*tu*s);
+   weq: integral(dx(u)*dx(tu)+dy(u)*dy(tu)+dz(u)*dz(tu)) = integral(-6 * tu)+bintegral(g*tu*s);
+   weq: integral(dx(v)*dx(tv)+dy(v)*dy(tv)+dz(v)*dz(tv)) = integral(-6 * tv)+bintegral(g*tv*s);
    dbc: u = x*x+y*y+z*z, on  outer,koimo;
    nbc: g = v*nx*x*d-u,on koimo; 
  }
