@@ -1,0 +1,13 @@
+PM_*.hpp
+
+  void pushVariableListInMain  (orderedPtrList<Variable *>);
+  void MainVariableDeclaration(Variable *);
+  void MainVariableAllocation( Variable *); 
+  void pushVariableNameInMain(Variable *);
+
+PM_*_main.cpp
+  variable declaration 
+
+
+PM_*_mainScheme.cpp
+  calling sequence to solve

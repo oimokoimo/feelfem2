@@ -1,0 +1,415 @@
+[current task 2003/02/10]
+feelfem90DRAMA_neumann.cpp connect to new discretizer
+
+
+
+
+
+[Keywords in Source code]
+  feelfemTEMP  temporary implementation, must be fixed.
+ 
+
+===========================================================================
+[Things to do]
+===========================================================================
+
+* material region sentence   material region steel(reg1,reg2,reg3);
+                          means 'reg1, reg2 and reg3 are steel'
+                          used with  material rho(steel=200.0,cupper=309.0);
+                          where  a = u * 100.0
+
+
+* check/isDefined.cpp ==> coordinates, normal vectors must be used
+                          those defined in feeldef.hpp
+                          currently, 'nx' ,etc. are explicitly and
+                          independently defined in this file.
+
+* Element::MakeBoundaryElement is temporary implementation
+
+* incomplete error check for boundary integrand
+
+* SNsolve::REgionGeometryCheck() is UC
+
+* 2nd Order PDE limitation in DiscretizedComponent_EcalInfo.cpp (020226)
+
+* GalerkinMethod is REALLY Galerkin method.  (not petrov galerkin now)
+  test function are set at GalerkinMethod_discretize from unknown 
+  element type [2002-02-13]
+
+
+* Check test function correspondance... (ex. 2nd equation can only
+                                         2nd testfunction symbol, etc.)       
+  [N020204-1]
+
+* Check geometry object consistency in boundary conditions
+
+
+* Surface variable, fem surface and ewise surface
+
+* Check consistency between program models and given patterns.
+  (Currently, ewise-interpolation variable cannot be used in
+   feelP2 program model, etc.)
+
+
+* Lamping
+  quadrature gauss3x3;
+  weq: integral[lamping](u*tu)- integral(dx(u2)*dx(tu)) = 0;
+
+
+* assure(fem u[P2], v[P2]);
+  param {  double t;  t = u_1 * u_2* u_3;
+        }
+
+* How to connect plural SolveElement problmes   !!!!!
+
+* check function making... 2002/01/21
+  isDefinedIdentifier( const char *); etc.   check/isDefined.cpp
+  
+
+* class ElementDiscretizer (control class for element discretization and GiNaC)
+
+  class DiscretizedComponent
+  class ElementMatrices
+
+* GiNaC comparison between 1 to 250 with (1 to 13 and 250)
+
+* element check is not complete
+  -> evaluation test
+  -> r,s,t system variable check  (especially node coordinate)+
+  -> symmetry
+  -> Helmite element family check (all derivative exist, etc.)
+
+* SNelement_InfoGenerate.cpp, generation of class element is UC.
+
+* element::elementType     (NODAL,etc, is not properly set in InfoGenerate.cpp)
+
+* element variable, duplicate declaration error check is not yet.
+
+* param block implementation
+
+  ==sample==
+  solve [u,v;tu,tv] {
+    param { double t,z;
+            t = x_1 * x_1 + y_1 * y_1;
+    };
+
+    weq:dx(u)*dx(tu) -
+
+* complete destructor for TermConvert (StrStrList data delete process)  
+
+
+* ptrList destructor check.
+  In pointer list, destructor is not delete values.
+  ptrList::deleteAllPointedValues()
+  
+
+* Pre-analysis for each schemes.  (Purpose: Analysis of necessary data
+                                   for each routine-level variable dependency)
+  (Pre tested implementation-oriented virtual code generator function to
+   summaraize the necessary information to run.)
+
+===========================================================================
+[GiNaC notes]
+===========================================================================
+In order to expand for input text terms,  for 256 items
+1)perl container.pl lst 256
+2)copy lst.h lst.cpp
+3)ginacEXPANDlst    15 256 >g.h       for lst.h 
+4)ginacEXPANDlstcpp 15 256 >g.cpp     for lst.cpp
+
+cln    --prefix=
+ginac  --prefix=  --with-cln-prefix=
+===========================================================================
+ [2003/01/26]
+Fix const variable initialize variable setting problem (I forget to copy Var)
+
+ [2003/01/25]
+Begin to support feelfem90DRAMA again...
+
+
+ [2002/09/27]
+add EXPRPRINT_SIMPLE for GiD cnd file(SNsolveNeumannPairs_InfoGenerate.cpp)
+
+ [2002/08/29]
+Add material variable  (not complete)
+
+
+ [2002/07/19]
+Remove Achim source code
+
+ [2002/07/17a]
+feelfem90_output  (small modification)
+feelfem.lex  =<  -> <= etc.
+exprAnalysis.cpp   add operators
+SNif
+
+
+ [2002/07/11a]
+cg_AssignmentEwiseQuad.cpp
+
+
+ [2002/05/30]
+New grammer
+Integral[quadrature](expression) to scalar-var;
+
+
+ [2002/05/20]
+Normal direction fix
+
+ [2002/04/24]
+Still making Output class
+
+[2002/04/23]
+REGN area added in feel_dat
+(In order to get the correspondance between region No. and GiD output Matno)
+
+
+[2002/04/09]
+BoundaryElementNodePattern_EqNo.cpp 
+trying to make BoundaryElementNode Pattern
+
+Boundary element has proper Node information
+
+
+[2002/04/08]
+Neumann_InfoGenerate.cpp
+
+
+[2001/04/06]
+memory error???
+in setExprGinacEvaluate(char *buf)
+
+if second cerr <<.. exists, no error, if not, segmentation fault
+
+===> make all extern variable in ginacEvaluate.cpp to static extern
+
+===>> SOLVED!!!!!!
+in BoundaryGalerkinMethod_discretize.cpp, 
+making coeffSblNoVec[iptr], region element freedom is used
+except boundary element freedom. ( boundaryGalerkinMethod_discretize L310)
+
+
+[2002/04/05]
+segmentation fault Error in nPtr->GenerateEcalInfo(); (discretizeSolve.cpp)
+
+
+[2002/04/03]
+BoundaryElement.cpp 
+if(ith_finder = ith+1) => if(ith_finder == ith+1)   <- equal 
+
+[2002/04/02]
+managing sspair in neumann_discretize.cpp
+
+
+[2002/04/01]
+setGinacExprToString ::  string  is conflict.
+
+
+[2002/03/31]
+Editing term convert, renewal of boundary configuration
+
+[2002/03/30] Neumann_discretize.cpp
+
+[2002/03/28]
+Neumann_discretize.cpp
+
+[2002/03/24]
+GeomObj is finished...
+
+Next is DirichletGeom etc.
+SNsolveNeumann_CHECK.cpp   check neumann geometry is valid.
+
+[2002/03/19]
+BGeom->Dcond, Ncond 
+
+
+[2002/03/15]
+DirichletGeom.hpp
+NeumannGeom.hpp
+BCondition.hpp
+SurfaceObject.hpp
+GeomObj.hpp
+
+[2002/03/14]
+Geometry/GeometryObject.cpp
+
+[2002/03/13]
+Element::nElementPtr, Element::makeBoundaryElement(void);
+
+
+[2002/03/12]
+GeometryObject class
+GiD interface
+
+[2002/03/11]
+GiD interface
+
+
+[2002/03/07]
+Modify configure class
+add feelfem90SKYLINE SL routines,
+check
+
+
+[2002/03/06]
+Add PM_feelfem90/Skyline (bug check at home, maybe)
+
+[2002/03/05a]
+MT_ff90skyline.cpp
+MT_ff90skyline.hpp
+modify   void  doSetDirichletValue(Dirichlet *);   in MT_dirichlet.cpp
+modify MemAllocate, MemDeallocate
+
+[2002/03/04]
+ewise-quad variable consistency check
+PMfeelfem90_eset.cpp  => 02/03/05 
+
+[2002/03/03]
+ElementInterpolation.hpp
+
+
+[2002/02/28]
+ecal routine generator for feelfem90
+begin eset generator.....
+Element::coordinateDependFlag...
+
+I found SNelement->SNelement........... is not yet....
+
+
+[2002/02/26]
+class EcalInfo
+DiscretizedComponent_EcalInfo.cpp
+
+
+[2002/02/22]
+Stalled again.....
+class EcalInfo
+
+[2002/02/21]
+Information for generating ecal routine is stored in DiscretizedComponent.
+There is a bug in GalerkinMethod_discretize.cpp
+(Variable::SblNo is not initizlized.)
+
+
+[2002/02/19]
+class DiscretizedComponent
+parametric in solve element
+
+[2002/02/18]
+TermConvert.hpp
+TermConvert_MakeReverse.cpp
+GalerkinMethod_discretize.cpp
+funcdef.hpp
+integrandEval.cpp                <- this is the main routine for ginac proc.
+funcSymbolConvert_ginac.cpp
+
+
+[2002/02/13]
+GalerkinMethod_discretize.cpp
+
+[2002/02/12]
+DiscretizedComponent.cpp
+GalerkinMethod_discretize.cpp
+
+[2002/02/08]
+IntegrandSet.hpp
+SolveElement_discretize.cpp (ApplyGalerkinMethod)
+
+[2002/02/07]
+ListUpQuadrature... series
+SolveElement_discretize.cpp
+
+[2002/02/06]
+Solve_InfoGenerate.cpp
+SNsolveElement_InfoGenerate.cpp
+CodeGenerator.cpp
+
+[2002/02/05]
+SNsolve_InfoGenerate_SE.cpp
+SNsolve_InfoGenerate_Dirichlet.cpp
+SNsolve_InfoGenerate_Neumann.cpp
+
+[2002/02/04]
+SolveElement_Infogenerate.cpp   iedp,ienp copy
+SNsolveDirichlet_CHECK.cpp
+SNsolveNeumann_CHECK.cpp
+SNsolveDirichlet_CHECK.cpp
+
+**REMAIN neumann check
+
+
+[2002/02/02]
+Debugging...
+if    list <ElementEquationNo *>elemEqNoPtrLst; ->
+   ptrList <ElementEquationNo *>elemEqNoPtrLst;     in ElementNodePattern.hpp
+
+error occurs,,,,,  =>> solved.. ptrList 
+
+[2002/02/01]
+SolveElement_InfoGenerate.cpp
+
+[2002/01/31]
+GalerkinMethod.cpp
+ElementNodePattern.cpp, hpp   Element node pattern class
+Element Node information
+Expression_Infogenerate, SNsolve_Infogenerate,SNweq,SNweqTerm _Infogenerate
+SNsolve::GalerkinMethod
+
+[2002/01/30]
+SNsolve_WEAKEQ.cpp , etc.  generate weak equation in string
+Disable info.cpp
+GalerkinMethod class in FiniteElement directory
+
+[2002/01/29]
+check Undef in weak integrand
+SNsolve_CHECK.cpp
+SNsolveWeq_CHECK.cpp
+
+[2002/01/28]
+TermConvertDOCONV.cpp
+make EWISE_A->EWISE_Q,EWISE_E, **BUT** restored.
+SNsolve_CHECK.cpp (variable check)
+
+
+
+[2002/01/25]
+LIB_feelfem90wasblk.cpp
+SL_feelfem90wasblk/original
+
+
+
+
+[2002/01/24]
+LIB_feelfem90wasblk
+
+
+[2002/01/21]
+isCoordinate(const char*) in check
+Expression::isDefinedFEMObjectSN();
+
+
+
+===========================================================================
+[2002/01/10]
+===========================================================================
+Solve class generation(empty)
+feelfemobj.AddElement
+parm block design in solve block
+
+
+[2002/01/09]
+
+
+[2002/01/08]
+Node class implementation (with ptrOrderedList.uniqAdd(T)
+element check, node check
+
+[2002/01/06]
+Node class development
+
+
+[2001/11/26]
+
+StrInt search (from code to string)   
+feelfemconf.SetProgramModelNameFromCode(int, string &);
+   memory copy problem??????
