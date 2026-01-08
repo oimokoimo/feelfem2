@@ -42,7 +42,8 @@ void mesh_exec_bamg(void)
 
   //  bamgPtr->DebugPrintBamgMesh();
 
-  bamgPtr->DebugDrawMesh();
+  //  bamgPtr->DebugDrawMesh();  //comment out 2026/01/06
 
+  bamgPtr->MakeSolvDat();        //add for making solv_dat file 2026/01/07
   return;
 }
