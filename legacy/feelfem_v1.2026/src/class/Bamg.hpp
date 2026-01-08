@@ -34,6 +34,8 @@ public:
   int getBamgRefNo    (void) { return(bamgRefNo); }
   double getX(void)          { return(x); }
   double getY(void)          { return(y); }
+
+  void MakeSolvDat(void);   // 2026/01/07  generate solv_dat file
   
 
   
