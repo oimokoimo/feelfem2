@@ -9,6 +9,16 @@
  *  
  *  Purpose  : lexical parser for feelfem
  *  
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *  Purpose: main program
+ *
+ *  Notes:
+ *   - Parser and language spec are carried over from feelfem 1.0.
+ *   - Back-end and build system are updated for modern C++ toolchains.
  */
 
 %{
