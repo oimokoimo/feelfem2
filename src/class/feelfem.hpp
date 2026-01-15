@@ -29,6 +29,6 @@ extern int wrtDEBUGcodeFlag;
 extern int dispDebugFlag;
 
 extern int feelfem_language;
-extern char *feelfem_currentFileName;
+extern const char *feelfem_currentFileName;
 
 #endif

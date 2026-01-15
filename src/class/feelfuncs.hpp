@@ -53,9 +53,9 @@ extern Geometry  feelfemgeom;     // geometry information
 extern GeometryObject feelfemgeomobj; // geometry object
 
 // Error message functions
-void storeSourceFileName( char *);          // check/SystemErrorFilename.cpp
+void storeSourceFileName( const char *);          // check/SystemErrorFilename.cpp
 int  currentSourceFileNo( void  );
-void wrtErrSourceFilename(ostream &,int);
+void wrtErrSourceFilename(std::ostream &os,int line);
 
 // Enumerator functions
 int getNextPointNo(void);                   // 
