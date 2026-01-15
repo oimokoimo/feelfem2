@@ -45,12 +45,12 @@ public:
                                    // src/Configure/*
 
   // Makefile initials
-  int  HasMakefileAdditional(void) {return additionalEnvironmentFlag;}
-  char *GetAdditionalMake() {return additional_environments; }
-  char *GetF90()  { return f90_compiler;}
-  char *GetF77()  { return f77_compiler;}
-  char *GetCPP()  { return cpp_compiler;}
-  char *GetCC()   { return c_compiler;  }
+  int  HasMakefileAdditional(void) const {return additionalEnvironmentFlag;}
+  const char *GetAdditionalMake() const {return additional_environments; }
+  const char *GetF90() const  { return f90_compiler;}
+  const char *GetF77() const  { return f77_compiler;}
+  const char *GetCPP() const  { return cpp_compiler;}
+  const char *GetCC()  const  { return c_compiler;  }
   
   void  SetF90(char *f90) { f90_compiler = f90; return; }
 

@@ -24,11 +24,12 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "../class/Configure.hpp"
 #include "../class/feelfem.hpp"     // extern declaration for flags
 #include "../class/feeldef.hpp"
 #include "../class/feelfuncs.hpp"     
 
-#include "../class/Configure.hpp"
+//#include "../class/Configure.hpp"
 
 #include "parse.h"
 

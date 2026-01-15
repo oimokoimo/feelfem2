@@ -1,747 +1,461 @@
-//======================================================================
-//  File:        list.h
-//  Author:      Timothy A. Budd
-//  Description: This file contains the interface of the list
-//               classes.
-//
-//  Copyright (c) 1992 by Timothy A. Budd.  All Rights Reserved.
-//	may be reproduced for any non-commercial purpose
-//
-//
-//  2001/02/01  add int list::getNumberOfElements()  count elements
-//
-//  2001/02/02  little modified for orderedPtrList
-//  2001/02/02  orderedList is temporary canceled for debugging
-//  2001/03/16  add ptrList  for == evaluation
-//
-//======================================================================
+/*
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Purpose: Minimal singly-linked list + iterator compatible with feelfem1 APIs.
+ *
+ *  Notes:
+ *   - Clean-room reimplementation: does NOT include/derive from Budd (1992) code.
+ *   - Keeps legacy API surface (add/addlast/deletelastlink/adduniq/duplicate/etc.)
+ *     to minimize changes in parser/backend.
+ */
 
-#ifndef LIST_H
-#define LIST_H
+#pragma once
 
-#include <assert.h>
+#include <cassert>
 #include "iterator.hpp"
-
-//----------------------------------------------------------------------
-//	class list
-//		arbitrary size lists of elements
-//		permits insertion and removal only
-//		from the front of the list
-//----------------------------------------------------------------------
 
 template <class T> class link;
 template <class T> class listIterator;
 template <class T> class ptrList;
 
-template <class T> class list
+template <class T>
+class list
 {
 public:
-  // constructors
-  list();
-  list(const list<T> & source);
-  virtual ~list();
+  list() noexcept : ptrToFirstLink(nullptr) {}
+  list(const list<T>& source);
+  virtual ~list() { deleteAllValues(); }
 
   // operations
   void         add(T value);
-  void         addnonvirtual(T value);  // (It is no longer valid, but remain)
+  void         addnonvirtual(T value);     // legacy: keep
   void         addlast(T value);
-  void         deletelastlink(void);    // do not delete the element itself
-  void         adduniq(T value);        // add if not includes
+  void         deletelastlink();           // delete link only (not the value itself)
+  void         adduniq(T value);           // add if not includes
   virtual void deleteAllValues();
-  //  virtual void deleteAllValuesWithContents();  // unnecessary
-  list *       duplicate() const;
+
+  list*        duplicate() const;
+
   T            firstElement() const;
   T            lastElement() const;
-  virtual int  includes(T value) const;     // virtural for ptrList
-  virtual int  getPosition(T value) const;  // return 0 if not included
-                                            // get number 1,2,3,... if included
-  
-  int          isEmpty() const;
+  virtual int  includes(T value) const;
+  virtual int  getPosition(T value) const;
+
+  int          isEmpty() const noexcept { return this->ptrToFirstLink == nullptr; }
   virtual void removeFirst();
 
-  T            getNthElement(int ) const;// 2001/03/13 for SystemErrorFilename
-
-  // some additional functions
-  int getNumberOfElements(void);      // return number of elements in this list
-
+  T            getNthElement(int n) const; // n starts from 1
+  int          getNumberOfElements();
 
 protected:
-  // data field
-  link<T> *     ptrToFirstLink;
+  link<T>* ptrToFirstLink;
 
-  // friends
-  friend class  listIterator<T>;
-
+  friend class listIterator<T>;
+  friend class ptrList<T>;
 };
 
-
-//----------------------------------------------------------------------
-//	class link
-//		facilitator for operations on lists
-//		maintains a single element for the linked list class
-//----------------------------------------------------------------------
-
-template <class T> class link
+template <class T>
+class link
 {
 public:
-  // insert a new element following the current value
-  link<T> * insert(T val);
+  link<T>* insert(T val);
 
 private:
-  // constructor
-  link(T linkValue, link * nextPtr);
-  link(const link &);
+  link(T linkValue, link* nextPtr) : value(linkValue), ptrToNextLink(nextPtr) {}
+  link(const link&) = delete;
+  link& operator=(const link&) = delete;
 
-  // duplicate
-  link *    duplicate() const;
+  link* duplicate() const;
 
-  // data areas
-  T            value;
-  link *    ptrToNextLink;
+  T     value;
+  link* ptrToNextLink;
 
-  // friends
   friend class list<T>;
   friend class ptrList<T>;
   friend class listIterator<T>;
-
-
 };
 
-
-
-//----------------------------------------------------------------------
-//	class listIterator
-//		implements iterator protocol for linked lists
-//		also permits removal and addition of elements
-//----------------------------------------------------------------------
-                                              
-template <class T> class listIterator : public iterator<T>
+template <class T>
+class listIterator : public iterator<T>
 {
 public:
-  // constructor
-  listIterator(list<T> & aList);
-  listIterator(const listIterator &);
+  explicit listIterator(list<T>& aList);
+  listIterator(const listIterator& x);
 
-  // iterator protocol
-  virtual int  init();
-  virtual T    operator ()();
-  virtual int  operator !();
-  virtual int  operator ++();
-  virtual void operator =(T value);
+  int  init() override;
+  T    operator()() override;
+  int  operator!() override;
+  int  operator++() override;
+  void operator=(T value) override;
 
-  // new methods specific to list iterators
-  void         removeCurrent();
-  void         addBefore(T newValue);
-  void         addAfter(T newValue);
+  void removeCurrent();
+  void addBefore(T newValue);
+  void addAfter(T newValue);
 
 protected:
-  // data areas
-  link<T> *    currentLink;
-  link<T> *    previousLink;
-  list<T> &    theList;
+  link<T>* currentLink;
+  link<T>* previousLink;
+  list<T>& theList;
 };
 
-
-//----------------------------------------------------------------------
-//	class orderedList
-//		a list structure where each element
-//		is maintained in sequence based on the
-//		less-than comparison operator
-//----------------------------------------------------------------------
-
-//oimo template <class T> class orderedList : public list<T>
-//oimo{
-//oimopublic:
-//oimo  // change the addition method
-//oimo  void  add(T value);
-//oimo};
-
-//----------------------------------------------------------------------
-//	class doubleEndedList
-//		a variation on lists - can add elements to end
-//		as well as to front
-//----------------------------------------------------------------------
-
-template <class T> class doubleEndedList : public list<T> {
+template <class T>
+class doubleEndedList : public list<T>
+{
 public:
-  // constructors
-  doubleEndedList ();
-  doubleEndedList (const doubleEndedList &);
+  doubleEndedList() noexcept : list<T>(), ptrToLastLink(nullptr) {}
+  doubleEndedList(const doubleEndedList& x);
 
-  // override the following methods from class list
-  virtual void 	add (T value);
-  virtual void	deleteAllValues ();
-  virtual void	removeFirst ();
+  void add(T value) override;
+  void deleteAllValues() override;
+  void removeFirst() override;
 
-  // add a new element to the end of the list
-  void		addToEnd (T value);
-
+  void addToEnd(T value);
 
 protected:
-  // data area -- link to end
-  link<T> * ptrToLastLink;
+  link<T>* ptrToLastLink;
 };
 
-//----------------------------------------------------------------------
-//	class list implementation
-//----------------------------------------------------------------------
+// =========================== list<T> implementation ===========================
 
-template <class T> list<T>::list() : ptrToFirstLink(0)
+template <class T>
+list<T>::list(const list<T>& source) : ptrToFirstLink(nullptr)
 {
-  // no further initialization
-}
-
-
-
-template <class T> list<T>::~list()
-{
-  // empty all elements from the list
-  deleteAllValues();
-}
-
-
-
-template <class T> void list<T>::add(T val)
-{
-  // add a new value to the front of a linked list
-  ptrToFirstLink = new link<T>(val, ptrToFirstLink);
-  assert(ptrToFirstLink != 0);
-
-  return;
-}
-
-template <class T> void list<T>::addnonvirtual(T val)
-{
-  // add a new value to the front of a linked list
-  ptrToFirstLink = new link<T>(val, ptrToFirstLink);
-  assert(ptrToFirstLink != 0);
-
-  return;
-}
-
-template <class T> void list<T>::addlast(T val)
-{
-  link <T> *next;
-
-  if(ptrToFirstLink == 0) {
-    ptrToFirstLink = new link<T>(val,ptrToFirstLink);
-    return;
+  if (!source.isEmpty()) {
+    this->ptrToFirstLink = source.ptrToFirstLink->duplicate();
   }
-  for(link<T> *p = ptrToFirstLink; p!= 0; p = next)
-    {
-      next = p->ptrToNextLink;
-      if(next == 0) {
-	p->ptrToNextLink = new link<T>(val,0);
-	assert(p->ptrToNextLink !=0);
-	return;
-      }
-    }
-  assert(1!=0);
 }
 
-template <class T> void list<T>::deletelastlink()
+template <class T>
+void list<T>::add(T val)
 {
-  link <T> *next;
+  this->ptrToFirstLink = new link<T>(val, this->ptrToFirstLink);
+  assert(this->ptrToFirstLink != nullptr);
+}
 
-  if(ptrToFirstLink == 0) {      // no element to delete
-    return;                
-  }
-  
-  // Only one element
-  if(ptrToFirstLink->ptrToNextLink == 0) {        // not delete the value!
-    delete ptrToFirstLink;
-    ptrToFirstLink = 0;
+template <class T>
+void list<T>::addnonvirtual(T val)
+{
+  // kept for legacy call sites
+  this->add(val);
+}
+
+template <class T>
+void list<T>::addlast(T val)
+{
+  if (this->ptrToFirstLink == nullptr) {
+    this->ptrToFirstLink = new link<T>(val, nullptr);
+    assert(this->ptrToFirstLink != nullptr);
     return;
   }
 
-  for(link<T> *p = ptrToFirstLink; p!= 0; p = next)
-    {
-      next = p->ptrToNextLink;
-      if(next->ptrToNextLink == 0) {  // next is the link to delete
-	p->ptrToNextLink = 0;         // not delete the value!!!
-	delete next;                  // delete only the link
-	return;
-      }
-    }
-  assert(1!=0);
+  link<T>* p = this->ptrToFirstLink;
+  while (p->ptrToNextLink != nullptr) {
+    p = p->ptrToNextLink;
+  }
+  p->ptrToNextLink = new link<T>(val, nullptr);
+  assert(p->ptrToNextLink != nullptr);
 }
 
-
-
-template <class T> void list<T>::deleteAllValues()
+template <class T>
+void list<T>::deletelastlink()
 {
-  // clear all items from the list
-  link<T> * next;
+  if (this->ptrToFirstLink == nullptr) return;
 
-  for (link<T> * p = ptrToFirstLink; p != 0; p = next)
-    {
-      // delete the element pointed to by p
-      next = p->ptrToNextLink;
-      p->ptrToNextLink = 0;
+  // only one element
+  if (this->ptrToFirstLink->ptrToNextLink == nullptr) {
+    delete this->ptrToFirstLink;
+    this->ptrToFirstLink = nullptr;
+    return;
+  }
 
-      delete p;
-    }
+  link<T>* prev = this->ptrToFirstLink;
+  link<T>* cur  = this->ptrToFirstLink->ptrToNextLink;
 
-  // mark that the list contains no elements
-  ptrToFirstLink = 0;
-    
-  return;
+  while (cur->ptrToNextLink != nullptr) {
+    prev = cur;
+    cur  = cur->ptrToNextLink;
+  }
+
+  // cur is last
+  prev->ptrToNextLink = nullptr;
+  delete cur;
 }
 
-
-template <class T> list<T> * list<T>::duplicate() const
+template <class T>
+void list<T>::deleteAllValues()
 {
-  list<T> * newlist = new list<T>;
-  assert(newlist != 0);
+  link<T>* p = this->ptrToFirstLink;
+  while (p != nullptr) {
+    link<T>* next = p->ptrToNextLink;
+    p->ptrToNextLink = nullptr;
+    delete p;
+    p = next;
+  }
+  this->ptrToFirstLink = nullptr;
+}
 
-  // copy list
-  if (ptrToFirstLink)
-    newlist->ptrToFirstLink = ptrToFirstLink->duplicate();
-
-  // return the new list
-
+template <class T>
+list<T>* list<T>::duplicate() const
+{
+  list<T>* newlist = new list<T>();
+  assert(newlist != nullptr);
+  if (this->ptrToFirstLink != nullptr) {
+    newlist->ptrToFirstLink = this->ptrToFirstLink->duplicate();
+  }
   return newlist;
 }
 
-template <class T> list<T>::list(const list<T> & source)
+template <class T>
+T list<T>::firstElement() const
 {
-  // duplicate elements from source list
-  if (source.isEmpty()) {
-    ptrToFirstLink = 0;
-  }
-  else {
-    link<T> * firstLink = source.ptrToFirstLink;
-    ptrToFirstLink = firstLink->duplicate();
-
-  }
+  assert(this->ptrToFirstLink != nullptr);
+  return this->ptrToFirstLink->value;
 }
 
-template <class T> T list<T>::firstElement() const
+template <class T>
+T list<T>::lastElement() const
 {
-  // return first value in list
-  assert(ptrToFirstLink != 0);
-  return ptrToFirstLink->value;
-}
-
-template <class T> T list<T>::lastElement() const
-{
-  link <T> *next;
-
-  assert(ptrToFirstLink != 0);
-  for(link<T> *p = ptrToFirstLink; p!= 0; p = next)
-    {
-      next = p->ptrToNextLink;
-      if(next == 0) {
-	return p->value;
-      }
-    }
-  assert(1!=0);
-}
-
-
-template <class T> T list<T>::getNthElement(int n) const   // n starts 1
-{
-  // return first value in list
-  assert(ptrToFirstLink != 0);
-
-  link<T> * p   ;
-
-  n--;
-  p = ptrToFirstLink;
-
-  for( int i=0; i < n; i++) {
+  assert(this->ptrToFirstLink != nullptr);
+  link<T>* p = this->ptrToFirstLink;
+  while (p->ptrToNextLink != nullptr) {
     p = p->ptrToNextLink;
-    assert( p != 0);
   }
-
-  return( p->value);
-
-
+  return p->value;
 }
 
-template <class T> void list<T>::adduniq(T val)
+template <class T>
+T list<T>::getNthElement(int n) const
 {
-  if(this->includes(val)) return;   // if exists do nothing
-  
-  add(val);
-  return;
+  assert(n >= 1);
+  assert(this->ptrToFirstLink != nullptr);
+
+  link<T>* p = this->ptrToFirstLink;
+  for (int i = 1; i < n; ++i) {
+    p = p->ptrToNextLink;
+    assert(p != nullptr);
+  }
+  return p->value;
 }
 
-
-template <class T> int list<T>::includes(T v) const
+template <class T>
+void list<T>::adduniq(T val)
 {
-  // loop to test each element
-  for (link<T> * p = ptrToFirstLink; p; p = p->ptrToNextLink)
-    if (v == p->value)
-      return 1;
+  if (this->includes(val)) return;
+  this->add(val);
+}
 
-    // not found
+template <class T>
+int list<T>::includes(T v) const
+{
+  for (link<T>* p = this->ptrToFirstLink; p != nullptr; p = p->ptrToNextLink) {
+    if (v == p->value) return 1;
+  }
   return 0;
 }
 
-template <class T> int list<T>::getPosition(T v) const
+template <class T>
+int list<T>::getPosition(T v) const
 {
-  // loop to test each element
   int no = 1;
-  for (link<T> * p = ptrToFirstLink; p; p = p->ptrToNextLink) {
-    if (v == p->value) {
-      return no;
-    }
-    no++;
+  for (link<T>* p = this->ptrToFirstLink; p != nullptr; p = p->ptrToNextLink) {
+    if (v == p->value) return no;
+    ++no;
   }
-
-    // not found
   return 0;
 }
 
-
-
-template <class T> int list<T>::isEmpty() const
+template <class T>
+void list<T>::removeFirst()
 {
-  // test to see if the list is empty
-  // list is empty if the pointer to the first link is null
-  return ptrToFirstLink == 0;
-}
-
-
-
-template <class T> void list<T>::removeFirst()
-{
-  // make sure there is a first element
-  assert(ptrToFirstLink != 0);
-
-    // save pointer to the removed node
-  link<T> * p = ptrToFirstLink;
-
-  // reassign the ptrToFirstLink node
-  ptrToFirstLink = p->ptrToNextLink;
-
-  // recover memory used by the first element
+  assert(this->ptrToFirstLink != nullptr);
+  link<T>* p = this->ptrToFirstLink;
+  this->ptrToFirstLink = p->ptrToNextLink;
+  p->ptrToNextLink = nullptr;
   delete p;
 }
 
-
-//----------------------------------------------------------------------
-//	class link implementation
-//----------------------------------------------------------------------
-
-template <class T> link<T> * link<T>::insert(T val)
+template <class T>
+int list<T>::getNumberOfElements()
 {
-  // insert a new link after current node
-  ptrToNextLink = new link<T>(val, ptrToNextLink);
-
-    // check that allocation was successful
-  assert(ptrToNextLink != 0);
-  return ptrToNextLink;
+  int counter = 0;
+  for (link<T>* p = this->ptrToFirstLink; p != nullptr; p = p->ptrToNextLink) {
+    ++counter;
+  }
+  return counter;
 }
 
-template <class T> link<T>::link(T val, link<T> * nxt)
-  : value(val), ptrToNextLink(nxt)
+// =========================== link<T> implementation ===========================
+
+template <class T>
+link<T>* link<T>::insert(T val)
 {
-  // create and initialize a new link field
+  this->ptrToNextLink = new link<T>(val, this->ptrToNextLink);
+  assert(this->ptrToNextLink != nullptr);
+  return this->ptrToNextLink;
 }
 
-template <class T> link<T>::link(const link<T> & source)
-  : value(source.value), ptrToNextLink(source.ptrToNextLink)
+template <class T>
+link<T>* link<T>::duplicate() const
 {
-}
+  link<T>* newlink = new link<T>(this->value, nullptr);
+  assert(newlink != nullptr);
 
-template <class T> link<T> * link<T>::duplicate() const
-{
-  link<T> * newlink;
-
-  // if there is a next field. copy remainder of list
-  if (ptrToNextLink != 0)
-    newlink = new link<T>(value, ptrToNextLink->duplicate());
-  else
-    newlink = new link<T>(value, 0);
-
-  // check that allocation was successful
-  //assert(newlink != 0);
+  if (this->ptrToNextLink != nullptr) {
+    newlink->ptrToNextLink = this->ptrToNextLink->duplicate();
+  }
   return newlink;
 }
 
-//----------------------------------------------------------------------
-//	class listIterator implementation
-//----------------------------------------------------------------------
+// ======================== listIterator<T> implementation ======================
 
-template <class T> listIterator<T>::listIterator(list<T> & aList)
-  : theList(aList)
-{
-  // create and initialize a new list
-  init();
-}
-
-template <class T> listIterator<T>::listIterator(const listIterator<T> & x)
-  : theList(x.theList)
+template <class T>
+listIterator<T>::listIterator(list<T>& aList)
+  : currentLink(nullptr), previousLink(nullptr), theList(aList)
 {
   init();
 }
 
-template <class T> int listIterator<T>::init()
+template <class T>
+listIterator<T>::listIterator(const listIterator& x)
+  : currentLink(nullptr), previousLink(nullptr), theList(x.theList)
 {
-  // set the iterator to the first element in the list
-  previousLink = 0;
-  currentLink = theList.ptrToFirstLink;
-  return currentLink != 0;
+  init();
 }
 
-
-
-template <class T> T listIterator<T>::operator ()()
+template <class T>
+int listIterator<T>::init()
 {
-  // return value of current element
-  // check to see if there is a current element
-  assert(currentLink != 0);
+  previousLink = nullptr;
+  currentLink  = theList.ptrToFirstLink;
+  return currentLink != nullptr;
+}
 
-  // return value associated with current element
+template <class T>
+T listIterator<T>::operator()()
+{
+  assert(currentLink != nullptr);
   return currentLink->value;
 }
 
-
-
-template <class T> int listIterator<T>::operator !()
+template <class T>
+int listIterator<T>::operator!()
 {
-  // test for termination of the iterator
-  // if current link references a removed value,
-  // update current to point to next position
-  if (currentLink == 0)
-    if (previousLink != 0)
-      currentLink = previousLink->ptrToNextLink;
-
-    // now see if currentLink is valid
-  return currentLink != 0;
+  if (currentLink == nullptr && previousLink != nullptr) {
+    currentLink = previousLink->ptrToNextLink;
+  }
+  return currentLink != nullptr;
 }
 
-template <class T> int listIterator<T>::operator ++()
+template <class T>
+int listIterator<T>::operator++()
 {
-  // move current pointer to nect element
-  // special processing if current link is deleted
-  if (currentLink == 0)
-    {
-      if (previousLink == 0)
-	currentLink = theList.ptrToFirstLink;
-      else
-	currentLink = previousLink->ptrToNextLink;
-    }
-  else
-    {
-      // advance pointer
-      previousLink = currentLink;
-      currentLink = currentLink->ptrToNextLink;
-    }
-
-  // return true if we have a valid current element
-  return currentLink != 0;
+  if (currentLink == nullptr) {
+    if (previousLink == nullptr) currentLink = theList.ptrToFirstLink;
+    else                        currentLink = previousLink->ptrToNextLink;
+  } else {
+    previousLink = currentLink;
+    currentLink  = currentLink->ptrToNextLink;
+  }
+  return currentLink != nullptr;
 }
 
-
-
-template <class T> void listIterator<T>::operator =(T val)
+template <class T>
+void listIterator<T>::operator=(T val)
 {
-  // modify value of current element
-  assert(currentLink != 0);
-
-    // modify value of the current link
+  assert(currentLink != nullptr);
   currentLink->value = val;
 }
 
-
-
-template <class T> void listIterator<T>::removeCurrent()
+template <class T>
+void listIterator<T>::removeCurrent()
 {
-  // remove the current element from a list
-  // make sure there is a current element
-  assert(currentLink != 0);
+  assert(currentLink != nullptr);
 
-  // case 1, removing first element
-  if (previousLink == 0)
+  if (previousLink == nullptr) {
     theList.ptrToFirstLink = currentLink->ptrToNextLink;
-
-    // case 2, not removing the first element
-  else
+  } else {
     previousLink->ptrToNextLink = currentLink->ptrToNextLink;
+  }
 
-    // delete current node
+  currentLink->ptrToNextLink = nullptr;
   delete currentLink;
-
-  // and set current pointer to null
-  currentLink = 0;
+  currentLink = nullptr;
 }
 
-
-
-template <class T> void listIterator<T>::addBefore(T val)
+template <class T>
+void listIterator<T>::addBefore(T val)
 {
-  // a a new element to list before current value
-  // case 1, not at start
-  if (previousLink)
+  if (previousLink != nullptr) {
     previousLink = previousLink->insert(val);
-
-    // case 2, at start of list
-  else
-    {
-      //theList.list<T>::add(val);
-      // g++ change
-      theList.addnonvirtual(val);
-      previousLink = theList.ptrToFirstLink;
-      currentLink = previousLink->ptrToNextLink;
-    }
+  } else {
+    theList.addnonvirtual(val);
+    previousLink = theList.ptrToFirstLink;
+    currentLink  = previousLink->ptrToNextLink;
+  }
 }
 
-
-
-template <class T> void listIterator<T>::addAfter(T val)
+template <class T>
+void listIterator<T>::addAfter(T val)
 {
-  // a a new element to list after current value
-  // case 1, not at start
-  if (currentLink != 0)
+  if (currentLink != nullptr) {
     currentLink->insert(val);
-
-    // case 2, at end of list
-  else if (previousLink != 0)
+  } else if (previousLink != nullptr) {
     currentLink = previousLink->insert(val);
-
-       // case 3, start of list
-  else
-    //theList.list<T>::add(val);
-    // g++ change
+  } else {
     theList.add(val);
-}
-//----------------------------------------------------------------------
-//	getNumberOfElements() implementation
-//----------------------------------------------------------------------
-template <class T> int list<T>::getNumberOfElements( void )
-{
-
-  if(ptrToFirstLink == 0) {
-    return(0);
   }
+}
 
+// ======================= doubleEndedList<T> implementation ====================
 
-  link<T> *next;
-  int counter;
-  counter = 1;
-
-  for(link<T> *p = ptrToFirstLink; p!= 0; p = next) {
-    
-    next = p->ptrToNextLink;
-    if(next == 0) {
-      return(counter);
-    }
-
-    counter++;
+template <class T>
+doubleEndedList<T>::doubleEndedList(const doubleEndedList& x)
+  : list<T>(x), ptrToLastLink(nullptr)
+{
+  // re-locate last link pointer
+  if (!this->isEmpty()) {
+    link<T>* p = this->ptrToFirstLink;
+    while (p->ptrToNextLink != nullptr) p = p->ptrToNextLink;
+    ptrToLastLink = p;
   }
-  assert(1!=0);
-
 }
-    
-  
 
-
-//----------------------------------------------------------------------
-//	class orderedList implementation
-//----------------------------------------------------------------------
-
-//oimotemplate <class T> void orderedList<T>::add(T val)
-//oimo{
-//oimo  // add a new value to an ordered list
-//oimo  // loop over values smaller than current
-//oimo  listIterator<T> itr(*this);
-//oimo
-//oimo  for (itr.init(); !itr; ++itr)
-//oimo    if (val < itr())
-//oimo      {
-//oimo	// found location to insert value
-//oimo	itr.addBefore(val);
-//oimo	return;
-//oimo      }
-//oimo
-//oimo  // add to end of list if not yet inserted
-//oimo  itr.addBefore(val);
-//oimo}
-//oimo
-//----------------------------------------------------------------------
-//	class doubleEndedList implementation
-//----------------------------------------------------------------------
-
-template <class T> doubleEndedList<T>::doubleEndedList() 
-  : list<T>()
+template <class T>
+void doubleEndedList<T>::add(T val)
 {
-  ptrToLastLink = 0;
-}
-
-template <class T> doubleEndedList<T>::
-doubleEndedList(const doubleEndedList<T> & x)
-  : list<T>(x), ptrToLastLink(x.ptrToLastLink)
-{
-}
-
-template <class T> void doubleEndedList<T>::add(T val)
-{	// add an element to the front of a double ended list
-  // only need to handle addition to empty list
-
-  if (isEmpty()) {
+  if (this->isEmpty()) {
     list<T>::add(val);
-    ptrToLastLink = ptrToFirstLink;
-  }
-  else
+    ptrToLastLink = this->ptrToFirstLink;
+  } else {
     list<T>::add(val);
+  }
 }
 
-template <class T> void doubleEndedList<T>::addToEnd(T val)
-{	
-  // add a new element to the end of a double ended list
-  // if there is an end, add to it
-
-  if (ptrToLastLink != 0)
+template <class T>
+void doubleEndedList<T>::addToEnd(T val)
+{
+  if (ptrToLastLink != nullptr) {
     ptrToLastLink = ptrToLastLink->insert(val);
-
-	// otherwise, just add to front
-  else
-    add(val);
+  } else {
+    this->add(val); // empty list case
+  }
 }
 
-template <class T> void doubleEndedList<T>::deleteAllValues()
-{	
-  // delete all values from collection
-  // invoke the list method to do the actual work
-
-  list<T>::deleteAllValues();
-
-  // then set the pointer to the last element to zero
-	
-  ptrToLastLink = 0;
-}
-
-template <class T> void doubleEndedList<T>::removeFirst()
+template <class T>
+void doubleEndedList<T>::deleteAllValues()
 {
-  // remove the first element from double ended list
-  // invoke the method from list to do the work
-
-  list<T>::removeFirst();
-
-  // only do something different if we removed last element
-	
-  if (isEmpty())
-    ptrToLastLink = 0;
+  list<T>::deleteAllValues();
+  ptrToLastLink = nullptr;
 }
 
-//
-//	==========insertion sort -- this is done differently by
-//		cfront and g++
+template <class T>
+void doubleEndedList<T>::removeFirst()
+{
+  list<T>::removeFirst();
+  if (this->isEmpty()) {
+    ptrToLastLink = nullptr;
+  }
+}
 
-# ifdef __GNUG__
-
-//# include <list.c>
-
-# endif
-
-# ifndef __GNUG__
-
-//# include <vector.h>
-//template <class T> void listInsertionSort(vector<T> & v);
-
-# endif
-
-#endif

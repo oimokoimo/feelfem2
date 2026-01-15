@@ -6,43 +6,55 @@
  *
  *  Purpose: pointer list with value-based comparison (*ptr).
  *
- *  Ported: 2026/01/15
+ *  Ported: 2026-01-15
  *
  *  Notes:
  *   - Clean-room implementation for feelfem2.
  *   - includes()/getPosition() compare pointed-to objects: (*a == *b).
  *   - deleteAllPointedValues() deletes pointees, then clears the list.
+ *   - Assumes list<T> provides protected: std::vector<T> data_;
  */
 
 #pragma once
-#ifndef FEM_CLASS_PTRLIST
-#define FEM_CLASS_PTRLIST
 
+#ifndef FEELFEM2_CLASS_PTRLIST_HPP
+#define FEELFEM2_CLASS_PTRLIST_HPP
+
+#include <cstddef>   // std::nullptr_t
 #include "list.hpp"
 
 template <class T>
 class ptrList : public list<T>
 {
 public:
-    // Compare pointed-to values (requires: T is pointer-like, *T supports operator==)
+    using base_type = list<T>;
+
+    // Compare pointed-to values (requires: T is pointer-like; *T supports operator==)
     int includes(T value) const override
     {
+        // legacy semantics: return 1 if included, else 0
+        if (!value) return 0;
+
         for (const auto& p : this->data_) {
-            if (p && value && (*value == *p)) return 1;
+            if (p && (*value == *p)) return 1;
         }
         return 0;
     }
 
     int getPosition(T value) const override
     {
+        // legacy semantics: position starts at 1; return 0 if not found
+        if (!value) return 0;
+
         int no = 1;
         for (const auto& p : this->data_) {
-            if (p && value && (*value == *p)) return no;
+            if (p && (*value == *p)) return no;
             ++no;
         }
         return 0;
     }
 
+    // Delete the pointees (T must be a raw pointer type or deletable pointer-like)
     void deleteAllPointedValues()
     {
         for (auto& p : this->data_) {
@@ -51,7 +63,14 @@ public:
         }
         this->data_.clear();
     }
+
+    // Safety: if someone calls base deleteAllValues() on a ptrList by mistake,
+    // do NOT leak pointees silently. We choose to delete pointees too.
+    void deleteAllValues() override
+    {
+        deleteAllPointedValues();
+    }
 };
 
-#endif
+#endif // FEELFEM2_CLASS_PTRLIST_HPP
 
