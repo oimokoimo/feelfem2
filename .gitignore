@@ -1,0 +1,18 @@
+# flex / bison generated
+lex.yy.c
+y.tab.c
+y.tab.h
+
+# gcc precompiled headers
+*.gch
+
+# build artifacts
+*.o
+*.a
+*.so
+
+# editor / OS
+*~
+*.swp
+.DS_Store
+
