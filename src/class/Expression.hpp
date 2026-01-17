@@ -25,7 +25,7 @@
 #include "string.hpp"
 #include "list.hpp"
 
-#include "../parser/Syntax/SNunit.hpp"
+#include "../parser/Syntax/SNunit.hpp"  
 #include "orderedPtrList.hpp"
 
 class SolveElement;
@@ -53,13 +53,13 @@ public:
     return;
   }
 
-  void print(ostream & );
+  void print(std::ostream & );
 
   // used in evaluation
   int howManyNotDefinedVariable(int flag, void *ptr1,void *ptr2)
   {
     if(snExprPtr == NULL) {
-      cerr << "try to howManyNotDefinedVariable NULL EXPR\n";
+	    std::cerr << "try to howManyNotDefinedVariable NULL EXPR\n";
       return(-1);
     }
     return(snExprPtr->howManyNotDefinedVariable(flag,ptr1,ptr2));
@@ -68,7 +68,7 @@ public:
   int howManyNotDefinedFunction(int flag, void *ptr1,void *ptr2)
   {
     if(snExprPtr == NULL) {
-      cerr << "try to howManyNotDefinedFunction NULL EXPR\n";
+	    std::cerr << "try to howManyNotDefinedFunction NULL EXPR\n";
       return(-1);
     }
     return(snExprPtr->howManyNotDefinedFunction(flag,ptr1,ptr2));
@@ -77,7 +77,7 @@ public:
   int howManyNotAssignedVariable(int flag, void *ptr1,void *ptr2)
   {
     if(snExprPtr == NULL) {
-      cerr << "try to howManyNotAssignedVariable NULL EXPR\n";
+	    std::cerr << "try to howManyNotAssignedVariable NULL EXPR\n";
       return(-1);
     }
     return(snExprPtr->howManyNotAssignedVariable(flag,ptr1,ptr2));
@@ -142,7 +142,7 @@ public:
   {
     if(snExprPtr == NULL) {
       *buf = '\0';
-      cerr << "try to exprPrint NULL EXPR\n";
+      std::cerr << "try to exprPrint NULL EXPR\n";
       return;
     }
     snExprPtr->exprPrint(buf,flag,ptr1,ptr2);

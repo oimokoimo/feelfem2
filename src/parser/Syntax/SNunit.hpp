@@ -18,7 +18,6 @@
  *  Notes:
  *  
  */
-
 #ifndef FEM_SYNTAX_UNIT
 #define FEM_SYNTAX_UNIT
 
@@ -33,124 +32,108 @@ class Expression;
 class Variable;
 class Main;
 
-
 class SNunit {
 protected:
-  int   classType;  //    
-  char *className;  // debugging information
-  int   lineNumber; // line number
-  int   fileNumber; // Source file No.
-
-  
+  int         classType;   //
+  const char* className;   // debugging information
+  int         lineNumber;  // line number
+  int         fileNumber;  // Source file No.
 
 public:
-  SNunit(char *name,int type) 
-    : className( name ), classType( type ) , lineNumber( 0 ) {
-    
-    fileNumber = currentSourceFileNo();    // in check/SystemErrorFilename.cpp
+  SNunit(const char* name, int type)
+    : classType(type), className(name), lineNumber(0)
+  {
+    fileNumber = currentSourceFileNo(); // in check/SystemErrorFilename.cpp
   }
 
-  //  virtual void print(ostream&) = 0;
+  virtual ~SNunit() = default;
 
-  virtual void print(std::ostream &);
+  virtual void print(std::ostream&);
 
   // for expression
-  virtual int  howManyNotDefinedVariable(int flag,void *ptr1,void *ptr2) {
-	  std::cerr << "THIS IS VIRTUAL howManyNotDefinedVariable in SNunit\n";
-	  std::cerr << "NAME = " << className << std::endl;
-    return(1);
+  virtual int howManyNotDefinedVariable(int, void*, void*) {
+    std::cerr << "THIS IS VIRTUAL howManyNotDefinedVariable in SNunit\n";
+    std::cerr << "NAME = " << className << std::endl;
+    return 1;
   }
 
-  virtual int  howManyNotDefinedFunction(int flag,void *ptr1,void *ptr2) {
-	  std::cerr << "THIS IS VIRTUAL howManyNotDefinedFunction in SNunit\n";
-	  std::cerr << "NAME = " << className << std::endl;
-    return(1);
+  virtual int howManyNotDefinedFunction(int, void*, void*) {
+    std::cerr << "THIS IS VIRTUAL howManyNotDefinedFunction in SNunit\n";
+    std::cerr << "NAME = " << className << std::endl;
+    return 1;
   }
 
-  virtual int  howManyNotAssignedVariable(int flag,void *ptr1,void *ptr2) {
-	  std::cerr << "THIS IS VIRTUAL howManyNotAssignedVariable in SNunit\n";
-	  std::cerr << "NAME = " << className << std::endl;
-    return(1);
+  virtual int howManyNotAssignedVariable(int, void*, void*) {
+    std::cerr << "THIS IS VIRTUAL howManyNotAssignedVariable in SNunit\n";
+    std::cerr << "NAME = " << className << std::endl;
+    return 1;
   }
 
-
-  virtual void exprPrint(char *buf ,int flag,void *ptr1,void *ptr2) {
-	  std::cerr << "THIS IS VIRTUAL exprPrint in SNunit\n";
-	  std::cerr << "CLASS= " << className << std::endl;
+  virtual void exprPrint(char*, int, void*, void*) {
+    std::cerr << "THIS IS VIRTUAL exprPrint in SNunit\n";
+    std::cerr << "CLASS= " << className << std::endl;
   }
 
-  virtual int isAlreadyUsedName( list <string> &strLst) {
-	  std::cerr << "THIS IS VIRTUAL isAlreadyUsedName(list <string> &strLst)\n";
-	  std::cerr << "CLASS= " << className << std::endl;
-    return(1);
+  virtual int isAlreadyUsedName(list<string>&) {
+    std::cerr << "THIS IS VIRTUAL isAlreadyUsedName(list <string> &strLst)\n";
+    std::cerr << "CLASS= " << className << std::endl;
+    return 1;
   }
 
   // Parsing error message related function
-  virtual void errWrtNameNO(std::ostream &,int) { 
-	  std::cerr << "THIS IS VIRTUAL errWrtName in SNunit\n";
-	  std::cerr << "CLASS= " << className << std::endl;
+  virtual void errWrtNameNO(std::ostream&, int) {
+    std::cerr << "THIS IS VIRTUAL errWrtName in SNunit\n";
+    std::cerr << "CLASS= " << className << std::endl;
   }
-  virtual void errWrtName(std::ostream &) { 
-	  std::cerr << "THIS IS VIRTUAL errWrtName in SNunit\n";
-	  std::cerr << "CLASS= " << className << std::endl;
-  }
-
-  virtual void errWrtData(std::ostream &) { 
-	  std::cerr << "THIS IS VIRTUAL errWrtData in SNunit\n";
-	  std::cerr << "CLASS= " << className << std::endl;
+  virtual void errWrtName(std::ostream&) {
+    std::cerr << "THIS IS VIRTUAL errWrtName in SNunit\n";
+    std::cerr << "CLASS= " << className << std::endl;
   }
 
-  void wrtLineNumber(std::ostream &ost) {
-	  ost << lineNumber;
-    return;
+  virtual void errWrtData(std::ostream&) {
+    std::cerr << "THIS IS VIRTUAL errWrtData in SNunit\n";
+    std::cerr << "CLASS= " << className << std::endl;
   }
 
-  void wrtSourceFilename(std::ostream &ost) {
-    wrtErrSourceFilename( ost, fileNumber);
-    return;
+  void wrtLineNumber(std::ostream& ost) { ost << lineNumber; }
+
+  void wrtSourceFilename(std::ostream& ost) {
+    wrtErrSourceFilename(ost, fileNumber);
   }
 
-  
   void LineNumber(int ln) { lineNumber = ln; }
 
-  void debugwrt(void) { std::cout << "UNIT : "<<className <<"\n"; }
+  void debugwrt() { std::cout << "UNIT : " << className << "\n"; }
 
-  int GetType(void) {
-    return classType;
-  }
+  int GetType() const { return classType; }
 
-  virtual Variable *CreateVariablePtr(void)
-  {
-	  std::cerr << "This is virtual Variable *CreateVariablePtr(void) in SNunit\n";
-	  std::cerr << "CLASS= " << className << std::endl;
-    return(0);
+  virtual Variable* CreateVariablePtr() {
+    std::cerr << "This is virtual Variable *CreateVariablePtr(void) in SNunit\n";
+    std::cerr << "CLASS= " << className << std::endl;
+    return nullptr;
   }
 
   // check routines
-  virtual int Check(void) {
-	  std::cerr << "This is virtual Check function in SNunit.\n";
-    return(1);
+  virtual int Check() {
+    std::cerr << "This is virtual Check function in SNunit.\n";
+    return 1;
   }
 
   // generating corresponding class
-  virtual int InfoGenerate(void) {
-	  std::cerr << "This is virtual InfoGenerate funciton in SNunit.\n";
-    return(1);
+  virtual int InfoGenerate() {
+    std::cerr << "This is virtual InfoGenerate funciton in SNunit.\n";
+    return 1;
   }
 
-
-  virtual void CodeGenerate(void) {
-	  std::cerr << "This is virtual CodeGenerate funciton in SNunit.\n";
-    return;
+  virtual void CodeGenerate() {
+    std::cerr << "This is virtual CodeGenerate funciton in SNunit.\n";
   }
 
-  virtual void CodeGenerateMain(void *,Main *) {
-	  std::cerr << "This is virtual CodeGenerateMain funciton in SNunit.\n";
-	  std::cerr << "Be careful argument is (void *,Main *) !!!\n";
-
-    return;
+  virtual void CodeGenerateMain(void*, Main*) {
+    std::cerr << "This is virtual CodeGenerateMain funciton in SNunit.\n";
+    std::cerr << "Be careful argument is (void *,Main *) !!!\n";
   }
-
 };
 
 #endif
+
