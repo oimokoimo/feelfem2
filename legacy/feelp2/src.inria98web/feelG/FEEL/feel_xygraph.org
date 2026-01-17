@@ -1,0 +1,229 @@
+      SUBROUTINE FEEL_XYGRAPH(NLINE,NODES,PX,PY,SX,SY,PPX,PPY,
+     $PXMIN,PXMAX,PYMIN,PYMAX,NXDIV,NYDIV,NAXIS,NSTEP,IRGF,IWD)
+C
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+      DIMENSION PX(NODES,NLINE)
+      DIMENSION PY(NODES,NLINE)
+      DIMENSION SX(NODES,NLINE)
+      DIMENSION SY(NODES,NLINE)
+C     DIMENSION PPX(*),PPY(*)
+C     DIMENSION PXMIN(*),PXMAX(*)
+C     DIMENSION PYMIN(*),PYMAX(*)
+C     DIMENSION NXDIV(*),NYDIV(*)
+C     DIMENSION NAXIS(*)
+C
+      DIMENSION PPX(NODES),PPY(NODES)
+      DIMENSION PXMIN(NLINE),PXMAX(NLINE)
+      DIMENSION PYMIN(NLINE),PYMAX(NLINE)
+      DIMENSION NXDIV(NLINE),NYDIV(NLINE)
+      DIMENSION NAXIS(NLINE)
+C
+C
+C-----------------------------------------------------------------------
+C     このルーチンはFEELのＸＹグラフ図作成を行うルーチンです。
+C     各引き数の意味
+C
+C     NLINE   :グラフの本数
+C     NODES   :グラフ１本あたりの点の数
+C     PX      :各グラフのＸの配列
+C     PY      :各グラフのＹの配列
+C     SX      :各グラフのＸの作業領域
+C     SY      :各グラフのＹの作業領域
+C     PPX     :各グラフのＸの作業領域
+C     PPY     :各グラフのＹの作業領域
+C     PXMIN   :Ｘ軸の最小値の配列(IRGF=1の時のみ参照)
+C     PXMAX   :Ｘ軸の最大値の配列(IRGF=1の時のみ参照)
+C     PYMIN   :Ｙ軸の最小値の配列(IRGF=1の時のみ参照)
+C     PYMAX   :Ｙ軸の最大値の配列(IRGF=1の時のみ参照)
+C     NXDIV   :Ｘ軸の分割数の配列(IRGF=1の時のみ参照)
+C     NYDIV   :Ｙ軸の分割数の配列(IRGF=1の時のみ参照)
+C     NSTEP   :グラフのステップ数
+C     IRGF    :レンジフラグ ０：Auto １：マニュアル
+C     NAXIS   :Ｙ軸表示フラグの配列 ０：書かない １：Ｙ１ ２：Ｙ２
+C     IWD     :ウィンドウＩＤ番号
+C-----------------------------------------------------------------------
+C     注意事項１   :１０ライン以上は表示できません
+C-----------------------------------------------------------------------
+C
+      DIMENSION ISAVE(10)
+      DATA      ISAVE/10*0/
+      SAVE      ISAVE
+C
+      DIMENSION XMIN(10),XMAX(10),YMIN(10),YMAX(10)
+      SAVE      XMIN,XMAX,YMIN,YMAX
+      SAVE      TXMIN,TXMAX,TYMIN,TYMAX
+      DIMENSION NXF(2)
+      SAVE	ISTEP
+C
+      IF (NLINE.GT.10) THEN
+        NLINE=10
+      ENDIF
+C
+      IF (ISAVE(IWD).EQ.0) THEN
+        CALL FEEL_XYCOLOR(IWD)
+C
+        ISTEP=0
+        NXF(1)=0
+        NXF(2)=0
+        DO 200 j=1,NLINE        
+          IF (IRGF.EQ.0) THEN
+            TXMIN=PX(1,j)
+            TXMAX=PX(1,j)
+            TYMIN=PY(1,j)
+            TYMAX=PY(1,j)
+            DO 100 i=1,NODES
+              TXMIN=MIN(TXMIN,PX(i,j))
+              TYMIN=MIN(TYMIN,PY(i,j))
+              TXMAX=MAX(TXMAX,PX(i,j))
+              TYMAX=MAX(TYMAX,PY(i,j))
+100         CONTINUE
+            XMIN(j)=TXMIN-(TXMAX-TXMIN)*0.05
+            XMAX(j)=TXMAX+(TXMAX-TXMIN)*0.05
+            YMIN(j)=TYMIN-(TYMAX-TYMIN)*0.05
+            YMAX(j)=TYMAX+(TYMAX-TYMIN)*0.05
+          ELSE
+            XMIN(j)=PXMIN(j)
+            XMAX(j)=PXMAX(j)
+            YMIN(j)=PYMIN(j)
+            YMAX(j)=PYMAX(j)
+          ENDIF
+C
+          CALL VEPX(XMIN(j),XMAX(j),YMIN(j),YMAX(j),
+     $                           NXDIV(j),NYDIV(j),IRGF)
+C
+          IF (NAXIS(j).EQ.0) THEN
+            NX=NAXIS(J)
+          ELSE 
+             IF (NAXIS(J).GT.0.AND.NXF(NAXIS(J)).EQ.0) THEN
+               NX=NAXIS(J)
+               NXF(NAXIS(J))=1
+            ELSE
+              NX=0
+            ENDIF
+          ENDIF
+          CALL VEPA(XMIN(j),XMAX(j),YMIN(j),YMAX(j),
+     $                    NXDIV(j),NYDIV(j),NX,1,IWD)
+200     CONTINUE
+      ENDIF
+C
+      IF (ISTEP.EQ.0.OR.ISTEP.EQ.NSTEP) THEN
+        IF (ISAVE(IWD).GT.0) THEN
+          CALL FEEL_XYDRAW(NLINE,NODES,XMIN,XMAX,YMIN,YMAX,
+     $                                 SX,SY,PPX,PPY,2,IWD)
+        ENDIF
+C
+        CALL FEEL_XYDRAW(NLINE,NODES,XMIN,XMAX,YMIN,YMAX,
+     $                                   PX,PY,PPX,PPY,1,IWD)
+C
+        DO 400 j=1,NLINE
+          DO 300 i=1,NODES
+            SX(i,j)=PX(i,j)
+            SY(i,j)=PY(i,j)
+300       CONTINUE
+400     CONTINUE
+C
+        ISTEP=0
+C
+      ENDIF
+C
+      CALL VUPD(IWD)
+C
+      ISAVE(IWD)=1
+      ISTEP=ISTEP+1
+C
+      RETURN
+      END
+C
+C-----------------------------------------------------------------
+C
+      SUBROUTINE FEEL_XYCOLOR(IWD)
+C
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C-----------------------------------------------------------------------
+C     このルーチンはFEELのＸＹグラフの色をイニシャライズします
+C     各引き数の意味
+C
+C     IWD     :ウィンドウＩＤ番号
+C-----------------------------------------------------------------------
+C
+      DIMENSION R(3,4)
+      DIMENSION G(3,4)
+      DIMENSION B(3,4)
+C
+C     色番号   31  32  33   34  35  36   37  38  39   40  41  42
+      DATA  R/1.0,1.0,0.0, 0.5,0.5,0.0, 1.0,0.0,0.0, 0.5,0.0,0.0/
+      DATA  G/0.0,1.0,1.0, 0.0,0.5,0.5, 1.0,1.0,0.0, 0.5,0.5,0.0/
+      DATA  B/0.0,0.0,1.0, 0.0,0.0,0.5, 0.0,1.0,1.0, 0.0,0.5,0.5/
+C
+      k=31
+      DO 200 j=1,4
+        DO 100 i=1,3
+          CALL VSCL(R(i,j),G(i,j),B(i,j),k,1,IWD)
+          k=k+1
+100     CONTINUE
+200   CONTINUE
+C
+      RETURN
+      END
+C
+C-----------------------------------------------------------------
+C
+      SUBROUTINE FEEL_XYDRAW(NLINE,NODES,XMIN,XMAX,YMIN,YMAX,
+     &                                PX,PY,PPX,PPY,NFG,IWD)
+C
+      IMPLICIT REAL*8 (A-H,O-Z)
+C-----------------------------------------------------------------------
+C     このルーチンはFEELのＸＹグラフの描画ルーチンです
+C     各引き数の意味
+C
+C     NLINE   :グラフの本数
+C     NODES   :グラフ１本あたりの点の数
+C     PX      :各グラフのＸの配列
+C     PY      :各グラフのＹの配列
+C     PPX     :各グラフのＸの作業領域
+C     PPY     :各グラフのＹの作業領域
+C     PXMIN   :Ｘ軸の最小値の配列
+C     PXMAX   :Ｘ軸の最大値の配列
+C     PYMIN   :Ｙ軸の最小値の配列
+C     PYMAX   :Ｙ軸の最大値の配列
+C     NFG     :グラフの色のフラグ １：普通の色 ２：薄い色
+C     IWD     :ウィンドウＩＤ番号
+C-----------------------------------------------------------------------
+C
+      DIMENSION PX(NODES,NLINE)
+      DIMENSION PY(NODES,NLINE)
+      DIMENSION PPX(*)
+      DIMENSION PPY(*)
+      DIMENSION XMIN(*),XMAX(*),YMIN(*),YMAX(*)
+C
+      DIMENSION NM(10)
+      DATA      NM/1,2,3,7*1/
+C
+      DO 200 j=1,NLINE
+        DO 300 i=1,NODES
+          PPX(i)=PX(i,j)
+          PPY(i)=PY(i,j)
+          ILID=j+30
+          IMID=j+30+6
+300     CONTINUE
+C
+        IF (NFG.EQ.2) THEN
+          ILID=ILID+3
+          IMID=IMID+3
+        ENDIF
+C
+        CALL VEPL(PPX,PPY,NODES,XMIN(j),XMAX(j),YMIN(j),YMAX(j)
+     &                                                ,ILID,IWD)
+        CALL VEPM(PPX,PPY,NODES,XMIN(j),XMAX(j),YMIN(j),YMAX(j)
+     &                                           ,NM(j),IMID,IWD)
+C
+200   CONTINUE
+C
+      CALL VUPD(IWD)
+C
+      RETURN
+      END
+C
+

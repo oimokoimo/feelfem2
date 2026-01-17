@@ -1,0 +1,157 @@
+	/*============================*/
+	/* Boundary condition routines*/
+	/*============================*/
+	dconds       = solve_ptr -> d_conditions;
+	dcond_ptrptr = solve_ptr -> d_dat;
+	
+	nconds       = solve_ptr -> n_conditions;
+	ncond_ptrptr = solve_ptr -> n_dat;
+
+	for(j=0;j<dconds;j++) {
+	    dcond_ptr = *(dcond_ptrptr + j);
+	    switch( solve_ptr -> linear_method) {
+
+	      case SKYLINE:
+		
+		if(solve_ptr->nonlinear_flag == NO) {
+		    /* 線形問題   */
+		    make_dcond_skyline(i+1,j+1,dcond_ptr);
+		}
+		else {
+		    /* 非線形問題 */
+		    make_dcond_skyline_nonlinear(i+1,j+1,dcond_ptr);
+		}
+		break;
+
+	      case MPPSCG:
+		if(solve_ptr->nonlinear_flag == NO) {
+		    /* 線形問題   */
+		    make_dcond_MPPSCG(i+1,j+1,dcond_ptr);
+		}
+		else {
+		    /* 非線形問題 */
+		    /* make_dcond_MPPSCG_nonlinear(i+1,j+1,dcond_ptr); */
+		    fprintf(stderr,"MPPSCG 非線形はまだだよ(dcond_non)");
+		}
+		break;
+
+	      case PCGS:
+	      case PBCG:
+		
+		if(solve_ptr->nonlinear_flag == NO) {
+		    /* 線形問題   */
+		    make_dcond_CG(i+1,j+1,dcond_ptr,solve_ptr->linear_method);
+		}
+		else {
+		    /* 非線形問題 */
+		    make_dcond_CG_nonlinear(i+1,j+1,dcond_ptr,
+						 solve_ptr->linear_method);
+		}
+		break;
+
+
+	      default:
+		SystemWarning("指定の数値解法は対応していません(make_dcond)");
+		break;
+	    }
+	}
+
+	for(j=0;j<nconds;j++) {
+	    ncond_ptr = *(ncond_ptrptr + j);
+	    switch( solve_ptr -> linear_method) {
+
+	      case SKYLINE:
+		make_ncond_skyline(i+1,j+1,solve_ptr,ncond_ptr);
+		break;
+
+	      case MPPSCG:
+		make_ncond_MPPSCG(i+1,j+1,solve_ptr,ncond_ptr);
+		break;
+
+	      case PCGS:
+	      case PBCG:
+		make_ncond_CG(i+1,j+1,solve_ptr,ncond_ptr,
+			      solve_ptr->linear_method);
+		break;
+
+	      default:
+		SystemWarning("指定の線形解法は対応していません(make_ncond)");
+		break;
+	    }
+	}
+	
+	/*=====================*/
+	/* 各要素ルーチン作成  */
+	/*=====================*/
+
+	for(j=0;j<solve_ptr->solve_elements;j++) {
+	    
+	    /* SolveElement構造体を得る */
+	    solve_elem_ptr = *(solve_ptr->solve_elem_dat + j);
+
+	    no = solve_elem_ptr -> element_no;
+
+	    /* 各要素内小行列計算プログラムの呼び出し */
+	    switch( solve_ptr -> linear_method) {
+	      case SKYLINE:
+
+		if(solve_ptr->nonlinear_flag == NO) {
+		    /* 線形問題の場合 */
+		    elem_fort77_main_skyline( no , solve_elem_ptr );
+		}
+		else {
+		    /* 非線形問題の要素行列作成ルーチンcall */
+		    elem_fort77_main_sk_nonlinear( no , solve_elem_ptr );
+		}
+		break;
+
+	      case MPPSCG:
+		if(solve_ptr->nonlinear_flag == NO) {
+		    /* 線形問題   */
+		    elem_fort77_main_MPPSCG(no, solve_elem_ptr);
+		}
+		else {
+		/* 非線形問題 */
+	        /* elem_fort77_main_MPPSCG_nonlinear(no, solve_elem_ptr); */
+		    fprintf(stderr,"MPPSCG 非線形はまだだよ(elem_fort77_MPP)");
+		}
+		break;
+
+
+	      case PCGS:
+	      case PBCG:
+		if(solve_ptr->nonlinear_flag == NO) {
+		    /* 線形問題の場合 */
+		    elem_fort77_main_CG( no , solve_elem_ptr );
+		}
+		else {
+		    /* 非線形問題の要素行列作成ルーチンcall */
+		    elem_fort77_main_CG_nonlinear( no , solve_elem_ptr );
+		}
+		break;
+
+		
+	      default:
+		SystemWarning("指定の数値解法には対応していません");
+		break;
+	    }
+
+	    /* esetルーチンの作成(解析的積分法のみの場合は作成しない) */
+	    make_eset( solve_elem_ptr -> solve_no , no ,solve_elem_ptr );
+
+	    /* ecalルーチンの作成(解析的積分法のみの場合は作成しない) */
+	    /* 非線形分岐は、make_ecal関数内で行う                    */
+	    make_ecal( solve_elem_ptr -> solve_no , no ,solve_elem_ptr );
+
+	    /* edevルーチンの作成(連立では無い時には考えましょう      */
+	    if(solve_ptr->nonlinear_flag == NO) {
+		/* 線形問題時 */
+		make_edev( solve_elem_ptr -> solve_no , no ,solve_elem_ptr );
+	    }
+	    else {
+		/* 非線形問題時の逐次近似値更新処理 */
+		make_nedev( solve_elem_ptr -> solve_no , no ,
+			    solve_ptr, solve_elem_ptr         );
+	    }
+	}
+    }

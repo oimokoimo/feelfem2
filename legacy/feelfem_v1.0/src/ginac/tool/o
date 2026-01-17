@@ -1,0 +1,48 @@
+    case 0:
+      e = e.subs(a01 == itr()->getValue());
+      break;
+
+    case 1:
+      e = e.subs(a02 == itr()->getValue());
+      break;
+
+    case 2:
+      e = e.subs(a03 == itr()->getValue());
+      break;
+
+    case 3:
+      e = e.subs(a04 == itr()->getValue());
+      break;
+
+    case 4:
+      e = e.subs(a05 == itr()->getValue());
+      break;
+
+    case 5:
+      e = e.subs(a06 == itr()->getValue());
+      break;
+
+    case 6:
+      e = e.subs(a07 == itr()->getValue());
+      break;
+
+    case 7:
+      e = e.subs(a08 == itr()->getValue());
+      break;
+
+    case 8:
+      e = e.subs(a09 == itr()->getValue());
+      break;
+
+    case 9:
+      e = e.subs(a10 == itr()->getValue());
+      break;
+
+    case 10:
+      e = e.subs(a11 == itr()->getValue());
+      break;
+
+    case 11:
+      e = e.subs(a12 == itr()->getValue());
+      break;
+

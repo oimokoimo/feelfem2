@@ -1,0 +1,1 @@
+./ranlib.bat check element feel_util feelPARA fort77lib geom2d let lisp_c lisp_exec lisp_lib lisp_util  main makefort77 mesh_book mesh_comp mesh_exec mesh_interface parallel  parallel_lib77 quadrature scheme_comp solve_comp solve_fort77 sys_lib system util var_comp yacc

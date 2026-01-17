@@ -1,0 +1,43 @@
+#
+# starts # means comment
+# 
+#
+# originalFilename PM class  module name   mkLevel  type
+#
+# last 0 means it is the default language of PM model
+#
+# mkLevel instruction
+#
+#    1-29 PROBLEM INDEPENDENT SUBROUTINES (PROGRAM MODEL)
+#
+#       1 very fundamental source code
+#       5 fundamental but depends on 1st grade 
+#      10 fundamental but depends on 1-9 grade
+#
+#   30-49 PROBLEM INDEPENDENT SUBROUTINES (MATRIX MODEL)
+#     
+#   50-99 PROBLEM INDEPENDENT *LIBRARIES*  (LIBRARY MODEL, GRAPHICS)
+#     
+#      50
+#      80 Service routine for Solver Library
+#      90 Solver library itself
+#     
+# 101-999 PROBLEM DEPENDENT SUBROUTINES  (Boundary conds, Assemble main)
+#     
+#     100 problem dependent, but depend on nothing  (ecal1_1.f,eset1_1.f)
+#     200 problem dependent, (elem.f)
+#     300 problem dependent  (dcond,ncond)  LINKLEVEL_DCOND,LINKLEVEL_NCOND
+#     
+#     500 problem dependent (like solve01.f, perspect1.f)
+#
+#    1000 PROBLEM DEPENDENT MAIN ROUTINE
+#
+#    1000 main routine (problem dependent)
+#
+#
+# first line must be class for this source library
+# SL_##### <- name after class goto #####.
+#
+class LIB_feelfem90SAMG20c
+programModel feelfem90DRAMA
+user_coo.f90             1000    0
