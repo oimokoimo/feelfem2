@@ -1,0 +1,61 @@
+       1   (solve number---SOLVE DATA START)
+       2   (number of fem variables)
+u
+v
+       0   (number of ewise variables)
+       0   (number of scalar variables)
+       1   (number of element groups)
+       3   (number of max nodes, following is IPD)
+       1   (nedtno data P2 limit only 1)
+1
+1
+1
+       1   (= dconds, following, data nsetno/.../)
+1
+       0   (= nconds, following, data nbedtno/.../)
+elem 1 1
+       0  nonlinear_flag
+       1  unknowns in case of nonlinear problem
+       1  (known fem variables)
+v
+       0  (known ewise variables)
+       0  (scalar variables)
+       0   (number of neumannconditions)
+       1   (number of dirichlet conditions)
+       0   (1th dirichlet condition fem_vars)
+       0   (1th dirichlet condition scalar_vars)
+       1  (unknowns for edev)
+u
+3
+owari
+       1       1  ***dcond(dcondgen)
+((x(ip)*x(ip))*x(ip))+(y(ip)*y(ip))
+*** end of dcond (1/1)***
+*** elem data ***
+   1   1  solveNo,elemNo
+       0  nonlinear flag
+0   unknowns
+       1  fem knowns
+v
+       0  ewise knowns
+       0  scalar knowns
+       3  NDF
+       1  quadrature methods
+       6 tri4  (points, quadrature name)
+       3  (NDF again for ienp)
+1
+2
+3
+       3  (NDF again for iedp)
+0
+0
+0
+       3  nodes (for element nodes, calling ecals)
+3  (arguments/freedom)
+fem_v(ielem(1,i))
+fem_v(ielem(2,i))
+fem_v(ielem(3,i))
+00000000   (end of fem variable)
+       0  (ewise_knowns)
+       0  (scalars)
+owari

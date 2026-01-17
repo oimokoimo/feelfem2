@@ -1,0 +1,13 @@
+Dependency of implemented models
+================================
+
+[Program Model dependencies]
+===========================================================================
+CodeGenerator/codeGenerateMain.cpp         mainPtr->getProgramModelType()
+parser/Syntax/SNsolve_CodeGenerateMain.cpp mPtr->getProgramModelType()
+
+
+[Solver Library dependencies]
+===========================================================================
+CodeGenerator/cg_NormalLinearProblem.cpp   solvePtr->GetLibraryType() 
+parser/Syntax/SNsolve_CodeGenerate.cpp     solvePtr->GetLibraryType() 

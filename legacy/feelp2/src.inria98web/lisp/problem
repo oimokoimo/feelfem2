@@ -1,0 +1,615 @@
+AKCL (Austin Kyoto Common Lisp)  Version(1.605) Mon Nov 11 17:01:42 JST 1991
+Contains Enhancements by W. Schelter; NEC EWS4800/220 Version by N. Yonezawa
+PCL(Portable CommonLoops)[5/1/90  May Day PCL (REV 4b)] by Xerox Corporation
+
+>(load "replace-string.l")
+Loading replace-string.l
+Finished loading replace-string.l
+T
+
+>(replace-string '( a b c $) '$ 'oimo)
+(A B C OIMO)
+
+>(car nil)
+NIL
+
+>(append '((oimo)) (list 'a))
+
+
+>(append '((oimo)) '(a))
+((OIMO) A)
+
+>(append '((oimo)) (list '(a)))
+((OIMO) A)
+
+>(append '((oimo)) (list '(a)))
+((OIMO) (A))
+
+>(append '( (* a) (* b)) '( (a) (b)))
+((* A) (* B) (A) (B))
+
+>(append '( (* a) (* b)) '(a b))
+((* A) (* B) A B)
+
+>
+
+Error: The function LST is undefined.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVAL.
+Broken at APPEND.  Type :H for Help.
+>>:q
+
+Top level.
+>(append '( (* a) (* b)) (list '(a b)))
+((* A) (* B) (A B))
+
+>Loading /tmp/emlisp8551
+Finished loading /tmp/emlisp8551
+T
+
+>Loading /tmp/emlisp8551
+Finished loading /tmp/emlisp8551
+T
+
+>(load "replace-test-func.l")
+
+(load "replace-test-func.l")
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+T
+
+>(load "replace-string.l")
+Loading replace-string.l
+Finished loading replace-string.l
+T
+
+>
+(APPEND RESULT RES)
+
+>Loading /tmp/emlisp8551
+Finished loading /tmp/emlisp8551
+T
+
+>
+((* (DX U) (DX (P1_1 P1_2 P1_3))) (* (DX U) (DX (P1_2 P1_3)))
+ (* (DX U) (DX (P1_3))) (* (DY U) (DY (P1_1 P1_2 P1_3)))
+ (* (DY U) (DY (P1_2 P1_3))) (* (DY U) (DY (P1_3))))
+
+>Loading /tmp/emlisp8551
+Finished loading /tmp/emlisp8551
+T
+
+>
+
+
+(replace-test-func *fem-weak-eq*)
+((* (DX U) (DX P1_1)) (* (DX U) (DX P1_2)) (* (DX U) (DX P1_3))
+ (* (DY U) (DY P1_1)) (* (DY U) (DY P1_2)) (* (DY U) (DY P1_3)))
+
+>Loading /tmp/emlisp8551
+Finished loading /tmp/emlisp8551
+T
+
+>
+(replace-test-func *fem-weak-eq*)
+((* (DX U) (DX P1_1)) (* (DX U) (DX P1_2)) (* (DX U) (DX P1_3))
+ (* (DY U) (DY P2_1)) (* (DY U) (DY P2_2)) (* (DY U) (DY P2_3)))
+
+>
+
+(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>*now*
+((* (DX U) (DX P1_1)) (* (DX U) (DX P1_2)) (* (DX U) (DX P1_3)))
+
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>*now
+
+Error: The variable *NOW is unbound.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVAL.
+Broken at EVAL.  Type :H for Help.
+>>:q
+
+Top level.
+>*now*
+((* (DX U) (DX P1_1)) (* (DX U) (DX P1_2)) (* (DX U) (DX P1_3)))
+
+>*fem-weak-eq*
+((* (DX U) (DX $)) (* (DY U) (DY $)))
+
+(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>*now*
+((+ (* (DX U) (DX P1_1)) (* (DY U) (DY P1_1)))
+ (+ (* (DX U) (DX P1_2)) (* (DY U) (DY P1_2)))
+ (+ (* (DX U) (DX P1_3)) (* (DY U) (DY P1_3))))
+
+>(length *now*)
+3
+
+>(car *now*)
+(+ (* (DX U) (DX P1_1)) (* (DY U) (DY P1_1)))
+
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>*now*
+((+ (* (DX U) (DX P1_1)) (* (DY U) (DY P1_1)))
+ (+ (* (DX U) (DX P1_2)) (* (DY U) (DY P1_2)))
+ (+ (* (DX U) (DX P1_3)) (* (DY U) (DY P1_3))))
+
+>*eval-vars*
+(U)
+
+>u
+(+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))
+
+>*now*
+((+ (* (DX U) (DX P1_1)) (* (DY U) (DY P1_1)))
+ (+ (* (DX U) (DX P1_2)) (* (DY U) (DY P1_2)))
+ (+ (* (DX U) (DX P1_3)) (* (DY U) (DY P1_3))))
+
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>*now2*
+((+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_1))
+    (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_1)))
+ (+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_2))
+    (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_2)))
+ (+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_3))
+    (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_3))))
+
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Loading diff.l
+Finished loading diff.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>*now3*
+(+ (* (+ (+ (* 0 P1_1) (* M1 (DX P1_1)))
+         (+ (* 0 P1_2) (* M2 (DX P1_2)))
+         (+ (* 0 P1_3) (* M3 (DX P1_3))))
+      (DX P1_1))
+   (* (+ (+ (* 0 P1_1) (* M1 (DY P1_1)))
+         (+ (* 0 P1_2) (* M2 (DY P1_2)))
+         (+ (* 0 P1_3) (* M3 (DY P1_3))))
+      (DY P1_1)))
+
+>(car *now2)
+
+Error: The variable *NOW2 is unbound.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVAL.
+Broken at CAR.  Type :H for Help.
+>>:q
+
+Top level.
+>(car *now2*)
+(+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_1))
+   (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_1)))
+
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Loading diff.l
+Finished loading diff.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>now
+
+Error: The variable NOW is unbound.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVAL.
+Broken at EVAL.  Type :H for Help.
+>>now1
+((+ (* (DX U) (DX P1_1)) (* (DY U) (DY P1_1)))
+ (+ (* (DX U) (DX P1_2)) (* (DY U) (DY P1_2)))
+ (+ (* (DX U) (DX P1_3)) (* (DY U) (DY P1_3))))
+>>now2
+((+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_1))
+    (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_1)))
+ (+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_2))
+    (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_2)))
+ (+ (* (DX (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DX P1_3))
+    (* (DY (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3))) (DY P1_3))))
+>>now3
+(+ (* (+ (+ (* 0 P1_1) (* M1 (DX P1_1)))
+         (+ (* 0 P1_2) (* M2 (DX P1_2)))
+         (+ (* 0 P1_3) (* M3 (DX P1_3))))
+      (DX P1_1))
+   (* (+ (+ (* 0 P1_1) (* M1 (DY P1_1)))
+         (+ (* 0 P1_2) (* M2 (DY P1_2)))
+         (+ (* 0 P1_3) (* M3 (DY P1_3))))
+      (DY P1_1)))
+>>
+
+(d-formula '(* (DX (* p1_1 p1_2)) (DY (* p1_1 p1_2))))
+(* (+ (* (DX P1_1) P1_2) (* P1_1 (DX P1_2)))
+   (+ (* (DY P1_1) P1_2) (* P1_1 (DY P1_2))))
+>>:q
+
+Top level.
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Loading diff.l
+Finished loading diff.l
+Loading fs.l
+Loading fs-dep.l
+Finished loading fs-dep.l
+Loading fs-term-bind.l
+Finished loading fs-term-bind.l
+
+Error: Cannot open the file fesl/fs-sort.l.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by LOAD.
+Broken at LOAD.  Type :H for Help.
+>>:q
+
+Top level.
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Loading diff.l
+Finished loading diff.l
+Loading fs.l
+Loading fs-dep.l
+Finished loading fs-dep.l
+Loading fs-term-bind.l
+Finished loading fs-term-bind.l
+Loading fs-sort.l
+Finished loading fs-sort.l
+Finished loading fs.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>now3
+(+ (* (+ (+ (* 0 P1_1) (* M1 (DX P1_1)))
+         (+ (* 0 P1_2) (* M2 (DX P1_2)))
+         (+ (* 0 P1_3) (* M3 (DX P1_3))))
+      (DX P1_1))
+   (* (+ (+ (* 0 P1_1) (* M1 (DY P1_1)))
+         (+ (* 0 P1_2) (* M2 (DY P1_2)))
+         (+ (* 0 P1_3) (* M3 (DY P1_3))))
+      (DY P1_1)))
+
+>(fs now3)
+
+Error: The function SBL-SORT is undefined.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by DO.
+Broken at APPEND.  Type :H for Help.
+>>
+:q
+
+Top level.
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Loading diff.l
+Finished loading diff.l
+Loading fs.l
+Loading fs-dep.l
+Finished loading fs-dep.l
+Loading fs-term-bind.l
+Finished loading fs-term-bind.l
+Loading fs-sort.l
+Finished loading fs-sort.l
+Loading expand.l
+Finished loading expand.l
+Finished loading fs.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>now3
+(+ (* (+ (+ (* 0 P1_1) (* M1 (DX P1_1)))
+         (+ (* 0 P1_2) (* M2 (DX P1_2)))
+         (+ (* 0 P1_3) (* M3 (DX P1_3))))
+      (DX P1_1))
+   (* (+ (+ (* 0 P1_1) (* M1 (DY P1_1)))
+         (+ (* 0 P1_2) (* M2 (DY P1_2)))
+         (+ (* 0 P1_3) (* M3 (DY P1_3))))
+      (DY P1_1)))
+
+>(fs now3)
+(+ (* (DX P1_1) (DX P1_1) M1) (* (DX P1_1) (DX P1_2) M2)
+   (* (DX P1_1) (DX P1_3) M3) (* (DY P1_1) (DY P1_1) M1)
+   (* (DY P1_1) (DY P1_2) M2) (* (DY P1_1) (DY P1_3) M3))
+
+>(load "test.l")
+Loading test.l
+Loading feel.l
+Loading replace-string.l
+Finished loading replace-string.l
+Loading replace-test-func.l
+Finished loading replace-test-func.l
+Loading symbol-eval-replace.l
+Finished loading symbol-eval-replace.l
+Loading diff.l
+Finished loading diff.l
+Loading fs.l
+Loading fs-dep.l
+Finished loading fs-dep.l
+Loading fs-term-bind.l
+Finished loading fs-term-bind.l
+Loading fs-sort.l
+Finished loading fs-sort.l
+Loading expand.l
+Finished loading expand.l
+Finished loading fs.l
+Finished loading feel.l
+Finished loading test.l
+T
+
+>no3
+
+Error: The variable NO3 is unbound.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVAL.
+Broken at EVAL.  Type :H for Help.
+>>;q
+now
+
+Error: The variable NOW is unbound.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVALHOOK.
+Backtrace: system:universal-error-handler > EVALHOOK
+
+Broken at EVAL.
+>>:q
+
+Top level.
+>now3
+(+ (* (+ (+ (* 0 P1_1) (* M1 (DX P1_1)))
+         (+ (* 0 P1_2) (* M2 (DX P1_2)))
+         (+ (* 0 P1_3) (* M3 (DX P1_3))))
+      (DX P1_1) (+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3)))
+   (* (+ (+ (* 0 P1_1) (* M1 (DY P1_1)))
+         (+ (* 0 P1_2) (* M2 (DY P1_2)))
+         (+ (* 0 P1_3) (* M3 (DY P1_3))))
+      (DY P1_1)))
+
+>now4
+(+ (* (DX P1_1) (DX P1_1) P1_1 (^ M1 2))
+   (* (DX P1_1) (DX P1_1) M1 M2 P1_2)
+   (* (DX P1_1) (DX P1_1) M1 M3 P1_3)
+   (* (DX P1_1) (DX P1_2) M1 M2 P1_1)
+   (* (DX P1_1) (DX P1_2) P1_2 (^ M2 2))
+   (* (DX P1_1) (DX P1_2) M2 M3 P1_3)
+   (* (DX P1_1) (DX P1_3) M1 M3 P1_1)
+   (* (DX P1_1) (DX P1_3) M2 M3 P1_2)
+   (* (DX P1_1) (DX P1_3) P1_3 (^ M3 2)) (* (DY P1_1) (DY P1_1) M1)
+   (* (DY P1_1) (DY P1_2) M2) (* (DY P1_1) (DY P1_3) M3))
+
+>(diff-fmla now4 'm1)
+Inner error in fmlaInner error in fmlaInner error in fmlaInner error in fmlaInner error in fmlaInner error in fmlaInner error in fmlaInner error in fmlaInner error in fmla
+(+ (+ (* NIL (DX P1_1) P1_1 (^ M1 2)) (* (DX P1_1) NIL P1_1 (^ M1 2))
+      (* (DX P1_1) (DX P1_1) NIL (^ M1 2))
+      (* (DX P1_1) (DX P1_1) P1_1 (* 2 (^ M1 1) 1)))
+   (+ (* NIL (DX P1_1) M1 M2 P1_2) (* (DX P1_1) NIL M1 M2 P1_2)
+      (* (DX P1_1) (DX P1_1) 1 M2 P1_2)
+      (* (DX P1_1) (DX P1_1) M1 0 P1_2)
+      (* (DX P1_1) (DX P1_1) M1 M2 NIL))
+   (+ (* NIL (DX P1_1) M1 M3 P1_3) (* (DX P1_1) NIL M1 M3 P1_3)
+      (* (DX P1_1) (DX P1_1) 1 M3 P1_3)
+      (* (DX P1_1) (DX P1_1) M1 0 P1_3)
+      (* (DX P1_1) (DX P1_1) M1 M3 NIL))
+   (+ (* NIL (DX P1_2) M1 M2 P1_1) (* (DX P1_1) NIL M1 M2 P1_1)
+      (* (DX P1_1) (DX P1_2) 1 M2 P1_1)
+      (* (DX P1_1) (DX P1_2) M1 0 P1_1)
+      (* (DX P1_1) (DX P1_2) M1 M2 NIL))
+   (+ (* NIL (DX P1_2) P1_2 (^ M2 2)) (* (DX P1_1) NIL P1_2 (^ M2 2))
+      (* (DX P1_1) (DX P1_2) NIL (^ M2 2))
+      (* (DX P1_1) (DX P1_2) P1_2 (* 2 (^ M2 1) 0)))
+   (+ (* NIL (DX P1_2) M2 M3 P1_3) (* (DX P1_1) NIL M2 M3 P1_3)
+      (* (DX P1_1) (DX P1_2) 0 M3 P1_3)
+      (* (DX P1_1) (DX P1_2) M2 0 P1_3)
+      (* (DX P1_1) (DX P1_2) M2 M3 NIL))
+   (+ (* NIL (DX P1_3) M1 M3 P1_1) (* (DX P1_1) NIL M1 M3 P1_1)
+      (* (DX P1_1) (DX P1_3) 1 M3 P1_1)
+      (* (DX P1_1) (DX P1_3) M1 0 P1_1)
+      (* (DX P1_1) (DX P1_3) M1 M3 NIL))
+   (+ (* NIL (DX P1_3) M2 M3 P1_2) (* (DX P1_1) NIL M2 M3 P1_2)
+      (* (DX P1_1) (DX P1_3) 0 M3 P1_2)
+      (* (DX P1_1) (DX P1_3) M2 0 P1_2)
+      (* (DX P1_1) (DX P1_3) M2 M3 NIL))
+   (+ (* NIL (DX P1_3) P1_3 (^ M3 2)) (* (DX P1_1) NIL P1_3 (^ M3 2))
+      (* (DX P1_1) (DX P1_3) NIL (^ M3 2))
+      (* (DX P1_1) (DX P1_3) P1_3 (* 2 (^ M3 1) 0)))
+   (+ (* NIL (DY P1_1) M1) (* (DY P1_1) NIL M1)
+      (* (DY P1_1) (DY P1_1) 1))
+   (+ (* NIL (DY P1_2) M2) (* (DY P1_1) NIL M2)
+      (* (DY P1_1) (DY P1_2) 0))
+   (+ (* NIL (DY P1_3) M3) (* (DY P1_1) NIL M3)
+      (* (DY P1_1) (DY P1_3) 0)))
+
+>(setq *fem-funcs* nil)
+
+
+
+
+
+(setq *fem-funcs* nil)
+NIL
+
+>(diff-fmla now4 'm1)
+(+ (+ (* NIL (DX P1_1) P1_1 (^ M1 2)) (* (DX P1_1) NIL P1_1 (^ M1 2))
+      (* (DX P1_1) (DX P1_1) 0 (^ M1 2))
+      (* (DX P1_1) (DX P1_1) P1_1 (* 2 (^ M1 1) 1)))
+   (+ (* NIL (DX P1_1) M1 M2 P1_2) (* (DX P1_1) NIL M1 M2 P1_2)
+      (* (DX P1_1) (DX P1_1) 1 M2 P1_2)
+      (* (DX P1_1) (DX P1_1) M1 0 P1_2)
+      (* (DX P1_1) (DX P1_1) M1 M2 0))
+   (+ (* NIL (DX P1_1) M1 M3 P1_3) (* (DX P1_1) NIL M1 M3 P1_3)
+      (* (DX P1_1) (DX P1_1) 1 M3 P1_3)
+      (* (DX P1_1) (DX P1_1) M1 0 P1_3)
+      (* (DX P1_1) (DX P1_1) M1 M3 0))
+   (+ (* NIL (DX P1_2) M1 M2 P1_1) (* (DX P1_1) NIL M1 M2 P1_1)
+      (* (DX P1_1) (DX P1_2) 1 M2 P1_1)
+      (* (DX P1_1) (DX P1_2) M1 0 P1_1)
+      (* (DX P1_1) (DX P1_2) M1 M2 0))
+   (+ (* NIL (DX P1_2) P1_2 (^ M2 2)) (* (DX P1_1) NIL P1_2 (^ M2 2))
+      (* (DX P1_1) (DX P1_2) 0 (^ M2 2))
+      (* (DX P1_1) (DX P1_2) P1_2 (* 2 (^ M2 1) 0)))
+   (+ (* NIL (DX P1_2) M2 M3 P1_3) (* (DX P1_1) NIL M2 M3 P1_3)
+      (* (DX P1_1) (DX P1_2) 0 M3 P1_3)
+      (* (DX P1_1) (DX P1_2) M2 0 P1_3)
+      (* (DX P1_1) (DX P1_2) M2 M3 0))
+   (+ (* NIL (DX P1_3) M1 M3 P1_1) (* (DX P1_1) NIL M1 M3 P1_1)
+      (* (DX P1_1) (DX P1_3) 1 M3 P1_1)
+      (* (DX P1_1) (DX P1_3) M1 0 P1_1)
+      (* (DX P1_1) (DX P1_3) M1 M3 0))
+   (+ (* NIL (DX P1_3) M2 M3 P1_2) (* (DX P1_1) NIL M2 M3 P1_2)
+      (* (DX P1_1) (DX P1_3) 0 M3 P1_2)
+      (* (DX P1_1) (DX P1_3) M2 0 P1_2)
+      (* (DX P1_1) (DX P1_3) M2 M3 0))
+   (+ (* NIL (DX P1_3) P1_3 (^ M3 2)) (* (DX P1_1) NIL P1_3 (^ M3 2))
+      (* (DX P1_1) (DX P1_3) 0 (^ M3 2))
+      (* (DX P1_1) (DX P1_3) P1_3 (* 2 (^ M3 1) 0)))
+   (+ (* NIL (DY P1_1) M1) (* (DY P1_1) NIL M1)
+      (* (DY P1_1) (DY P1_1) 1))
+   (+ (* NIL (DY P1_2) M2) (* (DY P1_1) NIL M2)
+      (* (DY P1_1) (DY P1_2) 0))
+   (+ (* NIL (DY P1_3) M3) (* (DY P1_1) NIL M3)
+      (* (DY P1_1) (DY P1_3) 0)))
+
+>m4
+
+Error: The variable M4 is unbound.
+Fast links are on: do (use-fast-links nil) for debugging
+Error signalled by EVAL.
+Broken at EVAL.  Type :H for Help.
+>>:q
+
+Top level.
+>now4
+(+
+   (* (DX P1_1) (DX P1_1) M1 M2 P1_2)
+   (* (DX P1_1) (DX P1_1) M1 M3 P1_3)
+   (* (DX P1_1) (DX P1_2) M1 M2 P1_1)
+   (* (DX P1_1) (DX P1_2) P1_2 (^ M2 2))
+   (* (DX P1_1) (DX P1_2) M2 M3 P1_3)
+   (* (DX P1_1) (DX P1_3) M1 M3 P1_1)
+   (* (DX P1_1) (DX P1_3) M2 M3 P1_2)
+   (* (DX P1_1) (DX P1_3) P1_3 (^ M3 2)) (* (DY P1_1) (DY P1_1) M1)
+   (* (DY P1_1) (DY P1_2) M2) (* (DY P1_1) (DY P1_3) M3))
+
+> (setq oimo '(* (DX P1_1) (DX P1_1) P1_1 (^ M1 2)))
+(setq oimo '(* (DX P1_1) (DX P1_1) P1_1 (^ M1 2)))
+(* (DX P1_1) (DX P1_1) P1_1 (^ M1 2))
+
+>oimo
+(* (DX P1_1) (DX P1_1) P1_1 (^ M1 2))
+
+>(diff-fmla oimo 'm1)
+(+ (* NIL (DX P1_1) P1_1 (^ M1 2)) (* (DX P1_1) NIL P1_1 (^ M1 2))
+   (* (DX P1_1) (DX P1_1) 0 (^ M1 2))
+   (* (DX P1_1) (DX P1_1) P1_1 (* 2 (^ M1 1) 1)))
+
+>

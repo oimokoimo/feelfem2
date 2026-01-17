@@ -1,0 +1,58 @@
+;--------------------------------------------------------------------------
+;   feel p2  Finite Element Simulation Language Prototype Version 2
+;            ~      ~       ~          ~
+;      File:   test.l
+;      Date:   1993/08/16
+;   
+;   Purpose:   デバッグ用
+;
+;--------------------------------------------------------------------------
+(setq *fem-weak-form* '( (+ (* (dx u)(dx $)) (* (dy u)(dy $))
+			    (* $ C1 ni (exp (* -1 S u)))
+			    (* -1 $ C1 ni (exp (*  S u)))
+			    (* $ C1 Q))
+
+		     )
+      )
+		    
+(setq u '(+ (* M1 P1_1) (* M2 P1_2) (* M3 P1_3)))
+(setq ni '(+ (* ni_1 P1_1) (* ni_2 P1_2) (* ni_3 P1_3)))
+(setq S  '(+ (* s_1 P1_1) (* s_2 P1_2) (* s_3 P1_3)))
+(setq Q  '(+ (* q_1 P1_1) (* q_2 P1_2) (* q_3 P1_3)))
+
+
+(setq *test-funcs* '((P1_1 P1_2 P1_3)))   ; 試験関数リスト
+(setq *eval-vars*  '( u ni s q ) )        ; symbol-eval-replaceで変換する変数
+
+
+;  現在、ni, s , q を定数と置いています
+;(setq *eval-vars*  '( u ) )        ; symbol-eval-replaceで変換する変数
+
+
+                                          ; fem,ewise,scalar変数
+; 【diff.l】の為の変数設定
+(setq *fem-funcs* '(P1_1 P1_2 P1_3))      ; 全ての基底関数(diff.l用)
+(setq *eval-smbl* nil)                    ; eval用
+
+(setq *coff-vect* '(m1 m2 m3))
+
+(load "replace-string.l")
+(load "replace-test-func.l")
+(load "symbol-eval-replace.l")
+
+(load "diff.l")                           ; 微分処理関数
+
+(load "fs.l")
+(load "diff-fmla-m.l")
+
+(load "do-d-formula.l")
+(load "make-integrand.l")
+
+(time (setq now1 (replace-test-func *fem-weak-form*)))
+(time (setq now2 (symbol-eval-replace now1 *eval-vars*)))
+(time (setq now3 (do-d-formula now2)))
+
+
+(time (setq now4 (make-integrand now3 *coff-vect* )))
+
+
