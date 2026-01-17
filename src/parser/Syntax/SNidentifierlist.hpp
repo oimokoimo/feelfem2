@@ -19,34 +19,30 @@
  *  Notes:
  *  
  */
-
 #ifndef FEM_SYNTAX_IDENTIFIERLIST
 #define FEM_SYNTAX_IDENTIFIERLIST
 
 #include "SNunit.hpp"
 #include "SNname.hpp"
 
-
 class SNidentifierlist : public SNunit {
 public:
+  explicit SNidentifierlist(int);
+  ~SNidentifierlist() override;
 
-  SNidentifierlist(int);
-  ~SNidentifierlist();
+  SNname*& operator[](int i) { return contents[i]; }
+  SNname*  operator[](int i) const { return contents[i]; }
 
-  SNname *&operator[] (int i) { return contents[i]; }
+  void print(std::ostream&) override;
 
-  void print(std::ostream&);
+  void StoreContentsInStringLst(list<string>&);
 
-  void StoreContentsInStringLst(list<string > &);
-
-  int  GetNumberOfElements() { return elements; }
-  
+  int GetNumberOfElements() const { return elements; }
 
 private:
   int      elements;
-  SNname **contents;
-
-
+  SNname** contents;
 };
 
 #endif
+
