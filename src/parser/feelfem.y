@@ -21,8 +21,7 @@
 
 %{
 
-#include <iostream.h>
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
 
 #include "../class/feeldef.hpp"
