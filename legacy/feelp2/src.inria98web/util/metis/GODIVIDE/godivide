@@ -1,5 +1,0 @@
-feel -bamg -meshonly $1
-bamg.metis.exe
-partdmesh bamg.metis $2
-mv bamg.metis.epart.$2 metis.bamg
-divideshow

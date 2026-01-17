@@ -1,2 +1,0 @@
-CFLAGS =  $(ADDITIONALCFLAGS)
-scheme_comp.a :scheme_comp.a(AVScontour.o) scheme_comp.a(contour.o) scheme_comp.a(contour_file.o) scheme_comp.a(displacement.o) scheme_comp.a(goto.o) scheme_comp.a(if.o) scheme_comp.a(label.o) scheme_comp.a(let.o) scheme_comp.a(norm.o) scheme_comp.a(perspect.o) scheme_comp.a(plot.o) scheme_comp.a(read.o) scheme_comp.a(scheme_block.o) scheme_comp.a(showvec.o) scheme_comp.a(showvec_file.o) scheme_comp.a(write.o) scheme_comp.a(adaptmesh.o) scheme_comp.a(AVSoutput.o) scheme_comp.a(AVSnetwork.o)

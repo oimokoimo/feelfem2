@@ -1,3 +1,0 @@
-scheme_comp.lib :: AVScontour.c AVSoutput.c adaptmesh.c contour.c contour_file.c displacement.c goto.c if.c label.c let.c norm.c perspect.c plot.c read.c scheme_block.c showvec.c showvec_file.c write.c AVSnetwork.c
-	cl /c AVScontour.c AVSoutput.c adaptmesh.c contour.c contour_file.c displacement.c goto.c if.c label.c let.c norm.c perspect.c plot.c read.c scheme_block.c showvec.c showvec_file.c write.c AVSnetwork.c
-	lib /OUT:scheme_comp.lib AVScontour.obj AVSoutput.obj adaptmesh.obj contour.obj contour_file.obj displacement.obj goto.obj if.obj label.obj let.obj norm.obj perspect.obj plot.obj read.obj scheme_block.obj showvec.obj showvec_file.obj write.obj AVSnetwork.obj
