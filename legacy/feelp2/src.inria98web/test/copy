@@ -1,2 +1,0 @@
-mv parse ~/bin/feel.parse
-rm -f parse

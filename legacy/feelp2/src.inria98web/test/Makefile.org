@@ -1,3 +1,0 @@
-FFLAGS = -g
-feelgo: feel_main.o filset.o datinp.o dat_node.o dat_edat.o dat_nodeset.o dat_num.o cal_ht.o sol.o scal.o get_ielem.o ipd_make.o make_KLD.o set.o zero.o f_alloc.o f_free.o inpdat_wrt.o ipf_nfree.o ipd_nonode.o report.o solve01.o elem1_1.o eset1_1_1.o ecal1_1.o edev1_1.o dirichlet.o
-	f77 -o feelgo feel_main.o filset.o datinp.o dat_node.o dat_edat.o dat_nodeset.o dat_num.o cal_ht.o sol.o scal.o get_ielem.o ipd_make.o make_KLD.o set.o zero.o f_alloc.o f_free.o inpdat_wrt.o ipf_nfree.o ipd_nonode.o report.o solve01.o elem1_1.o eset1_1_1.o ecal1_1.o edev1_1.o dirichlet.o

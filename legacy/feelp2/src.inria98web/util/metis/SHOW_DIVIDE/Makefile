@@ -1,2 +1,0 @@
-divideshow : dat_edat.o dat_ip.o dat_node1.o dat_node2.o dat_node3.o dat_nodeset.o dat_num.o datinp.o f_alloc.o feel_main.o filset.o get_ielem.o get_inset.o inpdat_wrt.o paradatsave.o datwrt.o divideshow.o ReadMetisBamg.o MetisOrdering.o
-	f77 -o divideshow  dat_edat.o dat_ip.o dat_node1.o dat_node2.o dat_node3.o dat_nodeset.o dat_num.o datinp.o f_alloc.o feel_main.o filset.o get_ielem.o get_inset.o inpdat_wrt.o paradatsave.o datwrt.o divideshow.o ReadMetisBamg.o MetisOrdering.o -lxplot -lX11 -L/home/fujio/lib -L/usr/X11R6/lib

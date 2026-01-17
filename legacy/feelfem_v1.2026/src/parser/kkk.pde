@@ -1,5 +1,0 @@
-scheme {
-
-  oimo = oimo;
-}
-

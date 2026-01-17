@@ -1,4 +1,0 @@
-lisp_writer make-linear-weak <make-linear-weak.l
-lisp_writer make-num-integral <make-num-integral.l
-lisp_writer make-num-int-matrix-dat <make-num-int-matrix-dat.l
-

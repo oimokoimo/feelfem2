@@ -1,2 +1,0 @@
-wc */*.pde *.doc mesh_book/*/*.f ../doc/*/*.tex */*.f */*.l */*.c */*.h */*.doc >log/`date | awk '{printf("%s-%s",$2,$3)}'`
-

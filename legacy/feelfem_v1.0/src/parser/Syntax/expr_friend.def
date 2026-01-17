@@ -1,3 +1,0 @@
-// friend function for analysis systax expressions
-
-  friend void exprAnalysis(Expression *,SNunit *);

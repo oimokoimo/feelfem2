@@ -1,3 +1,0 @@
-mesh_exec.lib :: boundary_data.c get_mesh_data.c get_midpoints.c make_MESH_REF.c make_boundary_edat.c make_boundary_nset.c make_boundary_plot_data.c make_feel_data_file.c make_ip_data.c mesh_book_exec.c mesh_info_for_meshbook.c mid_info_for_meshbook.c
-	cl /c boundary_data.c get_mesh_data.c get_midpoints.c make_MESH_REF.c make_boundary_edat.c make_boundary_nset.c make_boundary_plot_data.c make_feel_data_file.c make_ip_data.c mesh_book_exec.c mesh_info_for_meshbook.c mid_info_for_meshbook.c
-	lib /OUT:mesh_exec.lib boundary_data.obj get_mesh_data.obj get_midpoints.obj make_MESH_REF.obj make_boundary_edat.obj make_boundary_nset.obj make_boundary_plot_data.obj make_feel_data_file.obj make_ip_data.obj mesh_book_exec.obj mesh_info_for_meshbook.obj mid_info_for_meshbook.obj

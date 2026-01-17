@@ -1,2 +1,0 @@
-CFLAGS = $(ADDITIONALCFLAGS)
-let.a :let.a(adaptmesh_fort77.o) let.a(get_let_fp.o) let.a(let_ewise_ewise.o) let.a(let_ewise_sc.o) let.a(let_fem_fem.o) let.a(let_fort77.o) let.a(let_sc_sc.o) let.a(make_adapt_called.o) let.a(make_adapt_called_dim.o) let.a(make_called.o) let.a(make_called_dim.o) let.a(make_main_adapt_call.o) let.a(make_main_let_call.o) let.a(make_main_norm_call.o) let.a(make_norm_called.o) let.a(make_norm_called_dim.o) let.a(norm_fort77.o) 
