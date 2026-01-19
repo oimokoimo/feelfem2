@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  : assignment class for parser  (reference aumc)
+ *
+ *  
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -44,10 +53,10 @@ public:
   SNassignment( char *nm, Expression *ptr, int place, Expression *whereCond);
 
   // check print routine
-  void print(ostream & ost);
+  void print(std::ostream & ost);
 
   // CHECK family
-  void errWrtName(ostream &ost) {
+  void errWrtName(std::ostream &ost) {
     ost << leftVarName;
     return;
   }
