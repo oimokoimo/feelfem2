@@ -1,0 +1,19 @@
+lisp_writer diff <diff.l
+lisp_writer diff-fmla-m <diff-fmla-m.l
+lisp_writer fs <fs.l
+lisp_writer replace-string <replace-string.l
+lisp_writer minus-convert  <minus-convert.l
+lisp_writer do-d-formula <do-d-formula.l
+lisp_writer replace-test-func <replace-test-func.l
+lisp_writer make-linear-integrand < make-linear-integrand.l
+lisp_writer symbol-eval-replace <symbol-eval-replace.l
+lisp_writer make-fem-term-list <make-fem-term-list.l
+lisp_writer make-load-integrand < make-load-integrand.l
+lisp_writer make-num-integral-term <make-num-integral-term.l
+lisp_writer trans-num-int-integrand < trans-num-int-integrand.l
+lisp_writer exp-print <exp-print.l
+lisp_writer fs-dep <fs-dep.l
+lisp_writer fs-term-bind <fs-term-bind.l
+lisp_writer fs-sort     <fs-sort.l
+lisp_writer expand      <expand.l
+

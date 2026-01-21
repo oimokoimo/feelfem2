@@ -1,0 +1,17 @@
+mesh {
+   point a(0,0.5),b(0.5,0.5),c(0.5,0),d(1.0,0),e(1.0,0.5);
+   point f(1.5,0.5),g(1.5,1),h(1,1),i(1,1.5),j(0.5,1.5);
+   point k(0.5,1),l(0,1);
+
+   region left[rect](a,b,k,l);
+   region right[rect](e,f,g,h);
+   region up[rect](k,h,i,j);
+   region down[rect](c,d,e,b);
+   region middle[rect](b,e,h,k);
+
+
+   domain dom(a,b,c,d,e,f,g,h,i,j,k,l);
+
+   freedom 1000;
+
+}

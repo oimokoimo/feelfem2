@@ -1,0 +1,44 @@
+1) DATE:  1997/08/27
+   FILE:  mesh_bamg_exec/make_boundary_data_bamg.c
+   FUNC:  add_corner_name_bamg()
+
+   BUGS:  In current temporary support for bamg mesh, the uniq procedure
+          for Dirichlet boundary data functionality is omitted.
+
+          which works, 
+            dbc:  ....., on a,ab;   
+          originally, the node data a is not duplicated.....
+
+2) DATE:  1997/11/14
+   FILE:  geom2d/get_polygon_area.c
+
+   BUGS:  If the polygonal shape is concave, there a lot of errors in the 
+          original algorithm.  Most of them are thought to be eliminated,
+          but, ultimate certification has not been done yet.
+
+3) DATE:  1998/10/02
+   FILE:  get_region_area.c
+
+   BUGS:  It seems if there exist more than 2 holes, there will be bug
+          It seems there something wrong with MAX_POINTS
+
+   SOLU:  06/oct/98  in ReverseIntArray.c, function name was wrong.
+          Le nom de fonction est mal a la fichier de ReverseIntArray.c
+
+4) DATE:  1998/11/24
+   FILE:  mesh_exec/boundary_data.c
+   FILE:  mesh_bamg_exec/make_boundary_data_bamg.c
+
+   BUGS:  segmentation fault
+  
+   SOLU:                           n                              n
+    for(i=0;i<n;i++) {
+        if(streq(var_name,name_ptr[i][0]) && streq(name, name_ptr[i][1])) {
+            return;
+        }
+    }
+
+   Wow !!!!!!!!!
+   
+
+   

@@ -1,0 +1,40 @@
+C***************************************************************
+C
+C     DELAUNAY TRIANGLEATION FOR ARBITRARY 2-D DOMAIN   main.f
+C
+C**************************************************************
+      IMPLICIT REAL*8(A-H,O-Z)
+C
+      PARAMETER ( KBD = 10 )
+c      PARAMETER ( KTJ = 4000 )
+      PARAMETER ( KTJ = 20000 )
+C
+      DIMENSION IBEX( KBD ),IBIN( KBD ),IBNO( KBD,KTJ )
+      DIMENSION INDEX(KBD + 1),PX(KTJ + 3),PY(KTJ + 3),IFIX(KTJ + 3)
+      DIMENSION MTJ( 2*KTJ + 1,3 ),JAC( 2*KTJ + 1,3 ),IDM( 2*KTJ + 1 )
+      DIMENSION JNT( KTJ ),IBNN( KBD,2,KTJ/100 )
+C
+C********** INPUT DATA
+C
+      CALL INPUT( NEX,NIN,IBEX,IBIN,IBNO,NOB,NIB,PX,PY,KBD,KTJ,
+     &     IFORM,NTOTAL )
+C
+C********** THE PART OF MESH GENERATION
+C
+      CALL MODEL( NEX,NIN,IBEX,IBIN,IBNO,NOB,NIB,INDEX,NODE,
+     *     PX,PY,NELM,MTJ,JAC,IDM,IFORM,NTOTAL )
+C
+C********** RENUMBERING
+C
+      CALL RENUMBER( NODE,NELM,MTJ,PX,PY,JNT,KTJ )
+C
+      CALL BNDNOD( NEX,NIN,NODE,NELM,MTJ,JAC,IDM,
+     &     JNT,IBEX,IBIN,IBNN,IBNO,KBD,KTJ )
+C
+C********** PRINT RESULTS TO DATA FILE
+C
+      CALL DATA( NEX,NIN,NODE,NELM,MTJ,JAC,IDM,
+     &     JNT,IBEX,IBIN,IBNN,IBNO,KBD,KTJ,PX,PY,IFIX )
+C
+      STOP
+      END
