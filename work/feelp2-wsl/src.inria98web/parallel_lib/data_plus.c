@@ -1,0 +1,138 @@
+/*
+   FEEL p2  MAKE FORTRAN LIBRARY   data_plus
+ */
+
+#include <stdio.h>
+#include "../feel_def/feel_def.h"
+#include "../system/system.h"
+
+#define FNAME "data_plus.f"
+lib_data_plus()
+{
+   FILE *fp;
+   StoreMakefile(FNAME,SYSTEM_LIBRARY);
+   if(LIMIT_FILE == 1) return;
+   fp = OpenFileToWrite( FNAME );
+   F77("      subroutine data_plus (rank,neq_sub,rw,srb,\n");
+   F77("     $     nsrequ,\n");
+   F77("     $     nsendnum,nrecvnum,npesum,\n");
+   F77("     $     nsesum,nresum,nsendkaz,nrecvkaz,nsendlist,\n");
+   F77("     $     nrecvlist,nsendtable,nrecvtable)\n");
+   F77("*\n");
+   F77("c+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+   F77("*     FEEL/P2/Cenju-3/MPI subprogram\n");
+   F77("*     Purpose : nsrequ(nsesum+nresum) \n");
+   F77("*             : summation of the values on the interface for \n");
+   F77("*               solving\n");
+   F77("*++++++++++++++++++++++++++\n");
+   F77("      implicit real*8 (a-h,o-z)\n");
+   F77("*\n");
+   F77("      include 'mpi.incl'\n");
+   F77("*\n");
+   F77("      integer rank,size,status(mpi_status_size)\n");
+   F77("*\n");
+   F77("      dimension nsendlist(npesum),nrecvlist(npesum)\n");
+   F77("      dimension nsendkaz(npesum),nrecvkaz(npesum)\n");
+   F77("      dimension nsendtable(npesum),nrecvtable(npesum)\n");
+   F77("*++++++++++++\n");
+   F77("c    Value on the nodes on the interface\n");
+   F77("c+++++++++++    \n");
+   F77("      dimension rw(neq_sub)\n");
+   F77("*     ---- send_buffer(srb(i),i=1,nsesum) & \n");
+   F77("*     receive buffer(srb(i),i=nsesum+1,nsesum+nresum) ----\n");
+   F77("*\n");
+   F77("      dimension srb(nsesum+nresum)\n");
+   F77("* --------------------- \n");
+   F77("c   Equation number on the interface\n");
+   F77("c ---------------------\n");
+   F77("      dimension nsrequ(nsesum+nresum)\n");
+   F77("* --------------- -----------------------\n");
+   F77("c     SEND the value to the PE whose number is minimal\n");
+   F77("c -----------------------------------------\n");
+   F77("      if (nsendlist(rank+1).eq.1) then\n");
+   F77("         nshaji=0\n");
+   F77("         do 10 i=1,nsendnum\n");
+   F77("            do 20 j=1,nsendkaz(i)\n");
+   F77("               srb(nshaji+j)=rw(nsrequ(nshaji+j))\n");
+   F77(" 20         continue\n");
+   F77("            nshaji=nshaji+nsendkaz(i)\n");
+   F77(" 10      continue\n");
+   F77("*    \n");
+   F77("         nshaji=1\n");
+   F77("         do 30 i=1,nsendnum\n");
+   F77("            call mpi_send (srb(nshaji),nsendkaz(i),\n");
+   F77("     $           mpi_double_precision,nsendtable(i)-1,\n");
+   F77("     $           0,mpi_comm_world,ierror)\n");
+   F77("            nshaji=nshaji+nsendkaz(i)\n");
+   F77(" 30      continue\n");
+   F77("      end if\n");
+   F77("*\n");
+   F77("*    \n");
+   F77("      if (nrecvlist(rank+1).eq.1) then\n");
+   F77("         nrhaji=1\n");
+   F77("*\n");
+   F77("         do 40 i=1,nrecvnum\n");
+   F77("            call mpi_recv(srb(nsesum+nrhaji),nrecvkaz(i),\n");
+   F77("     $           mpi_double_precision,nrecvtable(i)-1,\n");
+   F77("     $           0,mpi_comm_world,status,ierror)\n");
+   F77("            nrhaji=nrhaji+nrecvkaz(i)\n");
+   F77(" 40      continue\n");
+   F77("*     \n");
+   F77("*    \n");
+   F77("*     \n");
+   F77("         nrhaji=0\n");
+   F77("         do 50 i=1,nrecvnum\n");
+   F77("            do 60 j=1,nrecvkaz(i)\n");
+   F77("               rw(nsrequ(nsesum+nrhaji+j))=\n");
+   F77("     $              rw(nsrequ(nsesum+nrhaji+j))+\n");
+   F77("     $              srb(nsesum+nrhaji+j)\n");
+   F77(" 60         continue\n");
+   F77("            nrhaji=nrhaji+nrecvkaz(i)\n");
+   F77(" 50      continue\n");
+   F77("*\n");
+   F77("*    \n");
+   F77("         nshaji=0\n");
+   F77("         do 70 i=1,nrecvnum\n");
+   F77("            do 80 j=1,nrecvkaz(i)\n");
+   F77("               srb(nsesum+nshaji+j)=rw(nsrequ(nsesum+nshaji+j))\n");
+   F77(" 80         continue\n");
+   F77("            nshaji=nshaji+nrecvkaz(i)\n");
+   F77(" 70      continue\n");
+   F77("*\n");
+   F77("*     \n");
+   F77("         nshaji=1\n");
+   F77("         do 90 i=1,nrecvnum\n");
+   F77("            call mpi_send (srb(nsesum+nshaji),nrecvkaz(i),\n");
+   F77("     $           mpi_double_precision,nrecvtable(i)-1,\n");
+   F77("     $           1,mpi_comm_world,ierror)\n");
+   F77("            nshaji=nshaji+nrecvkaz(i)\n");
+   F77(" 90      continue\n");
+   F77("      end if\n");
+   F77("*\n");
+   F77("*\n");
+   F77("      if (nsendlist(rank+1).eq.1) then\n");
+   F77("         nrhaji=1\n");
+   F77("         do 110 i=1,nsendnum\n");
+   F77("            call mpi_recv(srb(nrhaji),nsendkaz(i),\n");
+   F77("     $           mpi_double_precision,nsendtable(i)-1,\n");
+   F77("     $           1,mpi_comm_world,status,ierror)\n");
+   F77("            nrhaji=nrhaji+nsendkaz(i)\n");
+   F77(" 110     continue\n");
+   F77("*\n");
+   F77("         nshaji=0\n");
+   F77("         do 130 i=1,nsendnum\n");
+   F77("            do 140 j=1,nsendkaz(i)\n");
+   F77("               rw(nsrequ(nshaji+j))=srb(nshaji+j)\n");
+   F77(" 140        continue\n");
+   F77("            nshaji=nshaji+nsendkaz(i)\n");
+   F77(" 130     continue\n");
+   F77("*\n");
+   F77("      end if\n");
+   F77("*     \n");
+   F77("      return \n");
+   F77("      end\n");
+   F77("         \n");
+   F77("\n");
+ CloseFile(fp);
+ return;
+}

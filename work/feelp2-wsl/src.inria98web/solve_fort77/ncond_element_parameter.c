@@ -1,0 +1,47 @@
+/*
+ *  ncond_element_parameter.c
+ *
+ *  1998/07/28 Debug for PK element type (argumented element)
+ *
+ */
+
+
+#include "../feel_def/feel_def.h"
+#include "../feel_def/basic_struct.h"
+#include "../system/system.h"
+
+#include "../solve_comp/solve_comp.h"
+
+
+void ncond_element_parameter( fp,  solve_element_ptr)
+     FILE *fp;
+     SolveElement *solve_element_ptr;
+{
+  int i,j;
+  Element  *elem_ptr;
+  Element **elem_ptrptr;
+  Scalar   *scalar_ptr;
+  
+  elem_ptrptr = solve_element_ptr->elem_ptrptr;
+  for(i=0;i<solve_element_ptr->element_types;i++) {
+    elem_ptr = *(elem_ptrptr+i);
+
+    if(elem_ptr->scalar_vars == 0) continue;
+
+    scalar_ptr = elem_ptr->scalar_var;
+
+    fprintf(fp,"C\n");
+    for(j=0;j<elem_ptr->scalar_vars;j++) {
+      
+      fprintf(fp,"      %s=0\n",(scalar_ptr+j)->name);
+    }
+    fprintf(fp,"C\n");
+
+  }
+  return;
+}
+
+    
+
+    
+
