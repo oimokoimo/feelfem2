@@ -42,7 +42,8 @@ int              user_funcs=0;
 /* 変数としては用いることの出来ない文字列の数々 */
 
 /* feelのキーワード */
-static char *feel_key_word[] = {
+/* modernize (with static -> without static 2026/01/21 */
+char *feel_key_word[] = {
     "t","T","nil","NIL",
     "dx","dy","dz","dn","lap","x","y","z",
     "l1","l2","l3","l4",
@@ -68,12 +69,14 @@ static char *feel_test_var[]  = {
   };
 
 /* feelのシステム関数 */
-static char *feel_fem_func[] = {
+/* modernize 2026/01/21 from static to extern */
+char *feel_fem_func[] = {
     "dnorm",  NULL
   };
 
 /* fortran の関数 */
-static char *fort77_func[] = {
+/* modernize 2026/01/21 from static to extern */
+char *fort77_func[] = {
     "int","ifix","idint","iqint",
     "sngl","float","snglq",
     "dfloat","dbleq","dreal",
@@ -128,7 +131,7 @@ static char *fort77_func[] = {
     NULL
   };
 
-/* fortranの予約語 */
+/*  fortranの予約語 */
 static char *fort77_word[] = {
     "program","subroutine","function",
     "common","dimension","external",
@@ -141,7 +144,8 @@ static char *fort77_word[] = {
   };
 
 /* fortran の記号 */
-static char fort77_mark[] = {
+/* modernize 2026/01/21 from static to extern */
+char fort77_mark[] = {
     '(' , ')','+','-','*','/','\0'
   };
 
