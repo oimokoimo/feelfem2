@@ -12,6 +12,7 @@
 
 #include "../system/system.h"
 #include "scheme_comp.h"
+#include "../feel_def/pop.h"    /* modernize 2026/01/21 */
 
 
 static int write_args = 0;

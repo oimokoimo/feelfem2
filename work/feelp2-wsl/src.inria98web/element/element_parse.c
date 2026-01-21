@@ -13,6 +13,7 @@
  */
 
 #include "../feel_def/feel_def.h"  /* feel p2 プログラム規定ヘッダー */
+#include "../feel_def/pop.h"       /* modernize 2026/01/21  */
 #include "../system/system.h"
 #include "element.h"
 

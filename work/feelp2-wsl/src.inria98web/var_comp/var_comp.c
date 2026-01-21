@@ -23,6 +23,7 @@
  */
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
+#include "../feel_def/pop.h"    /* modernize 2026/01/21 */
 #include "../feel_def/basic_struct.h"
 #include "var_comp.h"
 #include "../system/system.h"

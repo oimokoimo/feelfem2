@@ -20,6 +20,65 @@
 #include "../system/system.h"
 #include "YaccExpression.h"
 
+#include "../feel_def/pop.h"    /* modernize 2026/01/21 */
+int streq(char *,char *);
+
+
+
+/* ---------- forward declarations (modernize 2026/01/xx) ---------- */
+
+/* local helper */
+static int identifier_no(char *name);
+static int function_no(char *name);
+
+/* debug routines */
+static void show_expression_string(char *s);
+static void show_list_string(int lst, char *s, int *str_ptr);
+
+/* cell/list primitives (defined in this file) */
+static int  get_new_cell(void);
+static void cons(int new_lst, int car_cell, int old_lst);
+static void put_atom(int atom, char *a);
+static void make_2_op(int new_cell, int op_cell, int left_cell, int right_cell);
+
+/* expression stack */
+static int  exp_pop(void);
+static void exp_push(int lst);
+
+/* public-ish entry points used by yacc actions (keep non-static if referenced elsewhere) */
+void cell_init(void);
+void exp_atom_push(char *a);
+void exp_func_push(char *a);
+void exp_array_push(char *a);
+void exp_pl_push(void);
+void exp_mi_push(void);
+void exp_mu_push(void);
+void exp_minus_push(void);
+void exp_di_push(void);
+
+void show_expression(void);
+void show_list(int lst);
+void show_expression_fp(FILE *fp);
+void show_list_fp(int lst, FILE *fp);
+
+char *get_expression_string(void);
+Expression *get_expr_structure(void);
+
+void push_identifier_and_push(void);
+char **get_exp_identifiers(int *symbols);
+
+void push_function_and_push(void);
+char **get_exp_functions(int *symbols);
+
+/* external functions this file calls (declared somewhere else, but ensure prototypes exist) */
+int streq(char *a, char *b);
+char *FEEL_GetMemory(int size);
+void SystemAbort(char *msg);
+char *PopString(void);
+char *MakeStringCopy(char *s);
+
+/* ----------------------------------------------------------------- */
+
 
 /*-----EXPRESSION STACK DEFINITION-----*/
 #define MAX_STACK    2000
@@ -614,7 +673,7 @@ char **get_exp_identifiers( symbols )
 }
 
 
-identifier_no( name )  /* nameのIDENTIFIER番号を返す、identifier_name[]に
+int identifier_no( name )  /* nameのIDENTIFIER番号を返す、identifier_name[]に
 			  登録されていなければ登録し、その番号を返す。
 			  名前の為の領域は引き数で示されるところが既に
 			  確保されているものとする。                      */
@@ -637,7 +696,7 @@ identifier_no( name )  /* nameのIDENTIFIER番号を返す、identifier_name[]に
     return(identifiers - 1);
 }
 
-
+int function_no(char *);
 
 push_function_and_push() /* expressionに現れる変数名を格納する為の関数 */
 {

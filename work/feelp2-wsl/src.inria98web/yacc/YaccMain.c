@@ -25,6 +25,26 @@
 #include <stdlib.h>  /* modernize 2026/01/21 */
 #include <string.h>  /* modernize 2026/01/21 */
 
+/* ---- forward declarations for YaccMain.c ---- */
+
+/* from other modules (must be in some header ideally) */
+extern void SystemAbort(char *msg);
+extern void FatalError(char *msg);
+extern void change_feel_array_size(int n);
+extern void cell_init(void);
+extern int  yyparse(void);
+
+/* functions defined in this file */
+static void init(void);
+static void yyerror(char *s);
+static void print_yylineno(void);
+static int  yylineno_info(void);
+
+void push(char *s);                 /* used from other .c (PopString etc.) */
+char *pop(void);                    /* used from other .c */
+void pop_push_inner_points(int inner_parameters);
+
+extern int streq(char *,char *);
 
 /*-- Extern variables used in yacc program --*/
 int parameters  = 0;   /* to count pushed strings */
@@ -71,7 +91,7 @@ int yylineno;     /* 99/12/14  here extern deleted !!! oimokoimo */
 
 /*-- DEFINES --*/
 
-#define  MAX_STACK  100         /* stack for strings */
+#define  MAX_STACK  100000         /* stack for strings */
 
 static int level = 0;
 static char *terms[MAX_STACK];
@@ -216,10 +236,30 @@ int yylineno_info()       /* ソースの現在位置を返す関数 */
     return(yylineno);
 }
 
+/*
+ * modernize (2026/01/21)
+ *
+ */
+
+void push(s)
+char *s;
+{
+    int len;
+
+    if(level >= MAX_STACK) {
+        FatalError("YACC PUSH ERROR: stack overflow");
+    }
+
+    len = strlen(s);
+    terms[level] = (char *)malloc(len + 1);
+    if(!terms[level]) FatalError("malloc failed");
+    strcpy(terms[level], s);
+    level++;
+}
 
 
 
-
+/*
 push(s)
 char *s;
 {
@@ -230,6 +270,7 @@ char *s;
     strcpy(terms[level],s);
     level++;
 }
+*/
 
 char *pop()
 {

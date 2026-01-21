@@ -12,6 +12,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/pop.h"    /* modernize 2026/01/21 */
 #include "../system/system.h"
 
 typedef struct Nodes_ {
