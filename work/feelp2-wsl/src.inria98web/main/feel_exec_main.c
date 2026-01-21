@@ -53,7 +53,7 @@ char *feel_dir;
 char *AVSExpress_dir;
 char *current_dir;
 
-feel_exec_main()
+void feel_exec_main()
 {
 
     extern int status_no_delete;
@@ -120,7 +120,7 @@ feel_exec_main()
     NORMAL;
 */
     
-/*    debug_start(); */  /* CAUTION: ここに移しました。 */
+   debug_start();  /* CAUTION: ここに移しました。 */
     
     if( how_many_errors() ) {
 	prt_errors_message();

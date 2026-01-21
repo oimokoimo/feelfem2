@@ -11,6 +11,8 @@
  */
 
 #include <stdio.h>
+extern FILE *popen(const char *command, const char *type);
+extern int   pclose(FILE *stream);
 
 FILE *OpenPipeToRead( cmd )
      char *cmd;

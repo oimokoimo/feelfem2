@@ -1,5 +1,6 @@
 /*
  *    FESL lex program
+ *    FEEL lex program
  * 
  *    Filename             fem_lex.l
  *    Made                 1991/12/24
@@ -7,9 +8,14 @@
  *    Version              0.2
  */
 %{
+#define YY_NEVER_INTERACTIVE 1
+
+#include <stdio.h>
+#include <unistd.h>
 
 #ifdef DEBUG
 
+/*
 #include <assert.h>
 main()
 {
@@ -23,16 +29,22 @@ s_lookup(){}
 int yynerrs = 0;
 #define token(x) (int) "x"
 
+*/
+
+int main() {
+    printf("main in DEBUG mode in lex is called.(should not happen)\n");
+    exit(1);
+}
 
 #else
 
-#include "y.tab.h"
+#include "fem.tab.h"
 #define token(x)  x
 
-#endif DEBUG
+#endif 
 
 #define END(v) (v-1 + sizeof v / sizeof v[0])
-extern push();
+extern void push(char *);
 
 %}
 

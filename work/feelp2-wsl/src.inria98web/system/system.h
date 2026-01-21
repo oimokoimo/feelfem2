@@ -42,6 +42,7 @@ extern char *get_nth_uniq_item();
 extern char *get_expression_string();
 extern char **get_exp_identifiers();
 extern char **get_exp_functions();
+extern int streq(char *,char *);
 
 
 #define F77(x) fprintf(fp,x)

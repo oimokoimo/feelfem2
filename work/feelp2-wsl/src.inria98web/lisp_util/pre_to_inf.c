@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
 #include "../system/system.h"
+extern FILE *popen(const char *command, const char *type);
+extern int   pclose(FILE *stream);
 
 extern char *feel_dir;         /* for win32 */
 

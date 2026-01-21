@@ -2,7 +2,9 @@
 #include "../system/system.h"
 
 
-show_expr()
+void show_expression_fp(FILE *);
+
+void show_expr()
 {
     show_expression_fp(stdout);
 }

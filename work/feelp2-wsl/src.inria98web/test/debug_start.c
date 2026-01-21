@@ -8,6 +8,7 @@
  *            
  */
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../feel_def/feel_def.h"
 #include "../feel_def/basic_struct.h"
@@ -20,8 +21,31 @@
 
 #include "../makefort77/Extern.h"
 
+int strindex(char *,char *);
+void show_element_structure();
+void show_var_dat();
+void scheme_data_debug();
+void show_solve_statement();
+void show_mesh_dat();
+int how_many_points();
+int how_many_lines();
+int how_many_regions();
+int how_many_domains();
+int make_inp_dat_file();
+int streq(char *,char*);
+void get_point_xy_by_name(char *,double *, double *);
+int get_region_nodes(char *);
+int how_many_int_vars();
+int how_many_double_vars();
+int how_many_const_vars();
+int how_many_fem_types();
+int how_many_material_vars();
+int how_many_ewise_types();
+int how_many_schemes();
+int how_many_solves();
 
-debug_start()
+
+void debug_start()
 {
 FILE *fp;
 char buf[BUFSIZ];
@@ -52,7 +76,7 @@ char buf[BUFSIZ];
 
 
 
-show_mesh_dat()
+void show_mesh_dat()
 {
     int i,j,k,max;
     Region *region;
@@ -118,7 +142,7 @@ show_mesh_dat()
 
 static int   pts =   0;
 
-point_number( name )
+int point_number( name )
      char *name;
 {
     int i;
@@ -134,14 +158,14 @@ point_number( name )
 }
 
 
-make_inp_dat_file()
+int make_inp_dat_file()
 {
     int i,j,pts;
     FILE *fp;
     Region *region;
     double x,y;
 
-    if(how_many_regions() != 1) return;
+    if(how_many_regions() != 1) return 0;
     region = get_nth_region_ptr( 0 );
 
     fp = fopen("inp.dat","w");
@@ -192,13 +216,16 @@ make_inp_dat_file()
 
     fclose(fp);
 
+    /* graphics disabled
     system("/home/fujio/feel_p2/src/mesh_book/egmesh");
     system("/home/fujio/feel_p2/src/tool/showmesh_exec");
+    */
+
 
 }
 	
 
-show_var_dat()
+void show_var_dat()
 {
     int i,j,max,max2;
     Var *var_ptr;
@@ -298,7 +325,7 @@ show_var_dat()
 }
 
 
-scheme_data_debug()
+void scheme_data_debug()
 {
     int i,j,k,l;
     Scheme *var;
@@ -394,7 +421,7 @@ scheme_data_debug()
 }
 
 
-show_solve_statement()
+void show_solve_statement()
 {
     int i,j,k,l;
     int solves;
