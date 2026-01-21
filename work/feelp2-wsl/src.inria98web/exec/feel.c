@@ -52,7 +52,7 @@ extern int   pclose(FILE *);
 
 
 
-void main(argc, argv)
+int main(argc, argv)
      int argc;
      char *argv[];
 {
@@ -431,10 +431,25 @@ void main(argc, argv)
     
 
 #else
+    /*
     who_am_i = popen("whoami","r");
     fgets(buf,sizeof(buf),who_am_i);
     pclose(who_am_i);
     sscanf(buf,"%s",whoami);
+    */
+    who_am_i = popen("whoami","r");
+if (who_am_i != NULL) {
+    if (fgets(buf,sizeof(buf),who_am_i) != NULL) {
+        sscanf(buf,"%s",whoami);
+    } else {
+        strcpy(whoami,"unknown");
+	fprintf(stderr,"User is unknown\n");
+    }
+    pclose(who_am_i);
+} else {
+    strcpy(whoami,"unknown");
+}
+
 
 
 
@@ -484,6 +499,8 @@ void main(argc, argv)
                                               FEEL_DOS_PDE);
 #else
     sprintf(com,"feel.parse %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %s %d",lisp_debug,no_delete,machine,limit_file,array_size,mesh_only,parallel,not_div,rd,noediv_flag,english,web,bamg,web_check,web_exec,modulef,mf_module,nodeset,argv[pdeargno],avs_64bit);
+
+    printf("%s\n",com);
 #endif
 
 

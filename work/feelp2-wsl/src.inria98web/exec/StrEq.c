@@ -4,6 +4,8 @@
  *
  */
 
+#include <string.h>
+
 int streq(s,t)
 char *s,*t;
 {
