@@ -179,7 +179,7 @@ static int is_number( c )
 }
 
 
-static int is_delimiter( c )
+int is_delimiter( c )     /* modernize 2026/01/21 */
      char c;
 {
     switch(c) {

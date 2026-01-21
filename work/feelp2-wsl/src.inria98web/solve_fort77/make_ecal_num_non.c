@@ -10,6 +10,7 @@
  *              
  */
 
+#include <stdio.h>
 #include "../feel_def/feel_def.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
@@ -20,6 +21,8 @@
 #include "../var_comp/var_comp.h"
 
 extern int noediv_flag;
+
+void CutLastCharPRT(FILE * , char * );  /* 2026/01/21 modernize  (in the same file static is deleted.) */
 
 void make_ecal_numerical_nonlinear(fp,solve_no,elem_no,quad_no,
 				   solve_element_ptr)
@@ -475,8 +478,11 @@ void make_ecal_numerical_nonlinear(fp,solve_no,elem_no,quad_no,
 
 }
 
-
-static CutLastCharPRT(fp , s )   /* 最後の文字だけ出力しない */
+/* 
+ * modernize   duplicate definition, because I remove static
+ *  2026/01/21
+ *
+void CutLastCharPRT(fp , s )  
      FILE *fp;
      char *s;
 {
@@ -487,3 +493,5 @@ static CutLastCharPRT(fp , s )   /* 最後の文字だけ出力しない */
     return;
 }
 
+ *
+ */

@@ -20,6 +20,7 @@
 #include "../var_comp/var_comp.h"
 
 extern int noediv_flag;
+void CutLastCharPRT(FILE * , char * );  /* 2026/01/21 modernize */
 
 void make_ecal_numerical(fp,solve_no,elem_no,quad_no,solve_element_ptr)
      FILE *fp;
@@ -483,8 +484,8 @@ void make_ecal_numerical(fp,solve_no,elem_no,quad_no,solve_element_ptr)
 
 }
 
-
-static CutLastCharPRT(fp , s )   /* 最後の文字だけ出力しない */
+/* modernize from static to extern 2026/01/21 */
+void CutLastCharPRT(fp , s )   /* 最後の文字だけ出力しない */
      FILE *fp;
      char *s;
 {

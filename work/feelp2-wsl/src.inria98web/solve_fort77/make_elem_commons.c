@@ -31,7 +31,8 @@ make_elem_commons()
     char term[BUFSIZ];
     char term2[BUFSIZ];
 
-    static FILE *fp_read_dbg,*OpenFileToRead();
+    static FILE *fp_read_dbg;
+    FILE *OpenFileToRead();
     char fname[FNAME_SIZE];
 
     int solves,solve_elements;

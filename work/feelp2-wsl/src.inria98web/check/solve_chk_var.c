@@ -34,6 +34,10 @@
 #include "../system/system.h"
 #include "../solve_comp/solve_comp.h"
 
+/* modernize 2026/01/21 */
+char *get_domain_name_by_no(int);  
+char *get_domain_ptr_by_name(char *);
+
 static element_groups;  /* Í×ÁÇÈÖ¹æ */
 
 solve_chk_var()

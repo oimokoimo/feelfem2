@@ -24,6 +24,10 @@
 
 #include <stdio.h>
 
+/* modernize 2026/01/21 */
+extern FILE *popen(const char *, const char *);
+extern int   pclose(FILE *);
+
 /* options */
 #define LISP_DEBUG  "-lispdebug"
 #define NO_DELETE   "-nodelete"

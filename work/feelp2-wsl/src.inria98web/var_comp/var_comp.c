@@ -503,7 +503,7 @@ static double push_s[MAX_NODES_FOR_EWISE];
 static double push_t[MAX_NODES_FOR_EWISE];
 
 
-static double myatof( s )
+double myatof( s )
      char *s;
 {
     double x;

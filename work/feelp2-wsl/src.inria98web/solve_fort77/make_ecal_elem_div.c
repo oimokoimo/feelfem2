@@ -81,7 +81,7 @@ char *next_plus(s,len)
 
   if(strlen(s) < len) {
 
-    return(NULL);              // formula is short enough
+    return(NULL);              /* formula is short enough */
     
   }
 
