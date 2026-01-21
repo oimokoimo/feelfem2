@@ -22,6 +22,8 @@
     char *tmp_pop;               /* debug for DEC/Alpha AXP/ OSF/1(941024) */
     extern char *get_expr_structure();
     extern char *if_left_ptr;
+    char *pop(void);            /* modernize 2026/01/21 */
+    void push(char *s);         /* modernize 2026/01/21 */
 %}
 
 

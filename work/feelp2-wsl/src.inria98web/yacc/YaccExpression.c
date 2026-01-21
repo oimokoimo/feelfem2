@@ -15,6 +15,8 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>  /* modernize 2026/01/21 */
+#include <string.h>  /* modernize 2026/01/21 */
 #include "../system/system.h"
 #include "YaccExpression.h"
 
@@ -41,6 +43,8 @@
 					      する領域の大きさ             */
 #define  MAX_EXPRESSION_FUNCTION       256 /* 式に現れる関数シンボルを記憶
 					      する領域の大きさ             */
+
+void put_atom(int atom, char *a);  /* modernize 2026/01/21 */
 
 
 struct CELL {
@@ -145,7 +149,7 @@ int old_lst;
     return;
 }
 
-put_atom(atom,a)
+void put_atom(atom,a)
 int atom;
 char *a;
 {

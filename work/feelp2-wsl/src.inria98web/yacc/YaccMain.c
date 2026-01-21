@@ -22,6 +22,9 @@
 
 #include <stdio.h>
 
+#include <stdlib.h>  /* modernize 2026/01/21 */
+#include <string.h>  /* modernize 2026/01/21 */
+
 
 /*-- Extern variables used in yacc program --*/
 int parameters  = 0;   /* to count pushed strings */
@@ -64,7 +67,7 @@ char *pde_src_name  = "Wow???";  /* pde source file name */
 
 
 /*-- Yacc/Lex variables --*/
-int yylineno;     /* 99/12/14  here extern deleted !!! oimo koimo */
+int yylineno;     /* 99/12/14  here extern deleted !!! oimokoimo */
 
 /*-- DEFINES --*/
 
