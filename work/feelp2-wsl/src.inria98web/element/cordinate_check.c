@@ -5,7 +5,10 @@
  */
 #include "../feel_def/feel_def.h"
 #include <math.h>
+#include <stdlib.h>
 #include "element.h"
+
+void SystemAbort(char *);
 
 int GCD(x,y)               /* 最大公約数の計算 */
      int x,y;
@@ -19,7 +22,7 @@ int GCD(x,y)               /* 最大公約数の計算 */
     return(x);
 }
 
-reduce_fraction(r)        /* 約分処理 */
+void reduce_fraction(r)        /* 約分処理 */
      Frac *r;
 {
     int gcd;
@@ -36,7 +39,7 @@ reduce_fraction(r)        /* 約分処理 */
 }
 
 
-line_node_cordinate_check(r)   /* add project-1dim */
+int line_node_cordinate_check(r)   /* add project-1dim */
      Frac r;
 {
     double x;
@@ -53,7 +56,7 @@ line_node_cordinate_check(r)   /* add project-1dim */
 
 }
 
-tri_node_cordinate_check(r,s)
+int tri_node_cordinate_check(r,s)
      Frac r,s;
 {
     double x,y;
@@ -74,7 +77,7 @@ tri_node_cordinate_check(r,s)
 
 /* 四辺形に対する節点座標検査 */
 
-rect_node_cordinate_check(r,s)
+int rect_node_cordinate_check(r,s)
      Frac r,s;
 {
     double x,y;

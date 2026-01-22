@@ -14,7 +14,12 @@
 #include "../feel_def/basic_struct.h"
 #include "element.h"
 
-element_order(etype , basis, r,s,t,ntype,expr)
+void SystemAbort(char *);
+int tri_node_order(Frac,Frac,int,Frac,Frac,int);
+int rect_node_order(Frac,Frac,int,Frac,Frac,int);
+int line_node_order(Frac,int,Frac,int);
+
+void element_order(etype , basis, r,s,t,ntype,expr)
      int etype;      /* 要素形状 */
      int basis;     /* 基底関数の数 */
      Frac r[],s[],t[];
@@ -151,6 +156,7 @@ int line_node_order(r1,n1,r2,n2)
     if(n1 > n2) return( YES );
 
     SystemAbort("Same node basis is used.(in line element)\n");
+    return -1;
 
 }
 
@@ -204,6 +210,7 @@ int tri_node_order(r1,s1,n1,r2,s2,n2)
     if(n1 > n2) return( YES );
 
     SystemAbort("Same node basis is used.(in tri element)\n");
+    return -1;
 
 }
 
@@ -308,6 +315,7 @@ int rect_node_order(r1,s1,n1,r2,s2,n2)
     if(n1 > n2) return( YES );
 
     SystemAbort("Same node basis is used.(in rect element)\n");
+    return -1;
 
 }
 

@@ -1,4 +1,4 @@
-CFLAGS = -g $(ADDITIONALCFLAGS)
+CFLAGS = -g -std=gnu89 $(ADDITIONALCFLAGS)
 #LINKFLAG = -dn (EWS/4800)
 #DBGX   = xplotv.o -lX11 -lsocket -lnsl 
 all :   debug_start.o o.o
