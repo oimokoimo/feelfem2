@@ -14,8 +14,10 @@
 
 #include "../feel_def/feel_def.h"  /* feel p2 プログラム規定ヘッダー */
 #include "../feel_def/pop.h"       /* modernize 2026/01/21  */
+#include "../feel_def/feel_msg.h"  /* modernize 2026/01/22  */
 #include "../system/system.h"
 #include "element.h"
+#include <stdlib.h>
 
 static int elements = 0;  /* element文の数 */
 static Element *element[MAX_ELEMENT];
@@ -48,6 +50,11 @@ static  char  *restrain_fem_var_type[MAX_RESTRAINS];
 
 static  int    frac_stacks = 0;     /* 座標スタック */
 static  Frac   frac_stack[3];
+
+void FEEL_FreeMemory(char *);
+#include "../feel_def/feel_msg.h"
+int element_etype_no(char *);
+int get_etype_no(char *);
 
 /*----------------------------------------------*/
 void element_parse_init()    /* メモリを取得し、要素名の代入を行う */
@@ -219,7 +226,7 @@ void  p_element_fem_restrains()
 }
 
 /* 分数スタック関数 -----------------*/
-static push_frac( frac )
+static void push_frac( frac )
      Frac frac;
 {
     if(frac_stacks == 3) {
@@ -248,7 +255,7 @@ static Frac pop_frac()
 /*------------------------------------*/
 
 
-static check_integer(cp) /* lex で num として字句解析されたものが整数か？ */
+static void check_integer(cp) /* lex で num として字句解析されたものが整数か？ */
      char *cp;
 {
     if(strindex(cp,".")) {
@@ -283,7 +290,7 @@ void p_node_cordinate( n )   /* 各分数成分をスタックに積む */
     return;
 }
 
-check_max_basis()                /* 最大要素内基底関数数に付いてチェック */
+void check_max_basis()                /* 最大要素内基底関数数に付いてチェック */
                                  /* と同時に、 ntypeの初期化    D0(zero) */
 {
     if(basis == MAX_BASIS_PER_ELEMENT) {
@@ -364,7 +371,7 @@ void p_basis_complete()        /* 一つのbasisについての登録終了 */
  * 関数 p_element_complete()
  */
 
-p_element_complete()
+void p_element_complete()
 {
     int i,err_flag;
     Scalar *scalar_var;
@@ -554,7 +561,7 @@ Element *get_element_ptr_by_name( name )
     return(NULL);  /* 指定されたFEM基底関数は定義されていない */
 }
 
-show_element_structure()      /* デバッグ用関数 */
+void show_element_structure()      /* デバッグ用関数 */
 {
     int i,j,k;
     printf("登録 総要素数   %d\n",elements);
