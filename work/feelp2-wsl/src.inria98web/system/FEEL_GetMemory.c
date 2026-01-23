@@ -6,46 +6,44 @@
  * Modified 
  * Version  0.0
  *
+ * Modified by chappy 
+ *
  * Purpose: Get Memory from heap area
  *
  */
 
+
 #include <stdio.h>
+#include <stdlib.h>   /* malloc, calloc */
+#include "../feel_def/feel_msg.h"
+#include "system.h"
 
-
-char *FEEL_GetMemory( size )
-     int size;
+void *FEEL_GetMemory(size_t size)
 {
-    char *cp,*cp2;
-    
-    if(size == 0) return(NULL);
+    void *cp;
 
-    cp2 = cp = (char *)malloc( size );
+    if (size == 0) return NULL;
 
-    if(cp == NULL ) {
-	SystemAbort("No more heap memory");
+    cp = calloc(1, size);   /* 0初期化込み */
+
+    if (cp == NULL) {
+        SystemAbort("No more heap memory");
     }
 
-    while(size) {
-      *cp2 = '\0';
-      cp2++;
-      size--;
-    }
-    return(cp);
+    return cp;
 }
 
-double *FEEL_GetMemory_double( n )
-     int n;
+double *FEEL_GetMemory_double(size_t n)
 {
     double *dble;
 
-    dble = (double *) malloc ( n * sizeof (double));
+    if (n == 0) return NULL;
 
-    if(dble == NULL) {
-	SystemAbort("No more heap memory(double)");
+    dble = (double *)calloc(n, sizeof(double));
+
+    if (dble == NULL) {
+        SystemAbort("No more heap memory(double)");
     }
-    
-    return(dble);
+
+    return dble;
 }
-
-

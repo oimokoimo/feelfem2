@@ -5,6 +5,7 @@
  *
  */
 #include <stdio.h>
+#include "../feel_def/feel_msg.h"
 
 void EraseTemporaryFiles()
 

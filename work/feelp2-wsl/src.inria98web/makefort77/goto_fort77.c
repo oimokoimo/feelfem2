@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "../scheme_comp/scheme_comp.h"
+#include "../system/system.h"
 
 extern int web_exec;
 

@@ -10,13 +10,16 @@
 
 #include "../feel_def/feel_def.h" 
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
+#include "../feel_def/feel_msg.h"    /* modernize 2026/01/21 */
 #include "../system/system.h"
 #include "mesh_comp.h"
 
 static Point *point[MAX_POINTS];
 static int    points = 0;
+int is_same_point( double x, double y, char *name);
+   
 
-point_2d_st()
+void point_2d_st()
 {
     double x,y;
     char *cp;

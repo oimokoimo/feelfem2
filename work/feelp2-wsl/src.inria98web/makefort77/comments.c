@@ -6,21 +6,21 @@
 
 #include<stdio.h>
 
-comment1(fp)
+void comment1(fp)
      FILE *fp;
 {
     fprintf(fp,"c --------------------------------------------------------------------\n");
     return;
 }
 
-comment2(fp)
+void comment2(fp)
      FILE *fp;
 {
     fprintf(fp,"c ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
     return;
 }
 
-comment_s(fp)
+void comment_s(fp)
      FILE *fp;
 {
     fprintf(fp,"c -----\n");

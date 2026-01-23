@@ -12,8 +12,11 @@
  *              
  *              
  */
-#include <stdio.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include "../system/system.h"
+#include "../feel_def/feel_msg.h"
 
 #ifdef  _MSC_VER       /* Microsoft Visual C++ only */
 #define MSDOS          /* Win32 version */

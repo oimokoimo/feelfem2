@@ -288,7 +288,7 @@ char *pop()
 
 
 /*-- special processing for inner parameters --*/
-pop_push_inner_points(inner_parameters) 
+void pop_push_inner_points(inner_parameters) 
      int inner_parameters;
 {
     int i,len;

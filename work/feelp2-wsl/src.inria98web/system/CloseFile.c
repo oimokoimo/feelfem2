@@ -11,7 +11,7 @@
  */
 
 #include <stdio.h>
-
+#include "system.h"
 
 extern int one_file;
 

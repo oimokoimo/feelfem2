@@ -5,7 +5,9 @@
  *
  */
 
+#include <stdio.h>
 extern char *pop();
+#include "../feel_def/feel_msg.h"
 
 double PopDouble()
 {

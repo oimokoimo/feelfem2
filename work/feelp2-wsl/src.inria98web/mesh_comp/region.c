@@ -21,6 +21,8 @@
 
 #include "../feel_def/feel_def.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
+#include "../feel_def/feel_msg.h"
+
 #include "../system/system.h"
 #include "mesh_comp.h"
 

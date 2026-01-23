@@ -6,6 +6,8 @@
  */
 
 #include <stdio.h>
+#include <string.h>
+#include "../system/system.h"
 
 char *MakeStringCopy( s )
      char *s;

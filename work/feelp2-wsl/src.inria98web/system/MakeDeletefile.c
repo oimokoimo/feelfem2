@@ -5,8 +5,10 @@
  *
  */
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 
 #ifdef MSDOS
@@ -19,14 +21,14 @@ static char *delete_file_name[MAX_FILES];
 static int   files = 0;
 static FILE *Makefile_fp;
 
-InitMakeDeletefile()
+void InitMakeDeletefile()
 {
     files = 0;
 
     return;
 }
 
-StoreDeletefile( name )
+void StoreDeletefile( name )
      char *name;
 {
     int i;
@@ -54,7 +56,7 @@ StoreDeletefile( name )
     return;
 }
 
-DoDeletefile()
+void DoDeletefile()
 {
     int i;
     char com[BUFSIZ];

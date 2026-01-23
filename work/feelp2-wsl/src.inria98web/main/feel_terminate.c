@@ -10,13 +10,14 @@
  *
  */
 #include <stdio.h>
+#include <stdlib.h>
 
 #define STRESS  fprintf(stderr,"%c[5m",27)
 #define NORMAL  fprintf(stderr,"%c[0m",27)
 
 extern int not_implemented;
 
-feel_terminate()
+void feel_terminate()
 {
 
     /* DoDeletefile(); は、feel_exec_mainでやっている */

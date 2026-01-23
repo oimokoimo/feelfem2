@@ -5,7 +5,9 @@
  *
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include "../feel_def/feel_def.h"
+#include "../system/system.h"
 
 static int warnings = 0;
 static int errors   = 0;

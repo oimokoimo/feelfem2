@@ -10,10 +10,14 @@
  *              
  */
 
+#include <string.h>
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
+int is_delimiter( char ) ;
+int is_member_str( char *identifier , char *from[] , int terms );
 
 char *term_convert( expr , from , to , terms )
      char expr[];   /* 数式の文字列 */

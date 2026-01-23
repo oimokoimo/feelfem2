@@ -11,6 +11,8 @@
  */
 
 #include <stdio.h>
+#include "../feel_def/feel_msg.h"
+
 extern FILE *popen(const char *command, const char *type);
 extern int   pclose(FILE *stream);
 

@@ -18,8 +18,12 @@
 
 #include "../feel_def/feel_def.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "mesh_comp.h"
+
+int get_mesh_name_type_by_name( char *);
+void store_mesh_name(char *,int);
 
 static Domain *domain[MAX_DOMAINS];
 static int  domains = 0;
@@ -248,7 +252,9 @@ Region *get_region_ptr_by_domain_matno(domain_name, matno)
     }
 
     SystemAbort("NOT FOUND matno @ get_region_ptr_by_domain_matno");
+    return NULL;
 }
+ 
 
 
 	    

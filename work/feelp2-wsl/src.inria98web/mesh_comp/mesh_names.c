@@ -12,6 +12,7 @@
 
 #include "../feel_def/feel_def.h"
 #include "../feel_def/basic_struct.h"
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 
 static char *mesh_name[MAX_MESH_NAMES];

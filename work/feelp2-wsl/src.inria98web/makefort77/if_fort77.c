@@ -11,6 +11,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -18,6 +19,8 @@
 
 static char *from[MAX_VARIABLES];
 static char *to[MAX_VARIABLES];
+
+void if_write_sc_expression(FILE *fp,Expression *expr_ptr);
 
 void if_fort77( fp, if_ptr )
      FILE    *fp;
@@ -120,7 +123,7 @@ void if_fort77( fp, if_ptr )
     return;
 }
 
-if_write_sc_expression(fp,expr_ptr)
+void if_write_sc_expression(fp,expr_ptr)
      FILE *fp;
      Expression *expr_ptr;
 {

@@ -10,6 +10,8 @@
  *              fgets_file(...)  fgetsと同じ、エラー処理を行う,呼元関数名も渡す
  */
 #include <stdio.h>
+#include <stdlib.h>
+#include "../feel_def/feel_msg.h"
 
 int geti_file( fp )
      FILE *fp;

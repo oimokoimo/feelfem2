@@ -8,8 +8,10 @@
  *
  */
 #include <stdio.h>
+#include <string.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "../var_comp/var_comp.h"
 #include "../parallel/parallel.h"
@@ -27,7 +29,7 @@ static int   x11_flag     = NO;      /* X11ライブラリ利用フラグ        */
 static int   mpi_flag       = NO;    /* MPI ルーチン */
 extern int   one_file;
 
-UseLibrary( item , lib_name)
+void UseLibrary( item , lib_name)
      int item;
      char *lib_name;
 {
@@ -75,14 +77,14 @@ UseLibrary( item , lib_name)
     return;
 }
 
-InitMakeMakefile()
+void InitMakeMakefile()
 {
     files = 0;
 
     return;
 }
 
-StoreMakefile( name , file_type )
+void StoreMakefile( name , file_type )
      char *name;
      int   file_type;
 {
@@ -107,7 +109,7 @@ StoreMakefile( name , file_type )
 }
 
 
-JustifyFORTfile()
+void JustifyFORTfile()
 {
     int i;
     for(i=0;i<files;i++) {
@@ -123,7 +125,7 @@ JustifyFORTfile()
 }
 
 
-MakeMakefile()
+void MakeMakefile()
 {
     FILE *fp;
     char *cp;

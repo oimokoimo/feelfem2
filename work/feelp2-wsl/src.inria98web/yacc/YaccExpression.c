@@ -72,7 +72,7 @@ char **get_exp_functions(int *symbols);
 
 /* external functions this file calls (declared somewhere else, but ensure prototypes exist) */
 int streq(char *a, char *b);
-char *FEEL_GetMemory(int size);
+void *FEEL_GetMemory(int size);
 void SystemAbort(char *msg);
 char *PopString(void);
 char *MakeStringCopy(char *s);
@@ -145,7 +145,7 @@ static int cell_stack[MAX_STACK];
 
 
 /*  CELL INITIALIZE  */
-cell_init()
+void cell_init()
 {
     int i;
     for(i=0;i<MAX_CELL;i++) {
@@ -184,7 +184,7 @@ cell_init()
 }
 
 /*----- LIST PROCESSING -----*/
-get_new_cell()
+int get_new_cell()
 {
     int new_cell_no;
     if(remain_cell == 0 ) {
@@ -196,7 +196,7 @@ get_new_cell()
     return(new_cell_no);
 }
 
-cons(new_lst,car_cell,old_lst)
+void cons(new_lst,car_cell,old_lst)
 int new_lst;
 int car_cell;
 int old_lst;
@@ -220,7 +220,7 @@ char *a;
 }
 
 /*  EXPRESSION STACK PROCEDURES */    
-exp_pop() 
+int exp_pop() 
 {
     if(exp_pos == 0) {
 	SystemAbort("POP_EXP: stack empty");
@@ -229,7 +229,7 @@ exp_pop()
     return( cell_stack[exp_pos]);
 }
 
-exp_push(lst)
+void exp_push(lst)
 int lst;
 {
     if(exp_pos == MAX_STACK) {
@@ -244,7 +244,7 @@ int lst;
 
 
 
-exp_atom_push( a )
+void exp_atom_push( a )
 char *a;
 {
     int atom_cell;
@@ -258,7 +258,7 @@ char *a;
     return;
 }
 
-exp_func_push( a )
+void exp_func_push( a )
      char *a;
 {
     int parm_cell;
@@ -287,7 +287,7 @@ exp_func_push( a )
     return;
 }
 
-exp_array_push( a )    /* 配列の場合のpush */
+void exp_array_push( a )    /* 配列の場合のpush */
      char *a;
 {
     int parm_cell;
@@ -316,7 +316,7 @@ exp_array_push( a )    /* 配列の場合のpush */
     return;
 }
     
-exp_pl_push()
+void exp_pl_push()
 {
     int left_cell;
     int right_cell;
@@ -334,7 +334,7 @@ exp_pl_push()
     return;
 }
 
-exp_mi_push()
+void exp_mi_push()
 {
     int left_cell;
     int right_cell;
@@ -352,7 +352,7 @@ exp_mi_push()
     return;
 }
 
-exp_mu_push()
+void exp_mu_push()
 {
     int left_cell;
     int right_cell;
@@ -370,7 +370,7 @@ exp_mu_push()
     return;
 }
 
-exp_minus_push()     /* 単項演算子の処理 */
+void exp_minus_push()     /* 単項演算子の処理 */
 {
     int left_cell;
     int right_cell;
@@ -387,7 +387,7 @@ exp_minus_push()     /* 単項演算子の処理 */
 }
 
 
-exp_di_push()
+void exp_di_push()
 {
     int left_cell;
     int right_cell;

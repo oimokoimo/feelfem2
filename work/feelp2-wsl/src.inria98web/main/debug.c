@@ -30,7 +30,7 @@ debug_start()
 */
 
 
-debug_terminate()
+void debug_terminate()
 {
     if(debug_mode == NO) return;
     
@@ -38,7 +38,7 @@ debug_terminate()
 */
 }
 
-is_debug_mode() {
+int is_debug_mode() {
     return(debug_mode);
 }
 
@@ -79,7 +79,7 @@ debug_xwait()
 
 
 
-nullwrt()
+void nullwrt()
 {
     /* do nothing */
     return;

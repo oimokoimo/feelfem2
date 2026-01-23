@@ -11,10 +11,13 @@
 #define YY_NEVER_INTERACTIVE 1
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
+#undef DEBUG
 #ifdef DEBUG
 
+#define token(x)  x
 /*
 #include <assert.h>
 main()
@@ -27,7 +30,6 @@ printf("%-10.10s is \"%s\"\n",p,yytext);
 
 s_lookup(){}
 int yynerrs = 0;
-#define token(x) (int) "x"
 
 */
 

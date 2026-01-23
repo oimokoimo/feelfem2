@@ -11,6 +11,8 @@
  */
 
 #include <stdio.h>
+#include <string.h>
+#include "system.h"
 
 static int f77src_nest_level = 0;
 
@@ -26,7 +28,7 @@ f77src(fp,buf)
 
     if(f77src_nest_level == 0) {
 	if(*buf != 'c') {
-	    tolower(buf);
+	    tolower_buf(buf);
 	}
     }
 

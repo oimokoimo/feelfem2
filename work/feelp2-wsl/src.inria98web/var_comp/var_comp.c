@@ -23,6 +23,7 @@
  */
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
 #include "../feel_def/basic_struct.h"
 #include "var_comp.h"
@@ -789,6 +790,7 @@ Var *get_nth_int_ptr(n)  /* n starts 0 */
 	if(counter-1 == n) return(var[i]);
     }
     SystemAbort("get_nth_int_ptr error.");
+    return NULL;
 }
 Var *get_nth_double_ptr(n)  /* n starts 0 */
      int n;
@@ -803,6 +805,7 @@ Var *get_nth_double_ptr(n)  /* n starts 0 */
 	if(counter-1 == n) return(var[i]);
     }
     SystemAbort("get_nth_double_ptr error.");
+    return NULL;
 }
 Var *get_nth_const_ptr(n)  /* n starts 0 */
      int n;
@@ -817,6 +820,7 @@ Var *get_nth_const_ptr(n)  /* n starts 0 */
 	if(counter-1 == n) return(var[i]);
     }
     SystemAbort("get_nth_const_ptr error.");
+    return NULL;
 }
 Var *get_nth_fem_ptr(n)  /* n starts 0 */
      int n;
@@ -831,6 +835,7 @@ Var *get_nth_fem_ptr(n)  /* n starts 0 */
 	if(counter-1 == n) return(var[i]);
     }
     SystemAbort("get_nth_fem_ptr error.");
+    return NULL;
 }
 
 Var *get_nth_ewise_ptr(n)  /* n starts 0 */
@@ -846,6 +851,7 @@ Var *get_nth_ewise_ptr(n)  /* n starts 0 */
 	if(counter-1 == n) return(var[i]);
     }
     SystemAbort("get_nth_ewise_ptr error.");
+    return NULL;
 }
 
 Var *get_nth_material_ptr(n)  /* n starts 0 */
@@ -861,6 +867,7 @@ Var *get_nth_material_ptr(n)  /* n starts 0 */
 	if(counter-1 == n) return(var[i]);
     }
     SystemAbort("get_nth_material_ptr error.");
+    return NULL;
 }
 /*-----------------------------------------------*/
 int get_var_kind( name )
@@ -888,7 +895,7 @@ int get_var_kind( name )
 }
 
 
-store_fem_type_2_var( name , fem_type_ptr )
+void store_fem_type_2_var( name , fem_type_ptr )
      char *name;
      FEM_type *fem_type_ptr;  
 {
@@ -922,6 +929,7 @@ Var *get_var_ptr_by_name( name ) /* 1998/12/17  for modulef */
     }
 
     SystemAbort("Cannot find specified var pointer(this is extension for modulef)");
+    return NULL;
 }
 
 
@@ -1101,7 +1109,7 @@ EWISE_type *get_ewise_type_ptr_by_2name( var_name , domain_name)
 
 
 
-store_fem_type_2_var_add( name , fem_type_ptr )
+void store_fem_type_2_var_add( name , fem_type_ptr )
      char *name;
      FEM_type *fem_type_ptr;  
 {
@@ -1122,7 +1130,7 @@ store_fem_type_2_var_add( name , fem_type_ptr )
 
 
 
-store_ewise_type_2_var( name , ewise_type_ptr )
+void store_ewise_type_2_var( name , ewise_type_ptr )
      char *name;
      EWISE_type *ewise_type_ptr;  /* (EWISE_var *)だけれども */
 {
@@ -1148,7 +1156,7 @@ store_ewise_type_2_var( name , ewise_type_ptr )
 
 
 
-store_ewise_type_2_var_add( name , ewise_type_ptr )
+void store_ewise_type_2_var_add( name , ewise_type_ptr )
      char *name;
      EWISE_type *ewise_type_ptr;  
 {

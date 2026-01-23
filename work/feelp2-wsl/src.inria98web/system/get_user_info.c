@@ -11,10 +11,15 @@
  *
  */
 
+#define _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
+#include "system.h"
 
 #ifdef MSDOS
 #include <time.h>

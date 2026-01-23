@@ -20,12 +20,12 @@ static int     scalars;
 static char  **sc_from;
 static char  **sc_to;
 
-init_scalar_term_convert()
+void init_scalar_term_convert()
 {
     int i,ptr;
     Var *var_ptr;
 
-    char *buf[BUFSIZ];
+    char buf[BUFSIZ];    /* bug fixed on 2026/01/23 */
 
     scalars  = how_many_int_vars();
     scalars += how_many_double_vars();
