@@ -10,6 +10,7 @@
 
 #include "../feel_def/feel_def.h"
 #include "../system/system.h"
+#include "../feel_def/feel_msg.h" /* modernize 2026/01/23 */
 #include "mesh_comp.h"
 #include "../geom2d/geom2d.h"
 

@@ -11,9 +11,10 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
-FEEL_FreeMemory( cp )
-   char *cp;
+void FEEL_FreeMemory( cp )
+   void *cp;
 {      
     free(cp);
     return;

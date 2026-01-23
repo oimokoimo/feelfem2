@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include "../scheme_comp/scheme_comp.h"
+#include "../system/system.h"
 
 
 label_fort77(fp,label_ptr)

@@ -13,6 +13,11 @@
 /*[FEM_dx,FEM_dy,FEM_grad]
  *
  */
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "../feel_def/feel_msg.h"
 void NotFEMvariableError( var_name, module_name)
      char *var_name;
      char *module_name;

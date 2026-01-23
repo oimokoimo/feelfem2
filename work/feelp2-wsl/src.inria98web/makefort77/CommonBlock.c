@@ -6,9 +6,10 @@
 
 #include <stdio.h>
 
+#include "../system/system.h"
 #include "../parallel/parallel.h"
 
-CommonBlock( fp )
+void CommonBlock( fp )
      FILE *fp;
 {
 /*

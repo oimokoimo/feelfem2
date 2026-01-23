@@ -11,7 +11,7 @@
  */
 
 
-tolower( buf )
+void tolower_buf( buf )
      char *buf;
 {
     while(*buf) {

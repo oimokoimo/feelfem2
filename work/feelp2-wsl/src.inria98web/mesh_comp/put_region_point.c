@@ -9,10 +9,13 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "mesh_comp.h"
 
-put_region_point(region_ptr)
+void store_region_name_in_point_st(char *,char *);
+
+void put_region_point(region_ptr)
      Region *region_ptr;
 {
     int i,j;
@@ -28,7 +31,7 @@ put_region_point(region_ptr)
 }
 
 
-store_region_name_in_point_st(point_name,region_name)
+void store_region_name_in_point_st(point_name,region_name)
      char *point_name;
      char *region_name;
 {

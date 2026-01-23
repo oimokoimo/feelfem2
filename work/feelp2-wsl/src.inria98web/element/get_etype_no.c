@@ -12,6 +12,9 @@
 #include "../feel_def/feel_def.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
+#include "../feel_def/feel_msg.h"
+
+int yylineno_info();
 
 int get_etype_no( s )  /* 要素形状の文字列から要素タイプ番号に変換 */
      char *s;

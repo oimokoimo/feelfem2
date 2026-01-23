@@ -25,7 +25,7 @@ static int open_files=0; /* データファイルの数     */
 static int nsolve_max_edat;  /* solve文に使う最大edat番号
 				(feel_exec_main,make_feel_dat_fileにて使用 */
 
-init_data_number()
+void init_data_number()
 {
    /* do nothing */
 

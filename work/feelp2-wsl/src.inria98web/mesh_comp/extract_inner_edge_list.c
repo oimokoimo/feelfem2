@@ -11,6 +11,7 @@
  */
 #include "../feel_def/feel_def.h"
 #include "../system/system.h"
+#include "../feel_def/system.h"  /* modernize 2026/01/23 */
 #include "mesh_comp.h"
 
 int extract_inner_edge_list( s , compos)

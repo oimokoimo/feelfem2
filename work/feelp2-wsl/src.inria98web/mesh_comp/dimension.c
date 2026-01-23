@@ -11,6 +11,7 @@
  */
 #include "../feel_def/feel_def.h"
 #include "../system/system.h"
+#include "../feel_def/feel_msg.h"
 
 static int dim = DEFAULT_DIMENSION;
 extern int feel_dim;

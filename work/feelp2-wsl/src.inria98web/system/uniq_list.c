@@ -13,6 +13,8 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
+#include "system.h"
 
 static char *uniq_item[MAX_UNIQ_ITEMS];
 static int   uniq_items;

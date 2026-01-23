@@ -11,6 +11,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 FEEL_FreeMemory( cp )
    char *cp;

@@ -1,5 +1,7 @@
 #include <stdio.h>
-strindex(s,c)
+#include <string.h>
+
+int strindex(s,c)
 char s[],c[];
 {
 	int slen,clen,i,j;

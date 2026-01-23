@@ -17,7 +17,7 @@
 
 int not_implemented = 0;
 
-NotImplement( s )
+void NotImplement( s )
      char *s;
 {
     

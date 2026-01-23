@@ -11,6 +11,7 @@
  */
 
 #include <stdio.h>
+#include "system.h"
 
 #define STRESS  fprintf(stderr,"%c[5m",27)
 #define NORMAL  fprintf(stderr,"%c[0m",27)

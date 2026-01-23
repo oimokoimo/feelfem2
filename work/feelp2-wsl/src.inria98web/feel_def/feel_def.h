@@ -13,7 +13,7 @@
 #endif
 
 
-#define DEBUG
+/* #define DEBUG */
 #ifdef DEBUG
 
 #define DBGWRT  printf

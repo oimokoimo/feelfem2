@@ -10,8 +10,11 @@
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
 #include "../parallel/parallel.h"
+#include "../system/system.h"
 
-CopyRight( fp )
+void ParallelCopyRight(FILE *);
+
+void CopyRight( fp )
      FILE *fp;
 {
     fprintf(fp,"c ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -23,7 +26,7 @@ CopyRight( fp )
     return;
 }
 
-ParallelCopyRight( fp )
+void ParallelCopyRight( fp )
      FILE *fp;
 {
     fprintf(fp,"* Parallel Version (Cenju-3/MPI)\n");

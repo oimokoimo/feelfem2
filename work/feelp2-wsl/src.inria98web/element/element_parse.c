@@ -21,6 +21,16 @@
 
 static int elements = 0;  /* element文の数 */
 static Element *element[MAX_ELEMENT];
+void reduce_fraction(Frac *); 
+int tri_node_order(Frac,Frac,int,Frac,Frac,int);
+int rect_node_order(Frac,Frac,int,Frac,Frac,int);
+int line_node_order(Frac,int,Frac,int);
+
+int tri_node_cordinate_check(Frac,Frac);
+int rect_node_cordinate_check(Frac,Frac);
+int line_node_cordinate_check(Frac);
+
+void element_order(int etype , int basis, Frac r[],Frac s[],Frac t[],int ntype[],Expression *expr[]);
 
 /*--------- 構文解析中のスタック用配列----------*/
 static  int basis;
@@ -51,7 +61,6 @@ static  char  *restrain_fem_var_type[MAX_RESTRAINS];
 static  int    frac_stacks = 0;     /* 座標スタック */
 static  Frac   frac_stack[3];
 
-void FEEL_FreeMemory(char *);
 #include "../feel_def/feel_msg.h"
 int element_etype_no(char *);
 int get_etype_no(char *);

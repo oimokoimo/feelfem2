@@ -14,14 +14,17 @@
 
 #include "../feel_def/feel_def.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
+#include "../feel_def/feel_msg.h"    /* modernize 2026/01/23 */
 #include "../system/system.h"
 #include "mesh_comp.h"
 
 
 static Line *line[MAX_LINES];
 static int   lines = 0;
+int get_mesh_name_type_by_name( char *);
+void store_mesh_name(char *, int);
 
-line_st(points)
+void line_st(points)
      int points;
 {
     int i;
@@ -55,7 +58,7 @@ line_st(points)
 
 
     if(get_mesh_name_type_by_name( line[lines]->name)) {
-	SystemError_s("line name %s is already defined for other object's name.");
+	SystemError_s("line name %s is already defined for other object's name.",line[lines]->name);
     }
     store_mesh_name( line[lines]->name , MESH_LINE );
     

@@ -11,6 +11,8 @@
  */
 
 #include <stdio.h>
+#include "system.h"
+#include "../feel_def/feel_msg.h"
 
 static FILE *feel_fp = NULL;
 extern int   one_file;
