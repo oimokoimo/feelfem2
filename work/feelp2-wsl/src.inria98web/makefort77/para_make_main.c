@@ -14,6 +14,8 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
+#include "main.h"
+
 
 #include <stdio.h>
 #include "MainProgram.h"

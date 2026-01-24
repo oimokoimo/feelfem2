@@ -22,6 +22,7 @@
  */      
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -32,7 +33,7 @@ static int outer_edge_points;
 static int inner_edge_points;
 static int isolate_points;
 
-point_check_order()
+void point_check_order()
 {
     int i,j,k,l;
 

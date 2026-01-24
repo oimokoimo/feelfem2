@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "mpi_util.f"
-lib_mpi_util()
+void lib_mpi_util()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

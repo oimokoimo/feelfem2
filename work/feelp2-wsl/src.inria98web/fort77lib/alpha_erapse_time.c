@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "alpha_erapse_time.f"
-lib_alpha_erapse_time()
+void lib_alpha_erapse_time()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

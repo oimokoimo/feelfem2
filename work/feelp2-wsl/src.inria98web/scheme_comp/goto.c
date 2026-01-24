@@ -10,10 +10,11 @@
  *
  */
 
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "scheme_comp.h"
 
-Goto_st() 
+void Goto_st() 
 {
     Goto *goto_struct;
 

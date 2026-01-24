@@ -19,6 +19,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -26,7 +27,13 @@
 #include "../var_comp/var_comp.h"
 #include "../element/element.h"
 
-make_fem_varinfo()
+int local_element_no1D(Frac r,ElemDat *elem_dat_ptr);
+int local_element_no2D(Frac r,Frac s,ElemDat *elem_dat_ptr);
+int local_element_po2D(int local_no,char *var_name,int ntype,ElemDat *elem_dat_ptr);
+int local_element_po1D(int local_no,char *var_name,int ntype,ElemDat *elem_dat_ptr);
+int frac_neq(Frac a ,Frac b);
+
+void make_fem_varinfo()
 {
     int i,j,k,l;
 
@@ -534,6 +541,7 @@ int local_element_po2D(local_no,var_name,ntype,elem_dat_ptr)
     }
 
     SystemAbort("指定自由度がElemDat構造体に登録されていない(local_element_po2D(make_fem_varinfo)");
+    return -1;
 
 }
 

@@ -13,12 +13,17 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../parallel/parallel.h"
 #include "../system/system.h"
 
 #include "solve_comp.h"
 #include "../mesh_comp/mesh_comp.h"
+
+#include "solve_comp_funcs.h"
+
+int assign_subdomain_edatno( int subdomain_no, int edat_no);
 
 static   int subdomain_patterns = 0;
 static   int subdomain_pattern[MAX_SUBDOMAINS][3];

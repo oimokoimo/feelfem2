@@ -12,12 +12,19 @@
 
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
-#include "../scheme_comp/scheme_comp.h"
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "../parallel/parallel.h"
+#include "scheme.h"
 
+void select_PE0(fp)
+     FILE *fp;
+{
+    fprintf(fp,"      if(p_rank .EQ. 0) then\n");
+    return;
+}
 
-main_scheme(fp)
+void main_scheme(fp)
      FILE *fp;
 {
     int i;
@@ -201,11 +208,5 @@ main_scheme(fp)
 }
 
 
-select_PE0(fp)
-     FILE *fp;
-{
-    fprintf(fp,"      if(p_rank .EQ. 0) then\n");
-    return;
-}
 
     

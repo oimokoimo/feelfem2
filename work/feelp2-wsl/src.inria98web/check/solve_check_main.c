@@ -19,6 +19,7 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
+#include "check.h"
 
 void solve_check_main()
 {

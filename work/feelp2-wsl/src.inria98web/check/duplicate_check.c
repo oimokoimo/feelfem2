@@ -11,18 +11,20 @@
  *              
  */
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
+#include "../system/system.h"
 
 static int words = 0;
 static char *word[DUPLICATE_CHECK];
 
-duplicate_init()
+void duplicate_init()
 {
     words = 0;
 
     return;
 }
 
-duplicate_push( name )
+void duplicate_push( name )
      char *name;
 {
     if(words == DUPLICATE_CHECK) {
@@ -41,7 +43,7 @@ duplicate_push( name )
     return;
 }
 
-is_duplicate( name )
+int is_duplicate( name )
      char *name;
 {
     int i;
@@ -66,6 +68,4 @@ is_duplicate( name )
 
     return(YES);
 }
-
-
 

@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../scheme_comp/scheme_comp.h"
 #include "../system/system.h"
 

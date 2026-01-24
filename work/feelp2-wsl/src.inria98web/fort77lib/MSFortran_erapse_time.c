@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "MSFortran_erapse_time.f"
-lib_MSFortran_erapse_time()
+void lib_MSFortran_erapse_time()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

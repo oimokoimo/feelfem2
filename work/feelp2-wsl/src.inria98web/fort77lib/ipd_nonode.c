@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "ipd_nonode.f"
-lib_ipd_nonode()
+void lib_ipd_nonode()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

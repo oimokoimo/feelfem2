@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "f_free.f"
-lib_f_free()
+void lib_f_free()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

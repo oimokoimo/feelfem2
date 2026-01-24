@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "diskio.f"
-lib_diskio()
+void lib_diskio()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

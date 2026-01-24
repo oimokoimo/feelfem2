@@ -14,7 +14,7 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
-lib_iris_cptime()
+void lib_iris_cptime()
 {
     FILE *fp;
     StoreMakefile("cptime.c",SYSTEM_LIBRARY);

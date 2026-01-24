@@ -15,7 +15,7 @@
 #include "../system/system.h"
 
 
-frac_neq( a , b)
+int frac_neq( a , b)
      Frac a,b;
 {
     if(a.bunsi * b.bunbo  != b.bunsi * a.bunbo ) {

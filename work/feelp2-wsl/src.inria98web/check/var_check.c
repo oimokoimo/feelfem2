@@ -20,9 +20,11 @@
 #include <stdio.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../var_comp/var_comp.h"
 #include "../system/system.h"
 
+int register_var_name(Var *var_ptr);
 /*----------------------------------------------------------------*/
 
 typedef struct {      /* 変数名検査用構造体 */
@@ -158,7 +160,7 @@ char fort77_mark[] = {
  *  var_check構造体配列に変数名、種別を登録し、多重定義を発見する
  */
 
-var_register()
+void var_register()
 {
     int i,j,k;
     int max;
@@ -241,7 +243,7 @@ var_register()
 	var_ptr = get_nth_ewise_ptr(i);
 	if(register_var_name(var_ptr)) {
 	    if(english_mesg) {
-		SystemError_s("Variable %s is multiply declared.");
+		SystemError_s("Variable %s is multiply declared.",var_ptr->name);
 	    }
 	    else {
 		SystemError_s("変数 %s は多重定義している",var_ptr->name);
@@ -261,7 +263,7 @@ var_register()
  *
  *  名称を小文字に変換して記録する
  *------------------------------------*/
-register_var_name(var_ptr)
+int register_var_name(var_ptr)
      Var *var_ptr;
 {
     int i;
@@ -303,7 +305,7 @@ register_var_name(var_ptr)
  *  変数名がfeel,fortranの予約語になっていないかどうかを調べる。
  */
 
-var_reserved_check()
+void var_reserved_check()
 {
     int i,j;
     char name[BUFSIZ];
@@ -392,7 +394,7 @@ var_reserved_check()
 }
 
 /* 微分作用素かどうかの検査 */
-is_diff_op( name )
+int is_diff_op( name )
      char *name;
 {
     int i;
@@ -406,7 +408,7 @@ is_diff_op( name )
 
 /* FORTRANの組み込み関数かどうかのチェック */
 
-is_fort77_func( name ) 
+int is_fort77_func( name ) 
      char *name;
 {
     int j;
@@ -420,7 +422,7 @@ is_fort77_func( name )
 
 /* FORTRANのキーワードかどうかのチェック */
 
-is_fort77_keyword( name ) 
+int is_fort77_keyword( name ) 
      char *name;
 {
     int j;
@@ -432,7 +434,7 @@ is_fort77_keyword( name )
     return(NO);
 }
 
-is_feel_system_var( name )
+int is_feel_system_var( name )
      char *name;
 {
     int j;
@@ -444,7 +446,7 @@ is_feel_system_var( name )
     return(NO);
 }
 
-is_feel_test_var( name )
+int is_feel_test_var( name )
      char *name;
 {
     int j;

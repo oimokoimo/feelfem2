@@ -15,10 +15,13 @@
 #include <stdlib.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../parallel/parallel.h"
 #include "../var_comp/var_comp.h"
 #include "../system/system.h"
+
+#include "avs.h"
 
 extern char *AVSExpress_dir;
 extern char *current_dir;

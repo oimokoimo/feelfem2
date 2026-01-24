@@ -10,12 +10,16 @@
  *              
  */
 
+#include <string.h>
+
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 
 #include "../system/system.h"
 #include "../scheme_comp/scheme_comp.h"
 
+#include "avs.h"
 
 static char *avsnetwork_item[] = {
   "isoline",
@@ -57,6 +61,7 @@ static int get_avsnetwork_member_no( name )
        strlen(name)==strlen(avsnetwork_item[i]) ) return(i);
   }
   SystemAbort("Inner Error in get_avsnetwork_member_no");
+  return -1;
 }
 
 

@@ -11,10 +11,16 @@
 #include <stdio.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../var_comp/var_comp.h"
 #include "../system/system.h"
 
+#include "check.h"
 
+void store_fem_type_2_var( char *name , FEM_type *fem_type_ptr );
+void store_fem_type_2_var_add(char *name ,FEM_type *fem_type_ptr );
+void store_ewise_type_2_var( char *name , EWISE_type *ewise_type_ptr );
+void store_ewise_type_2_var_add( char *name , EWISE_type *ewise_type_ptr );
 /*  tree図
  *
  *  |-feel_data_check  [check.c]
@@ -24,7 +30,7 @@
  *  FEM_type,EWISE_type 構造体より FEM_var,EWISE_var構造体を作成する
  */
 
-var_fem_ewise_datmake()
+void var_fem_ewise_datmake()
 {
     int i,j,k;
     int no;

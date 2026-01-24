@@ -14,7 +14,9 @@
 #include "../system/system.h"
 #include "solve_comp.h"
 
-solve_dat_make_main()
+#include "solve_comp_funcs.h"
+
+void solve_dat_make_main()
 {
     int i,j,k;
     int solves,domains;

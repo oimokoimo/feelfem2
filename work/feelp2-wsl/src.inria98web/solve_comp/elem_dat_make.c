@@ -21,14 +21,16 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 #include "solve_comp.h"
 #include "../var_comp/var_comp.h"
 #include "../element/element.h"
 
+#include "solve_comp_funcs.h"
 
-elem_dat_make_main(solve_ptr,solve_element_ptr, elem77_ptr)
+void elem_dat_make_main(solve_ptr,solve_element_ptr, elem77_ptr)
      Solve         *solve_ptr;
      SolveElement  *solve_element_ptr;
      ElementFORT77 *elem77_ptr;

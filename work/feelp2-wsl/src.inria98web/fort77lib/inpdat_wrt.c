@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "inpdat_wrt.f"
-lib_inpdat_wrt()
+void lib_inpdat_wrt()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

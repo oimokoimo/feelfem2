@@ -11,6 +11,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -20,6 +21,7 @@ static int avsoutputs = 0;
 static AVSoutput *avsoutput_ptr[MAX_AVSOUTPUT];
 
 char *get_nth_uniq_item();
+int get_nth_avsoutput_parameters( int n );
 
 void AVSoutput_st(parameters)
      int parameters;

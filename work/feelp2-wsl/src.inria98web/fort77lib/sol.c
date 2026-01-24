@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "sol.f"
-lib_sol()
+void lib_sol()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

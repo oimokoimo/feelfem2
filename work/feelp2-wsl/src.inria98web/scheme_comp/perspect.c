@@ -10,7 +10,9 @@
  *              
  */
 
+#include <stdlib.h>
 
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "scheme_comp.h"
 
@@ -20,7 +22,7 @@ Perspect_st()
     Perspect *perspect_struct;
 
     var = PopString();
-    UseLibrary( PERSPECT );
+    UseLibrary( PERSPECT ,NULL);
 
     perspect_struct = (Perspect *)FEEL_GetMemory( sizeof(Perspect) );
 
@@ -77,7 +79,7 @@ void Perspect_st_with_setting(settings)
     xmin_flag = ymin_flag = xmax_flag = ymax_flag = NO;
     umin_flag = umax_flag = NO;
 
-    UseLibrary( PERSPECT );
+    UseLibrary( PERSPECT ,NULL);
 
     perspect_struct = (Perspect *)FEEL_GetMemory( sizeof(Perspect) );
 
@@ -104,7 +106,7 @@ void Perspect_st_with_setting(settings)
 	if(streq(key,"winsiz")) {
 	    winsiz = atoi(num);
 	    if(winsiz <= 0 || winsiz > 2000) {
-		SystemWarning_yy("perspect文での画面サイズ不正");
+		SystemWarning_yy("perspect文での画面サイズ不正",yylineno_info());
 	    }
 	    perspect_struct -> winsiz = winsiz;
 	    continue;		

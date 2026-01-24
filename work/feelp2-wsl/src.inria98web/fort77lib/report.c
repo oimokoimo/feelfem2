@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "report.f"
-lib_report()
+void lib_report()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

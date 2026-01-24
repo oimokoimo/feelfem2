@@ -28,9 +28,12 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 #include "solve_comp.h"
+
+int get_new_edatno();
 
 static int edats = 0;               /* メッシュ生成の為の要素節点データ数 */
 

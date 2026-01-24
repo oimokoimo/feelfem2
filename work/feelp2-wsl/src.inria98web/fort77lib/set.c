@@ -17,7 +17,7 @@
 
 #define FILENAME "set.f"
 
-lib_set()
+void lib_set()
 {
     FILE *fp;
 

@@ -15,6 +15,7 @@
 
 #include "../system/system.h"
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../parallel/parallel.h"
 
 make_feel_fort77()

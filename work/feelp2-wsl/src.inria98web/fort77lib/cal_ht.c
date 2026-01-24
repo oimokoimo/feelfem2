@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "cal_ht.f"
-lib_cal_ht()
+void lib_cal_ht()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);
