@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "get_inset.f"
-lib_get_inset()
+void lib_get_inset()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

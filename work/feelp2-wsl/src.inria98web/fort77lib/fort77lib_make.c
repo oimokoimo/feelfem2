@@ -16,9 +16,11 @@
 
 #include "../parallel/parallel.h"
 
+#include "fort77lib.h"
+
 /* この関数はライブラリをソースファイルとして出力する時の為のもの */
 
-fort77lib_make()
+void fort77lib_make()
 {
     /* LIMIT_FILE の検査は各lib_XXXルーチンで行う。
        これは、StoreMakefileを実行する為である      */

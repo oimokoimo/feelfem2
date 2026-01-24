@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "scal.f"
-lib_scal()
+void lib_scal()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

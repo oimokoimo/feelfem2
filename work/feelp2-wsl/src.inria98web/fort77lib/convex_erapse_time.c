@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "convex_erapse_time.f"
-lib_convex_erapse_time()
+void lib_convex_erapse_time()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

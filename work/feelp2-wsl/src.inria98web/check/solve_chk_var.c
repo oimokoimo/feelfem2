@@ -30,6 +30,7 @@
 
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 #include "../solve_comp/solve_comp.h"
@@ -451,10 +452,10 @@ solve_chk_var()
 
 		    if(neumann_args == MAX_NEUMANN_ARGS) {
 			if(english_mesg) {
-			    SystemError_yy_s("There are too many boundary temporary variables.",equation_ptr->yylineno);
+			    SystemError_yy("There are too many boundary temporary variables.",equation_ptr->yylineno);
 			}
 			else {
-			    SystemError_yy_s("境界積分項での仮変数または未定義変数が多すぎる",equation_ptr->yylineno);
+			    SystemError_yy("境界積分項での仮変数または未定義変数が多すぎる",equation_ptr->yylineno);
 			}
 
 

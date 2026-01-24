@@ -42,16 +42,23 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "../mesh_comp/mesh_comp.h"
 #include "solve_comp.h"
 
+#include "solve_comp_funcs.h"
+
 static ElemDat *domain_elem_dat[MAX_DOMAINS];
 static int      save_domains = 0;
 
 extern int      feel_dim;
+
+void mesh_exec_1D(ElemDat *mesh_elem_dat_ptr);
+void mesh_book_exec(ElemDat *mesh_elem_dat_ptr);
+void mesh_bamg_exec(ElemDat *mesh_elem_dat_ptr);
 
 void make_mesh_ctrl_data()
 {

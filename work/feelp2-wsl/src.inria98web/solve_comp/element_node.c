@@ -16,6 +16,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -39,7 +40,7 @@ static int   order[MAX_NODES_PER_ELEMENT];
 static int   basic_shape_type;
 static char *domain_name;
 
-store_element_node_init( name,etype )
+void store_element_node_init( name,etype )
      char *name;  /* 領域名 */
      int etype;
 {
@@ -67,7 +68,7 @@ store_element_node_init( name,etype )
     return;
 }
 
-store_element_node(ra,sa,ta,name,type,free_flag)
+void store_element_node(ra,sa,ta,name,type,free_flag)
      Frac ra,sa,ta;    /* 節点座標値 */
      char *name;       /* 未知変数名 */
      int   type;       /* 未知変数種 */

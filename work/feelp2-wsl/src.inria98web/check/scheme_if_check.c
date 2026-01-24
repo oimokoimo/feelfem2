@@ -13,13 +13,18 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "../scheme_comp/scheme_comp.h"
 
+#include "check.h"
+
 
 static char *sc_name_buf[MAX_VARIABLES];
+
+void if_expression_check(IFblock *if_ptr,Expression *left,Expression *right);
 
 void scheme_if_check()
 {
@@ -154,7 +159,7 @@ int is_scalar_var( name )
 }
 
 
-if_expression_check(if_ptr,left,right)
+void if_expression_check(if_ptr,left,right)
      IFblock *if_ptr;
      Expression *left,*right;
 {

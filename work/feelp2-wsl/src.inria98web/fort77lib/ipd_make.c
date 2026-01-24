@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "ipd_make.f"
-lib_ipd_make()
+void lib_ipd_make()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

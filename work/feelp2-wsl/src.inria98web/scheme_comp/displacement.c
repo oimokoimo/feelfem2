@@ -10,7 +10,10 @@
  *              
  */
 
+#include <stdlib.h>
+
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -21,7 +24,7 @@ void Displacement_st()
     char    *u_var,*v_var;
     Displacement *displacement_struct;
 
-    UseLibrary( DISPLACEMENT );
+    UseLibrary( DISPLACEMENT ,NULL);
 
     v_var = PopString();
     u_var = PopString();
@@ -87,7 +90,7 @@ void Displacement_st_with_setting(settings)
     xmin_flag = ymin_flag = xmax_flag = ymax_flag = NO;
     umin_flag = umax_flag = NO;
 
-    UseLibrary( DISPLACEMENT );
+    UseLibrary( DISPLACEMENT ,NULL);
 
     displacement_struct = (Displacement *)FEEL_GetMemory( sizeof(Displacement) );
 
@@ -122,7 +125,7 @@ void Displacement_st_with_setting(settings)
 	if(streq(key,"winsiz")) {
 	    winsiz = atoi(num);
 	    if(winsiz <= 0 || winsiz > 2000) {
-		SystemWarning_yy("displacement文での画面サイズ不正");
+		SystemWarning_yy("displacement文での画面サイズ不正",yylineno_info());
 	    }
 	    displacement_struct -> winsiz = winsiz;
 	    continue;		

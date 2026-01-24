@@ -13,8 +13,11 @@
  *              データを完成させるルーチン群である。
  */
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
+
+#include "check.h"
 
 
 void feel_data_check()         /* checkする各項目について対応する関数名を列挙する */

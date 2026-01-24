@@ -13,6 +13,7 @@
 #include "../system/system.h"
 #include "scheme_comp.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
+#include "../feel_def/feel_msg.h"    /* modernize 2026/01/24 */
 
 
 static int write_args = 0;
@@ -29,7 +30,7 @@ static Write *fwrite_ptr_buf[MAX_SCHEMES];
 static int   file_writes=0;
 
 
-Write_parse_init()
+void Write_parse_init()
 {
     write_args = 0;
     write_exprs = 0;
@@ -38,7 +39,7 @@ Write_parse_init()
     return;
 }
 
-File_Write_parse_init()
+void File_Write_parse_init()
 {
     write_args = 0;
     write_exprs = 0;
@@ -48,7 +49,7 @@ File_Write_parse_init()
 }
 
 
-Write_st()
+void Write_st()
 {
     int i;
     Write *write_struct;
@@ -96,7 +97,7 @@ Write_st()
 }
 
 
-File_Write_st()
+void File_Write_st()
 {
     int i;
     Write *write_struct;
@@ -165,7 +166,7 @@ File_Write_st()
     return;
 }
 
-write_st_expression()
+void write_st_expression()
 {
     
     if(write_args == MAX_RW_ARGS) {
@@ -184,7 +185,7 @@ write_st_expression()
     return;
 }
 
-write_st_string()
+void write_st_string()
 {
     if(write_args == MAX_RW_ARGS) {
 	pop();

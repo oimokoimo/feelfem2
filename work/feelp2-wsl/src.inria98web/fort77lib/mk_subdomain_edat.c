@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "mk_subdomain_edat.f"
-lib_mk_subdomain_edat()
+void lib_mk_subdomain_edat()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

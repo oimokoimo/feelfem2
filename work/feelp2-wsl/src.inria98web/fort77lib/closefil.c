@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "closefil.f"
-lib_closefil()
+void lib_closefil()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

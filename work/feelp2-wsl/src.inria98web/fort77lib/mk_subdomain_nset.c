@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "mk_subdomain_nset.f"
-lib_mk_subdomain_nset()
+void lib_mk_subdomain_nset()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

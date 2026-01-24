@@ -12,9 +12,10 @@
 
 #include "../system/system.h"
 #include "scheme_comp.h"
+#include "../feel_def/feel_msg.h"
 
 
-AVScontour_st() 
+void AVScontour_st() 
 {
     char    *var;
     AVScontour *AVScontour_struct;

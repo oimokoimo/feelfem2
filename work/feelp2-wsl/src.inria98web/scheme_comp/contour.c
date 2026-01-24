@@ -10,7 +10,10 @@
  *              
  */
 
+#include <stdlib.h>
+
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -21,7 +24,7 @@ void Contour_st()
     char    *var;
     Contour *contour_struct;
 
-    UseLibrary( CONTOUR );
+    UseLibrary( CONTOUR ,NULL);
 
     var = PopString();
 
@@ -84,7 +87,7 @@ void Contour_st_with_setting(settings)
     xmin_flag = ymin_flag = xmax_flag = ymax_flag = NO;
     umin_flag = umax_flag = NO;
 
-    UseLibrary( CONTOUR );
+    UseLibrary( CONTOUR ,NULL);
 
     contour_struct = (Contour *)FEEL_GetMemory( sizeof(Contour) );
 

@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "f_alloc.f"
-lib_f_alloc()
+void lib_f_alloc()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

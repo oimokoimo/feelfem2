@@ -11,6 +11,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "scheme_comp.h"
 
 static int   schemes = 0;
@@ -22,7 +23,7 @@ static Scheme scheme[MAX_SCHEMES];
  
 void store_scheme( type , ptr )
      int   type;                   /* スキームタイプ */
-     char *ptr;                    /* 構造体へのポインタ */
+     void *ptr;                    /* 構造体へのポインタ */
 {
 
     if(schemes == MAX_SCHEMES -1 ) {

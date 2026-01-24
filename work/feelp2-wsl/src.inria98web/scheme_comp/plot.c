@@ -10,8 +10,10 @@
  *              ２番目はline名
  *              ３番目以降が変数データ名
  */
+#include <stdlib.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
@@ -196,7 +198,7 @@ void Xplot_st_with_setting(parameters,settings)
 	if(streq(key,"winsiz")) {
 	    winsiz = atoi(num);
 	    if(winsiz <= 0 || winsiz > 2000) {
-		SystemWarning_yy("xplot文での画面サイズ不正");
+		SystemWarning_yy("xplot文での画面サイズ不正",yylineno_info());
 	    }
 	    winsiz_flag = YES;
 	    continue;		

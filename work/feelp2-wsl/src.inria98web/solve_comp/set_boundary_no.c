@@ -17,6 +17,8 @@
 #include "../system/system.h"
 
 #include "../solve_comp/solve_comp.h"
+#include "solve_comp_funcs.h"
+
 
 
 void set_boundary_no()

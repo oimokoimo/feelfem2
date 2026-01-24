@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "make_KLD.f"
-lib_make_KLD()
+void lib_make_KLD()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

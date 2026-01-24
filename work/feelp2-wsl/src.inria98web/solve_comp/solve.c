@@ -12,12 +12,15 @@
 
 #include <stdio.h>
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/pop.h"    /* modernize 2026/01/21 */
 #include "../system/system.h"
 #include "../scheme_comp/scheme_comp.h"
 #include "solve_comp.h"
 
 #include "../parallel/parallel.h"
+
+void Make_SolveElement();
 
 static int    solves = 0;         /* solve文のcounter  
 				     【注意】０にここで初期化 */
@@ -86,7 +89,7 @@ static NeumannData *neumann_data[MAX_BCONDS];     /* ノイマン条件記録用   */
  *   solve文構文解析の開始ルーチン
  */
 
-solve_parse_init()
+void solve_parse_init()
 {
     elemg     = 0;           /* 要素グループの数＝domaiの数 */
     equations = 0;           /* 方程式の数 */
@@ -136,7 +139,7 @@ solve_parse_init()
  *  未知変数の登録 
  */
 
-p_solve_unknowns( parameters )
+void p_solve_unknowns( parameters )
      int parameters;
 {
     int i;
@@ -158,7 +161,7 @@ p_solve_unknowns( parameters )
  *   標準で使用する数値積分法の指定
  */
 
-p_solve_quadrature_method()
+void p_solve_quadrature_method()
 {
     quad_method = PopString();   /* これはSolveElement構造体に指定 */
 
@@ -168,7 +171,7 @@ p_solve_quadrature_method()
 /*
  *   境界積分のガウス数値積分点数の構文解釈
  */
-p_solve_boundary_quadrature()
+void p_solve_boundary_quadrature()
 {
     boundary_gauss_points = PopInt(); /* 数値積分点数 */
     if(boundary_gauss_points <1 || boundary_gauss_points >MAX_GAUSS_POINTS) {
@@ -189,7 +192,7 @@ p_solve_boundary_quadrature()
 /*
  *   アイソパラメトリック要素の指定
  */
-p_solve_isoparametric()
+void p_solve_isoparametric()
 {
     isoparametric = YES;
 
@@ -315,7 +318,7 @@ void p_solve_symmetry()
  *   領域の指定 
  */
 
-p_solve_domain()
+void p_solve_domain()
 {
     char *domain_name;
 
@@ -374,7 +377,7 @@ p_solve_domain()
  *   領域の指定 
  */
 
-p_solve_subdomain()
+void p_solve_subdomain()
 {
     char *subdomain_name;
     subdomain_name = PopString();
@@ -386,7 +389,7 @@ p_solve_subdomain()
  *  連立一次方程式解法の指定
  */ 
 
-p_solve_linear_method()
+void p_solve_linear_method()
 {
     if(linear_method != NULL) {
 	if(english_mesg) {
@@ -497,7 +500,7 @@ p_solve_linear_method()
 /*
  *   試験関数の設定
  */
-p_solve_test_function()
+void p_solve_test_function()
 {
     if( test_function != NULL ) {
 
@@ -521,7 +524,7 @@ p_solve_test_function()
 /*
  *  領域積分項の設定(数値積分法はなし)
  */
-p_solve_expression()
+void p_solve_expression()
 {
     if(eq_expressions == MAX_EQUATION_TERMS) {
 
@@ -547,7 +550,7 @@ p_solve_expression()
 /*
  *  境界積分項(数値積分法は指定されていない)
  */
-p_solve_boundary_term()
+void p_solve_boundary_term()
 {
     if(bd_expressions == MAX_EQUATION_TERMS) {
 
@@ -574,7 +577,7 @@ p_solve_boundary_term()
 /*
  *  数値積分法の指定付の領域積分項
  */
-p_solve_expression_with_quad_method()
+void p_solve_expression_with_quad_method()
 {
     if(eq_expressions == MAX_EQUATION_TERMS) {
 	
@@ -600,7 +603,7 @@ p_solve_expression_with_quad_method()
 /*
  *  数値積分法の指定付の境界積分項
  */
-p_solve_boundary_term_with_quad_method()
+void p_solve_boundary_term_with_quad_method()
 {
     if(bd_expressions == MAX_EQUATION_TERMS) {
 
@@ -628,7 +631,7 @@ p_solve_boundary_term_with_quad_method()
  *  偏微分方程式が与えられた
  */
 
-p_EQ()
+void p_EQ()
 {
     int   i;
     Equation *eq_ptr;
@@ -724,7 +727,7 @@ p_EQ()
  *  弱形式が与えられた
  */
 
-p_WEQ(p_weq_type)
+void p_WEQ(p_weq_type)
      int p_weq_type;
 {
     int   i;
@@ -836,7 +839,7 @@ p_WEQ(p_weq_type)
 /*
  *  固有値問題が与えられた(P2では暫定的に、積分が二つあるweq問題として扱う)
  */
-p_EIGEN()
+void p_EIGEN()
 {
     if(equations != 0 ) {
 	if(eigen_problem == NO) {
@@ -859,7 +862,7 @@ p_EIGEN()
  *  汎関数の停留値問題が与えられた
  */
 
-p_FUNC()
+void p_FUNC()
 {
     int   i;
     Equation *eq_ptr;
@@ -961,7 +964,7 @@ p_FUNC()
 /* 
  *  ノイマン境界条件のデータ構造体作成
  */
-p_ncond_init()
+void p_ncond_init()
 {
     NeumannData *ptr;
 
@@ -988,7 +991,7 @@ p_ncond_init()
     return;
 }	
 
-p_ncond_arg()
+void p_ncond_arg()
 {
 
     if(nconds == MAX_BCONDS) {
@@ -1025,7 +1028,7 @@ p_ncond_arg()
     return;
 }
 
-p_ncond_edge(parameters)
+void p_ncond_edge(parameters)
      int parameters;
 {
     int i;
@@ -1081,7 +1084,7 @@ p_ncond_edge(parameters)
  * ディリクレ境界条件の処理 
  */
 
-p_dcond_var()
+void p_dcond_var()
 {
     DirichletData *ptr;
 
@@ -1108,7 +1111,7 @@ p_dcond_var()
     return;
 }
 
-p_dcond_expr()
+void p_dcond_expr()
 {
 
     if(dconds == MAX_BCONDS) {
@@ -1121,7 +1124,7 @@ p_dcond_expr()
     return;
 }
 
-p_dcond_edge(parameters)
+void p_dcond_edge(parameters)
      int parameters;
 {
     int i;
@@ -1153,7 +1156,7 @@ p_dcond_edge(parameters)
  *
  */
   
-Make_SolveElement()
+void Make_SolveElement()
 {
     int i;
     int type;
@@ -1269,7 +1272,7 @@ Make_SolveElement()
  *
  */ 
     
-p_solve_complete()
+void p_solve_complete()
 {
     int i;
     
@@ -1403,7 +1406,7 @@ p_solve_complete()
  *
  */
 
-how_many_solves()
+int how_many_solves()
 {
     return(solves);
 }

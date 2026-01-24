@@ -13,12 +13,15 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "../var_comp/var_comp.h"
 #include "../scheme_comp/scheme_comp.h"
 #include "../mesh_comp/mesh_comp.h"
+
+#include "check.h"
 
 void scheme_norm_check()
 {

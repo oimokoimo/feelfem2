@@ -11,6 +11,7 @@
 #include <stdio.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../var_comp/var_comp.h"
 #include "../element/element.h"
 #include "../system/system.h"

@@ -30,7 +30,7 @@ void MAX_norm()
 }
 
 
-Parse_norm( norm_type)
+void Parse_norm( norm_type)
      int norm_type;
 {
     Norm *norm_ptr;

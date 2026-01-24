@@ -10,7 +10,10 @@
  *              
  */
 
+#include <stdlib.h>
+
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -114,7 +117,7 @@ void Contour_file_st_with_setting(settings)
 	if(streq(key,"winsiz")) {
 	    winsiz = atoi(num);
 	    if(winsiz <= 0 || winsiz > 2000) {
-		SystemWarning_yy("contour文での画面サイズ不正");
+		SystemWarning_yy("contour文での画面サイズ不正",yylineno_info());
 	    }
 	    contour_struct -> winsiz = winsiz;
 	    continue;		

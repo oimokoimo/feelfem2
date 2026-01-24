@@ -10,7 +10,10 @@
  *              
  */
 
+#include <stdlib.h>
+
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -21,7 +24,7 @@ void Showvec_st()
     char    *var;
     Showvec *showvec_struct;
 
-    UseLibrary( SHOWVEC );
+    UseLibrary( SHOWVEC ,NULL);
 
 
     showvec_struct = (Showvec *)FEEL_GetMemory( sizeof(Showvec) );
@@ -81,7 +84,7 @@ void Showvec_st_with_setting(settings)
 
     xmin_flag = ymin_flag = xmax_flag = ymax_flag = NO;
 
-    UseLibrary( SHOWVEC );
+    UseLibrary( SHOWVEC ,NULL);
 
     showvec_struct = (Showvec *)FEEL_GetMemory( sizeof(Showvec) );
 
@@ -112,7 +115,7 @@ void Showvec_st_with_setting(settings)
 	if(streq(key,"winsiz")) {
 	    winsiz = atoi(num);
 	    if(winsiz <= 0 || winsiz > 2000) {
-		SystemWarning_yy("showvec文での画面サイズ不正");
+		SystemWarning_yy("showvec文での画面サイズ不正",yylineno_info());
 	    }
 	    showvec_struct -> winsiz = winsiz;
 	    continue;		

@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "ews4800_erapse_time.f"
-lib_ews4800_erapse_time()
+void lib_ews4800_erapse_time()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

@@ -9,9 +9,12 @@
  *              
  */
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../scheme_comp/scheme_comp.h"
 #include "../system/system.h"
 
+
+void rw_expr_check( Expression *expr , int type , int yylineno);
 
 void scheme_rw_avs_warning()
 {
@@ -125,7 +128,7 @@ void scheme_rw_check()
 
 
 
-rw_expr_check( expr , type , yylineno)
+void rw_expr_check( expr , type , yylineno)
      Expression *expr;
      int type;
      int yylineno;

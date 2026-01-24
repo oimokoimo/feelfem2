@@ -13,7 +13,7 @@
 #include "../feel_def/feel_def.h"
 #include "system.h"
 
-is_member( name , ptr , n)
+int is_member( name , ptr , n)
      char  *name;
      char **ptr;
      int    n;

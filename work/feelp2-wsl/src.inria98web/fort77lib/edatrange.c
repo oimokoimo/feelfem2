@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "edatrange.f"
-lib_edatrange()
+void lib_edatrange()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

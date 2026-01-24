@@ -45,6 +45,11 @@ extern char **get_exp_functions();
 extern int streq(char *,char *);
 extern int strindex(char *,char *);
 
+void print_yylineno();
+
+int yylineno_info();
+
+
 void ReverseDoubleArray(int n,double d[]);
 void FEEL_FreeMemory(void *);
 
@@ -88,6 +93,9 @@ void tolower_buf(char *);
 int how_many_int_vars();
 int how_many_double_vars();
 int how_many_const_vars();
+int how_many_material_vars();
+
+int how_many_plots();
 
 
 void InitMakeMakefile();
@@ -122,6 +130,7 @@ void set_boundary_no();
 void do_pre_to_inf();
 void make_mesh_ctrl_data(); 
 void rep_proc(char *);
+void rep_proc_no(char *,int);
 void mfMakeMakefile();
 int  current_edatno();
 
@@ -153,10 +162,82 @@ int get_var_kind(char *);
 
 int how_many_points();
 int how_many_solves();
-
+int how_many_schemes();
 
 int how_many_avs_variables();
 void put_nth_avs_feel_name_fp(FILE *fp,int i);
 void main_declare_scalar(FILE *fp);
 
 void file_write_open_fort77(FILE *fp);
+
+
+void store_scheme(int, void *);
+int get_new_window_id();
+
+void UseLibrary(int,char *);
+int  get_data_file_number();
+int get_new_file_window_id();
+
+
+void Parse_norm( int norm_type);
+
+void uniq_list_init();
+void put_uniq_name(char *);
+int how_many_uniq_items();
+int get_nth_avs_feel_var_type(int);
+
+int how_many_subdomains();
+int get_subdomain_NO_by_name(char *);
+
+int how_many_fem_vars();
+int how_many_ewise_vars();
+
+void data_initialize(); /* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿   */
+void system_default();  /* ¿¿¿¿¿¿¿¿¿¿¿¿¿       */
+void para_make_main();  /* ¿¿¿¿¿¿¿¿¿¿main program¿¿¿¿ */
+void make_main();       /* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿ */
+void make_avs_interface_routine(FILE *);
+void make_avs_output_routine(FILE *);
+void make_avs_coroutine(FILE *);
+void make_avs_def_file();
+void make_avs_network_file();
+void fort77lib_make();  /* ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿ */
+void make_solve_fort77();        /* solve_fort77 ¿¿¿¿¿¿¿¿¿¿¿¿¿ */
+
+int how_many_contour_files();
+int how_many_showvec_files();
+
+int get_midpoints();
+
+int how_many_adaptmesh();
+
+int how_many_elements();
+
+
+/* lisp_util*/
+void pre_to_inf_push(char *exp,char **save_adr);
+
+int how_many_ewise_types();
+int how_many_fem_types();
+int how_many_domains();
+int is_defined_quadrature( char *);
+int how_many_regions();
+int how_many_refine_points();
+int get_point_number_by_name(char *);
+
+int  point_nth_to_point_order_no( int no ); /* This is for bamg/refine statement */
+
+
+void duplicate_init();
+void duplicate_push(char *);
+int  is_duplicate(char *);
+
+int get_label_lineno(char *);
+int get_region_no_by_2names( char *region_name , char *domain_name );
+
+
+int get_new_nodesetno();
+
+int is_member( char * name , char **ptr ,int n);
+
+int get_fem_var_freedom_by_ND( char *var_name , char *domain_name );

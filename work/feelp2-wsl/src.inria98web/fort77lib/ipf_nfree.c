@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "ipf_nfree.f"
-lib_ipf_nfree()
+void lib_ipf_nfree()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

@@ -9,6 +9,8 @@
 #include "../system/system.h"
 #include "../feel_def/feel_def.h"
 
+#include "main.h"
+
 /* 並列版は、para_make_main.c にて作成する */
 /* AVS version is prcessed in this routine */
 

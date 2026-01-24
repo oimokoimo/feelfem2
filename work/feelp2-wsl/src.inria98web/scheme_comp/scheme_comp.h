@@ -23,7 +23,7 @@
 
 typedef struct _Scheme {
     int     type;          /* scheme文の種類 */
-    char   *ptr;           /* ポインタ       */
+    void   *ptr;           /* ポインタ       */
 } Scheme;
 
 

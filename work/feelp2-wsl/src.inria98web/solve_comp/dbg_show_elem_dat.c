@@ -11,12 +11,15 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "solve_comp.h"
 
-dbg_show_elem_dat( elem_dat_ptr )
+int etype_no_to_dimension( int no );
+
+void dbg_show_elem_dat( elem_dat_ptr )
      ElemDat *elem_dat_ptr;
 {
     int i,j;

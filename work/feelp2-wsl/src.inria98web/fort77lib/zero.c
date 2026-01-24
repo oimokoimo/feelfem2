@@ -15,7 +15,7 @@
 
 #define FILENAME "zero.f"
 
-lib_zero()
+void lib_zero()
 {
     FILE *fp;
 

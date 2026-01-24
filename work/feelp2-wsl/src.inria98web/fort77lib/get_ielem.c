@@ -7,7 +7,7 @@
 #include "../system/system.h"
 
 #define FNAME "get_ielem.f"
-lib_get_ielem()
+void lib_get_ielem()
 {
    FILE *fp;
    StoreMakefile(FNAME,SYSTEM_LIBRARY);

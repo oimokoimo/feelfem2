@@ -19,9 +19,6 @@ void NotImplement(char *);
 
 void FatalError(char *);
 
-void print_yylineno();
-
-int yylineno_info();
 
 void SystemError_s(char *,char *);
 void SystemError_yy(char *,int);
