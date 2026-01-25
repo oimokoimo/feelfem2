@@ -241,3 +241,32 @@ int get_new_nodesetno();
 int is_member( char * name , char **ptr ,int n);
 
 int get_fem_var_freedom_by_ND( char *var_name , char *domain_name );
+
+void LISP_SEND(FILE *fp, char *s);
+
+void LISP_SEND_d(FILE *fp, char *s, int d);
+
+void LISP_SEND_dd(FILE *fp, char *s, int d1, int d2);
+
+void LISP_SEND_ddd(FILE *fp, char *s, int d1, int d2, int d3);
+
+void LISP_SEND_s(FILE *fp, char *s, char *s1);
+
+void LISP_SEND_sd(FILE *fp, char *s, char *s1, int d1);
+
+void LISP_SEND_sds(FILE *fp, char *s, char *s1, int d1, char *s2);
+
+void LISP_SEND_sdsd(FILE *fp, char *s, char *s1, int d1, char *s2, int d2);
+
+char *make_list_st(char *buf , char *s );
+void end_list_st( char *buf );
+
+int get_quad_nodes_by_name( char *name );
+int get_ewise_nodes( char *name ,char *domain_name );
+
+void XYZ_in_subroutine(FILE *fp);
+void StoreDeletefile(char *);
+
+int geti_file(FILE *fp );
+void fgets_file( char *buf ,int size , FILE *fp ,char * from);
+

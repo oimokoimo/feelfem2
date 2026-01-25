@@ -18,7 +18,7 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
-make_test_funcs_vect( fp , funcs , freedom ,equations)
+void make_test_funcs_vect( fp , funcs , freedom ,equations)
      FILE *fp;
      char *funcs[];
      int   freedom[];

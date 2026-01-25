@@ -14,12 +14,15 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "../solve_comp/solve_comp.h"
 #include "../var_comp/var_comp.h"
 #include "../quadrature/quadrature.h"
+
+#include "solve_fort77_funcs.h"
 
 void make_ecal( solve_no, elem_no, solve_element_ptr  )
      int solve_no;

@@ -11,6 +11,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -164,11 +165,13 @@ void make_dcond_CG(solve_no,dcond_no,d_ptr)
 	from[terms] = "z";
 	to[terms]   = "z(ip)";
 	terms++;
+	/* fall through */
 
       case 2:
 	from[terms] = "y";
 	to[terms]   = "y(ip)";
 	terms++;
+	/* fall through */
 
       case 1:
 	from[terms] = "x";

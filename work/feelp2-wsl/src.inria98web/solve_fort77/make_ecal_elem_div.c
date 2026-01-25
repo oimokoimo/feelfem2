@@ -11,6 +11,9 @@
  *              
  */
 
+#include <string.h>
+#include <stdlib.h>
+
 #include "../feel_def/feel_def.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"

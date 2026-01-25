@@ -16,7 +16,7 @@
 #include "../solve_comp/solve_comp.h"
 #include "../system/system.h"
 
-make_collec_sol(solve_no,solve_element_ptr)
+void make_collec_sol(solve_no,solve_element_ptr)
      int solve_no;
      SolveElement *solve_element_ptr;
 {

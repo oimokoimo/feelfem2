@@ -21,9 +21,12 @@
 #include <stdio.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../system/system.h"
 #include "../feel_def/basic_struct.h"
 #include "../solve_comp/solve_comp.h"
+
+#include "solve_fort77_funcs.h"
 
 make_solve_ctrl77_skyline( solve_ptr, solve77_ptr )
      Solve       *solve_ptr;
