@@ -11,7 +11,7 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
-make_coff_vect( fp, n)
+void make_coff_vect( fp, n)
      FILE *fp;
      int    n;
 {

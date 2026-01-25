@@ -1,1 +1,1 @@
-export ADDITIONALCFLAGS='-std=c89 -O1 -g -fsanitize=address -fno-omit-frame-pointer -fno-builtin -Wall -Wextra -Werror=int-conversion -Werror=implicit-function-declaration -Wno-unused-variable'
+export ADDITIONALCFLAGS='-std=c89 -O1 -g -fsanitize=address -fno-omit-frame-pointer -fno-builtin -Wall -Wextra -Werror=int-conversion -Werror=implicit-function-declaration -Wno-unused-variable -Wunused-variable'

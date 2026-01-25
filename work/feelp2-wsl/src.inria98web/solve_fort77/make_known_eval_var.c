@@ -18,7 +18,7 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
-make_known_eval_var( fp  , name , domain_name )
+void make_known_eval_var( fp  , name , domain_name )
      FILE *fp;
      char *name;
      char *domain_name;

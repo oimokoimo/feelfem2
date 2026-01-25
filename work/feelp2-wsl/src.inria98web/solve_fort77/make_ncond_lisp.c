@@ -15,9 +15,10 @@
 #include "../system/system.h"
 
 #include "../solve_comp/solve_comp.h"
+#include "solve_fort77_funcs.h"
 
 
-make_ncond_lisp(fp,solve_ptr,solve_element_ptr,n_ptr,solve_no,ncond_no)
+void make_ncond_lisp(fp,solve_ptr,solve_element_ptr,n_ptr,solve_no,ncond_no)
      FILE         *fp;
      Solve        *solve_ptr;
      SolveElement *solve_element_ptr;

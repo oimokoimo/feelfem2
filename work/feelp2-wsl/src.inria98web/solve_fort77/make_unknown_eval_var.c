@@ -14,7 +14,7 @@
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
-make_unknown_eval_var(fp , name , start , element_name, freedom)
+void make_unknown_eval_var(fp , name , start , element_name, freedom)
      FILE *fp;
      char *name;
      int   start;

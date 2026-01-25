@@ -15,6 +15,7 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -22,12 +23,15 @@
 #include "../element/element.h"
 #include "mesh_exec.h"
 
+void mesh_info_for_meshbook_TRI( ElemDat *edat_ptr , MidPoint2D *mesh_info_ptr );
+void mesh_info_for_meshbook_RECT(ElemDat *edat_ptr , MidPoint2D *mesh_info_ptr );
+
 /* Frac は 分母、分子の順番  注意！   */
 Frac frac_p0 = { 1, 0};    /* 0       */  
 Frac frac_m1 = { 1,-1};    /* minus 1 */
 Frac frac_p1 = { 1, 1};    /* plus  1 */
 
-mid_info_for_meshbook( edat_ptr , mesh_info_ptr )
+void mid_info_for_meshbook( edat_ptr , mesh_info_ptr )
      ElemDat *edat_ptr;
      MidPoint2D *mesh_info_ptr;
 {
@@ -52,7 +56,7 @@ mid_info_for_meshbook( edat_ptr , mesh_info_ptr )
 
 
 /* 三角形 中間節点情報抜き出し関数 */
-mesh_info_for_meshbook_TRI( edat_ptr , mesh_info_ptr )
+void mesh_info_for_meshbook_TRI( edat_ptr , mesh_info_ptr )
      ElemDat *edat_ptr;
      MidPoint2D *mesh_info_ptr;
 {
@@ -163,7 +167,7 @@ mesh_info_for_meshbook_TRI( edat_ptr , mesh_info_ptr )
 
 
 /* 四角形 中間節点情報抜き出し関数 */
-mesh_info_for_meshbook_RECT( edat_ptr , mesh_info_ptr )
+void mesh_info_for_meshbook_RECT( edat_ptr , mesh_info_ptr )
      ElemDat *edat_ptr;
      MidPoint2D *mesh_info_ptr;
 {

@@ -11,11 +11,14 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "../solve_comp/solve_comp.h"
 #include "../mesh_exec/mesh_exec.h"
+
+#include "../mesh_exec/mesh_exec_funcs.h"
 
 void MakeEdgeBasis_IEDPIENP( name , eb_ptr , solve_element_ptr )
      char         *name;

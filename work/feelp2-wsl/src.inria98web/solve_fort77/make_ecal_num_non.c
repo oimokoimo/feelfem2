@@ -11,7 +11,10 @@
  */
 
 #include <stdio.h>
+#include <string.h>
+
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
@@ -19,6 +22,8 @@
 #include "../element/element.h"
 #include "../quadrature/quadrature.h"
 #include "../var_comp/var_comp.h"
+
+#include "solve_fort77_funcs.h"
 
 extern int noediv_flag;
 

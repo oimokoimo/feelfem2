@@ -28,12 +28,16 @@
  */
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 #include "../solve_comp/solve_comp.h"
 #include "../quadrature/quadrature.h"
 
-int make_elem_lisp( fp , solve_ptr , solve_element_ptr)
+#include "solve_fort77_funcs.h"
+
+void make_elem_lisp( fp , solve_ptr , solve_element_ptr)
+
      FILE         *fp;
      Solve        *solve_ptr;
      SolveElement *solve_element_ptr;

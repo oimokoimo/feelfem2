@@ -15,12 +15,16 @@
  *              現在数値積分設定はこの関数内で行っている
  *
  */
+#include <string.h>
 
 #include "../feel_def/feel_def.h"
+#include "../feel_def/feel_msg.h"
 #include "../feel_def/basic_struct.h"
 #include "../system/system.h"
 
 #include "../solve_comp/solve_comp.h"
+
+#include "solve_fort77_funcs.h"
 
 void make_ncond_skyline(solve_no,ncond_no,solve_ptr,n_ptr)
      int            solve_no;   /* solve文番号       */
