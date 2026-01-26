@@ -94,7 +94,7 @@ void make_solve_lisp()
 	
 	for(j=0;j<nconds;j++) {
 	    LISP_SEND(lisp_program,";--------------------\n");
-	    LISP_SEND(lisp_program,"; Neumann cond %d-%d\n",i+1,j+1);
+	    LISP_SEND_dd(lisp_program,"; Neumann cond %d-%d\n",i+1,j+1);
 	    LISP_SEND(lisp_program,";--------------------\n");
 	    
 	    /* ここで境界に対応するsolve_elementを捜し出す */

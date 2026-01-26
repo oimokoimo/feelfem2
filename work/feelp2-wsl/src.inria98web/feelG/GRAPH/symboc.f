@@ -300,7 +300,7 @@ C      DIMENSION XU(NU),YU(NU),IPU(NU)
       CHARACTER*72 IA
 *
       IOPSY = 1
-      OPEN (IOPSY, FILE='/home/fujio/lib/alpnum.str',
+      OPEN (IOPSY, FILE='/usr/local/lib/alpnum.str',
      $         ACCESS='DIRECT', RECL=72,
      $         FORM='UNFORMATTED', ERR=99)
 

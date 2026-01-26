@@ -8,6 +8,7 @@
  * Last Modified: 1998/11/02
  */
 
+#include <stdio.h>
 #ifdef  _MSC_VER       /* Microsoft Visual C++ only */
 #define MSDOS          /* Win32 version */
 #endif
@@ -22,6 +23,7 @@
 #else
 
 #define DBGWRT  nullwrt          /* main/debug.cにて定義 */
+#define FDBGWRT fprintf
 
 #endif
 
@@ -699,7 +701,8 @@
 #define DEFAULT_UNIX_EXPRESS_DIR "/usr/express"
 #define DEFAULT_CURRENT_DIR      "   "
 
-#define LISP_COMMAND "/usr/bin/sbcl"     /* ubuntu */
+#define LISP_COMMAND "/usr/bin/gcl"     /* ubuntu gcl*/
+/* #define LISP_COMMAND "/usr/bin/sbcl"  */   /* ubuntu */
 /* #define LISP_COMMAND   "/home/fujio/bin/saved_gcl >/dev/null" */  /* kartoffel/LINUX */ 
 /* #define LISP_COMMAND   "/usr/local/bin/lisp >/dev/null" */ /* potato.csl.cl.nec.co.jp/LINUX */
 /* #define LISP_COMMAND   "/net/tetrodon/home1/fujio/bin/saved_gcl /net/tetrodon/home1/fujio/bin/ >/dev/null" */  /* anchois.inria.fr */
@@ -806,7 +809,7 @@
   -------------------------------------------------------------*/
 extern int  status_lisp_debug;
 extern int  status_no_delete;
-extern char *lisp_debug_fp;
+extern FILE *lisp_debug_fp;
 extern int  mesh_only;
 extern int  english_mesg;
 extern int  web_mode;
