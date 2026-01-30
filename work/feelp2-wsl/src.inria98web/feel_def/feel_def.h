@@ -426,7 +426,7 @@
 
 /* feel fort77 の制限定義 */
 
-#define FEEL_ARRAY_SIZE  10000
+#define FEEL_ARRAY_SIZE  50000000
 
 #define MAX_DOMAIN          10  /* 最大domain数          */
 #define MAX_EDATSET         38  /* 最大要素節点データ数  */
@@ -701,7 +701,7 @@
 #define DEFAULT_UNIX_EXPRESS_DIR "/usr/express"
 #define DEFAULT_CURRENT_DIR      "   "
 
-#define LISP_COMMAND "/usr/bin/gcl"     /* ubuntu gcl*/
+#define LISP_COMMAND "/usr/bin/gcl >/dev/null"     /* ubuntu gcl*/
 /* #define LISP_COMMAND "/usr/bin/sbcl"  */   /* ubuntu */
 /* #define LISP_COMMAND   "/home/fujio/bin/saved_gcl >/dev/null" */  /* kartoffel/LINUX */ 
 /* #define LISP_COMMAND   "/usr/local/bin/lisp >/dev/null" */ /* potato.csl.cl.nec.co.jp/LINUX */

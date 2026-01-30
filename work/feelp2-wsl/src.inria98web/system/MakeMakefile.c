@@ -151,7 +151,7 @@ void MakeMakefile()
         break;
    
       case Linux:
-        fprintf(fp," -fno-globals");
+        fprintf(fp," -fallow-argument-mismatch");
         break;
 
       default:

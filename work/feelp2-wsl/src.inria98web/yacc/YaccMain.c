@@ -87,7 +87,7 @@ char *pde_src_name  = "Wow???";  /* pde source file name */
 
 
 /*-- Yacc/Lex variables --*/
-int yylineno;     /* 99/12/14  here extern deleted !!! oimokoimo */
+extern int yylineno;     /* 99/12/14  here extern deleted !!! oimokoimo */
 
 /*-- DEFINES --*/
 
