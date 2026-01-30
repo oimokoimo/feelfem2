@@ -1,4 +1,7 @@
-# feel p2 + bamg (INRIA 1997–1998) revival  bamg is the mesh generator developed by F. Hechet at INRIA/Roc
+# feel p2 + bamg (INRIA 1997–1998) revival  
+
+
+bamg is the mesh generator developed by F. Hechet at INRIA/Roc
 
 
 
