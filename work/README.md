@@ -1,9 +1,6 @@
 # feel p2 + bamg (INRIA 1997–1998) revival  
 
 
-bamg is the mesh generator developed by F. Hechet at INRIA/Roc
-
-
 
 This repository contains a revived working environment for **feel p2** and the **bamg (Bidimensional Anisotropic Mesh Generator)** originally developed and used during my stay at **INRIA (1997–1998)**.
 
@@ -28,8 +25,8 @@ In the mornings and evenings:
 - quiet concentration.
 
 Between races and recovery:
-- resurrecting 1990s C++/Fortran code,
-- resolving pre-ISO C++ compatibility issues,
+- resurrecting 1990s C/Fortran code,
+- resolving pre-ISO C compatibility issues,
 - rebuilding bamg with a minimal, historically faithful toolchain.
 
 In the late 1990s, recompiling `feel.parse` on an **EWS4800/220 (R3000, 120 MHz, 32 MB)** took long enough for a coffee break.  
