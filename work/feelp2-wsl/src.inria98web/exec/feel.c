@@ -500,7 +500,6 @@ if (who_am_i != NULL) {
 #else
     sprintf(com,"feel.parse %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %s %d",lisp_debug,no_delete,machine,limit_file,array_size,mesh_only,parallel,not_div,rd,noediv_flag,english,web,bamg,web_check,web_exec,modulef,mf_module,nodeset,argv[pdeargno],avs_64bit);
 
-    printf("%s\n",com);
 #endif
 
 
