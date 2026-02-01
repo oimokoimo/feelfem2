@@ -35,7 +35,7 @@ int   getSpaceDimension(void);              // 2000/10/20
 int   stringLength(const char *);           // 2000/12/26 strlen
 int   strindex(const char *,const char *);  // 2001/01/31 strindex
 void  abortExit(int);                       // 2000/12/26 abort function
-void  abortExit(char *);                    // 2001/01/31 with message
+void  abortExit(const char *);                    // 2001/01/31 with message
 
 FILE *fileOpenToWrite(const char *);
 
