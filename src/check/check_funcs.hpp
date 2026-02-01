@@ -123,24 +123,24 @@ int scheme_io_create(list <void *> &);
 int scheme_label_if_create(list <void *> &);
 
 // System functions
-void SystemError_A(char *);  // without SNunit
+void SystemError_A(const char *);  // without SNunit
 
-void SystemErrorA(SNunit *,char *);
+void SystemErrorA(SNunit *,const char *);
 void SystemErrorAA(SNunit *,const char *,const char *);
 void SystemErrorAAA(SNunit *,const char *,const char *,const char *);
-void SystemErrorNameA( SNunit *,char *);
-void SystemErrorStrA( SNunit *, string &, char *);
-void SystemErrorAStr( SNunit *, char *,string &);
-void SystemErrorAStrA( SNunit *,char *, string &, char *);
-void SystemErrorNameNOA( SNunit *,int,char *);    // NameNO series of above
-void SystemErrorANameA( SNunit *,char *,char *);
-void SystemErrorAIA(SNunit *,char *,int , char *);
-void SystemErrorANameStrA( SNunit *,string &,char *,char *);
-void SystemErrorANameAStr( SNunit *,string &,char *,char *);
-void SystemErrorANameADataA(SNunit *,char *,char *,char *);
-void SystemWarningA(SNunit *,char *);
-void SystemWarningANameA(SNunit *,char *,char *);
+void SystemErrorNameA( SNunit *,const char *);
+void SystemErrorStrA( SNunit *, string &, const char *);
+void SystemErrorAStr( SNunit *, const char *,string &);
+void SystemErrorAStrA( SNunit *,const char *, string &, char *);
+void SystemErrorNameNOA( SNunit *,int,const char *);    // NameNO series of above
+void SystemErrorANameA( SNunit *,const char *,const char *);
+void SystemErrorAIA(SNunit *,const char *,int , const char *);
+void SystemErrorANameStrA( SNunit *,string &,const char *,const char *);
+void SystemErrorANameAStr( SNunit *,string &,const char *,const char *);
+void SystemErrorANameADataA(SNunit *,const char *,const char *,const char *);
+void SystemWarningA(SNunit *,const char *);
+void SystemWarningANameA(SNunit *,const char *,const char *);
 
-void SystemErrorAAAA(char *,char *,char *,char *);
+void SystemErrorAAAA(const char *,const char *,const char *,const char *);
 
 #endif

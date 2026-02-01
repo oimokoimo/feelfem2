@@ -36,21 +36,21 @@ class SNassignment : public SNunit {
 public:
 
   // normal one
-  SNassignment( char *nm, Expression *ptr);
+  SNassignment(const char *nm, Expression *ptr);
 
   // only for integral, and bintegral
-  SNassignment( char *nm, Expression *ptr, int);
+  SNassignment(const char *nm, Expression *ptr, int);
 
   // with integration method
-  SNassignment( char *nm, char *quad,Expression *ptr, int);
+  SNassignment(const char *nm, char *quad,Expression *ptr, int);
 
   // for at,on,in specification
-  SNassignment( char *nm, Expression *ptr,int place,SNidentifierlist *lstPtr);
+  SNassignment(const char *nm, Expression *ptr,int place,SNidentifierlist *lstPtr);
 
 
 
   // for Where condition
-  SNassignment( char *nm, Expression *ptr, int place, Expression *whereCond);
+  SNassignment(const char *nm, Expression *ptr, int place, Expression *whereCond);
 
   // check print routine
   void print(std::ostream & ost);

@@ -42,7 +42,7 @@ public:
   void SetMesherName(string &);
   void SetProblemName(string &);
   void SetMesherPtr(Mesher *);
-  char *GetMesherName() { return (char *)mesherName;}
+  const char *GetMesherName() const { return (const char *)mesherName;}
 
   // Etype   (2002/11 add for integral() and bintegral() functionalities
   // RegionEtype (In Gid case, it is explicitly given by user in scheme,
@@ -90,8 +90,8 @@ public:
 
   
   // currently, used for GiD class
-  char *GetProblemName(void) {
-    return ( (char *)problemName );
+  const char *GetProblemName(void) const {
+    return ( (const char *)problemName );
   }
 
   // RegionObject

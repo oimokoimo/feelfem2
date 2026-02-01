@@ -224,7 +224,7 @@ int SNassignment::checkValidQuadrature()
 
   }
   if(vPtr->GetType()==VAR_DOUBLE && integralType==ASSIGNMENT_TYPE_BINTEGRAL) {
-    cerr << "NOT CHECK yet" << endl;
+	  std::cerr << "NOT CHECK yet" << std::endl;
     assert(1==0);
   }
 
@@ -268,7 +268,7 @@ int SNassignment::checkValidExpr()
 	break;
 	
       default:
-	cerr << "Only integral is now supported." << endl;
+	std::cerr << "Only integral is now supported." << std::endl;
 	assert(1==0);
       }
     }

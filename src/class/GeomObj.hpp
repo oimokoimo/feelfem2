@@ -35,8 +35,8 @@ public:
 
   int GetType();
   int IsNameIs(string &);
-  char *GetName(void) {
-    return(char *)name;
+  const char *GetName(void) const {
+    return static_cast<const char *>(name);
   }
 
   void SetDirichletFlag();
