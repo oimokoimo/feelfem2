@@ -8,7 +8,7 @@
  *  
  *  Purpose  : General header file for feelfem system
  *  
- *  
+ *
  *  feelfem2 (modernized/ported)
  *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
  *  SPDX-License-Identifier: BSD-3-Clause
@@ -16,7 +16,7 @@
  *
  *
  *  Notes:
- *
+ *  
  */
 
 //#define FEELFEM_PREDEFINED_PDE    "/home/fujio/feelfem/lib/feelfem_basic.pde"
