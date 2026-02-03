@@ -155,10 +155,12 @@
 #define BAMG_COMMAND_NAME     "bamg.exe  >NUL"
 #define BAMG_FDAT_COMMAND     "feel.bamg.exe"
 #define BAMG_ADPT_COMMAND     "feel.bamg.adpt.exe %d"
+#define FC_NAME               "f77.exe"   /* obsolete 2026/02/03 */
 #else
 #define BAMG_COMMAND_NAME     "bamg  >/dev/null"
 #define BAMG_FDAT_COMMAND     "feel.bamg.exe"
 #define BAMG_ADPT_COMMAND     "feel.bamg.adpt %d"
+#define FC_NAME               "gfortran"
 #endif
 
 #define BAMG_DEFAULT_OPTION   "-splitpbedge -nbv 2000000"

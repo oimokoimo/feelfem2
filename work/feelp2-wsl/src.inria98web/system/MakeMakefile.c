@@ -159,6 +159,9 @@ void MakeMakefile()
     }
     fprintf(fp,"\n");
 
+    /* FC definition */
+    fprintf(fp,"FC = %s\n",FC_NAME);
+
     /* Cenju-3 Option */
     if(parallel) {
 	fprintf(fp,"FC = cjf77 -O -KOlimit=3000 -Kmips2\n");
@@ -186,7 +189,7 @@ void MakeMakefile()
 	fprintf(fp,"%ccjf77 ",9);
     }
     else {
-	fprintf(fp,"%cf77 ",9);
+	fprintf(fp,"%c%s ",9,FC_NAME);
     }
 
 
