@@ -631,7 +631,8 @@
 /* #define FreeBSD_CONTOUR_LIB        "-L/home/fujio/feel/lib.intel -lfeelG" */
 #define FreeBSD_CONTOUR_LIB        "-L/usr/people/sun1/fujio/lib -lfeelG"
 #define Cenju3_CONTOUR_LIB         "-lpfeelG"
-#define Linux_CONTOUR_LIB          "-L/home/fujio/lib -lfeelG"
+/* #define Linux_CONTOUR_LIB          "-L/home/fujio/lib -lfeelG" */
+#define Linux_CONTOUR_LIB          "-L~/lib -lfeelG"
 
 #define R4000_LIB                  "-Kmips2"
 
