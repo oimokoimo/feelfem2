@@ -24,6 +24,8 @@ sudo apt update
 Install build tools, parser generators, and X11 development headers
 sudo apt install -y \
   build-essential \
+  gfortran \
+  gcl \
   flex bison \
   libfl-dev \
   libx11-dev \
