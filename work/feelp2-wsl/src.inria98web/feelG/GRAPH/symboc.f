@@ -40,7 +40,14 @@
 C      DIMENSION XU(NU),YU(NU),IPU(NU)
       DIMENSION XU(*),YU(*),IPU(*)
 *
+      character*256 home
+      character*512 path
+*
+
       COMMON / COMGXB / XCONT,YCONT,ISCR,RWIDTH
+
+      call get_environment_variable("HOME",home)
+      path = trim(home) // "/lib/alpnum.str"
 *
       IF (LXYZ .LT. 0) THEN
         SGN = -1.0
@@ -115,7 +122,7 @@ C      DIMENSION XU(NU),YU(NU),IPU(NU)
           IREC = IASC + 1
           IF (IASC .EQ. 32) GO TO 21
           IYD = 0
-          CALL ALPSTR (IREC, IXA, IYA, IPA, IEND)
+          CALL ALPSTR (IREC, IXA, IYA, IPA, IEND,path)
 *
           IF (IEND .EQ. 0) GO TO 10
           IF (N .EQ. -2) THEN
@@ -209,7 +216,7 @@ C      DIMENSION XU(NU),YU(NU),IPU(NU)
           END IF
           IREC = IASC + 1
           IF (IASC .EQ. 32) GO TO 121
-          CALL ALPSTR (IREC, IXA, IYA, IPA, IEND)
+          CALL ALPSTR (IREC, IXA, IYA, IPA, IEND,path)
           IF (IEND .EQ. 0) GO TO 110
           IF (N .EQ. -2) THEN
             IP = 2
@@ -267,7 +274,7 @@ C      DIMENSION XU(NU),YU(NU),IPU(NU)
       RETURN
       END
 *
-      SUBROUTINE ALPSTR (IREC, IXA, IYA, IPA, IEND)
+      SUBROUTINE ALPSTR (IREC, IXA, IYA, IPA, IEND,path)
 *****************************************************
 *     This routine gets the plot data of            *
 *     the character whose ASCII code is IREC - 1    *
@@ -296,11 +303,13 @@ C      DIMENSION XU(NU),YU(NU),IPU(NU)
       COMMON / COMOPS / IOPSY
 *
       DIMENSION IXA(*),IYA(*),IPA(*)
+      character*512 path
 *
       CHARACTER*72 IA
 *
       IOPSY = 1
-      OPEN (IOPSY, FILE='/usr/local/lib/alpnum.str',
+      write(*,*) 'path=',path
+      OPEN (IOPSY, FILE=path,
      $         ACCESS='DIRECT', RECL=72,
      $         FORM='UNFORMATTED', ERR=99)
 

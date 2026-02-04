@@ -19,4 +19,9 @@ cd ../..
 cd feelG
 make
 cp libfeelG.a ~/lib
+cd ALPNUM
+gfortran mk_alpnum.f
+./a.out <alpnum.txt
+cp alpnum.str ~/lib
+
 

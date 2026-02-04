@@ -10,3 +10,5 @@ void ReverseStringArray(int n,char *s[]);
 int GetMaxInteger(int n , int dat[]);
 
 void get_point_xy_by_name(char *,double *, double *);
+extern char * home_dir;
+
