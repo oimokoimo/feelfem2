@@ -1,0 +1,136 @@
+HOWTO: Build & Run feelp2 on WSL / Ubuntu
+
+This document explains how to set up a WSL / Ubuntu environment to build and run feelp2 on your local machine.
+
+The Podman-based environment is provided separately.
+This guide is for users who want to run feel p2 directly on WSL Ubuntu.
+
+1. Prerequisites
+
+Windows 10/11 with WSL2
+
+Ubuntu (20.04 / 22.04 / 24.04 recommended)
+
+A working X11 environment
+
+Windows 11: WSLg (default)
+
+Windows 10: external X server (VcXsrv, X410, etc.)
+
+2. Required packages
+Update package list
+sudo apt update
+
+Install build tools, parser generators, and X11 development headers
+sudo apt install -y \
+  build-essential \
+  gfortran \
+  gcl \
+  flex bison \
+  libfl-dev \
+  libx11-dev \
+  libxt-dev \
+  libxext-dev \
+  libxmu-dev \
+  libxpm-dev
+
+3. What these packages are for
+Build tools
+
+build-essential
+Provides gcc, g++, make, and standard C libraries.
+
+Parser generators (yacc / lex compatible)
+
+flex
+Generates lex.yy.c from .l files.
+
+bison
+Generates *.tab.c and *.tab.h from .y files.
+
+libfl-dev
+Provides libfl.so (-lfl) required for yywrap().
+
+X11 development headers
+
+libx11-dev
+Base X11 headers (X11/Xlib.h)
+
+libxt-dev
+X Toolkit Intrinsics (X11/Intrinsic.h)
+
+libxext-dev
+X11 extensions (commonly used by legacy code)
+
+libxmu-dev
+X11 utility functions
+
+libxpm-dev
+X Pixmap support
+
+These are required for the original FEEL/feelp2 visualization and GUI components.
+
+4. X11 setup check
+
+Before running feelp2, confirm that X11 is available.
+
+echo $DISPLAY
+
+
+If this prints something like:
+
+:0
+
+
+or
+
+localhost:0
+
+
+then X11 forwarding is working.
+
+5. Build feelp2
+
+From the feelp2 source directory:
+
+make
+
+
+(or the project-specific build command, if different)
+
+6. Run feelp2
+
+Example:
+
+./feelp2 input.feel
+
+
+If X11 is correctly configured, visualization windows should appear.
+
+7. Notes
+
+This setup targets legacy FEEL / feelp2 code (1990s–early 2000s).
+
+Modern Ubuntu versions still provide full compatibility via Xt/X11.
+
+For headless or containerized execution, use the provided Podman environment instead.
+
+8. Troubleshooting
+X11/Intrinsic.h: No such file or directory
+
+→ libxt-dev is missing.
+
+cannot find -lfl
+
+→ libfl-dev is missing.
+
+X window does not appear
+
+Ensure WSLg is enabled (Windows 11), or
+
+Ensure your X server is running (Windows 10)
+
+9. Philosophy (optional but very feelp2)
+
+feelp2 is a compact FEM DSL system designed to be built from source.
+If you can run flex, bison, make, and X11, you can run feelp2.
