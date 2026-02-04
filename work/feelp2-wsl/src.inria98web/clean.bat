@@ -16,8 +16,6 @@ rm */*.o
 rm parallel_tool/*/*.o
 rm mesh_bamg_util/*/*.o
 rm mesh_bamg_util/*/feel.bamg.exe
-rm bamg/bamg
-rm bamg/bamg-g
 rm viewmesh/*/*.o
 rm viewmesh/exec/feelmesh
 rm viewmesh/prog/feel.meshview

@@ -6,6 +6,7 @@ fem.tab.h
 fem.tab.c
 
 fem.tab.c
+fem.tab.h
 
 # gcc precompiled headers
 *.gch
