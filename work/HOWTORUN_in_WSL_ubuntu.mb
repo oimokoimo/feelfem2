@@ -9,7 +9,7 @@ This guide is for users who want to run feel p2 directly on WSL Ubuntu.
 
 Windows 10/11 with WSL2
 
-Ubuntu (20.04 / 22.04 / 24.04 recommended)
+Ubuntu (20.04 / 22.04 / 22.04 recommended)  **24.04 doesn't works**
 
 A working X11 environment
 
