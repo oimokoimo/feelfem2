@@ -8,6 +8,9 @@ fem.tab.c
 fem.tab.c
 fem.tab.h
 
+parse
+mesh.bamg.exe
+
 # gcc precompiled headers
 *.gch
 
