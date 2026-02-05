@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "list.hpp"
+
 template <class T>
 class ptrList : public list<T>
 {
