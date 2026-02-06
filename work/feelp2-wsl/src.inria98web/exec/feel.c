@@ -23,10 +23,13 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 /* modernize 2026/01/21 */
 extern FILE *popen(const char *, const char *);
 extern int   pclose(FILE *);
+void basic_libraries(FILE *);
 
 /* options */
 #define LISP_DEBUG  "-lispdebug"
