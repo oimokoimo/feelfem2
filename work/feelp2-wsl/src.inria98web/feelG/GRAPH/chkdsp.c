@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-chkdsp_(iflag)
+void chkdsp_(iflag)
 int	*iflag;
 {
 	char	str[100];
