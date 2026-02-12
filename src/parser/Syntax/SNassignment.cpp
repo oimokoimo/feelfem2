@@ -25,7 +25,7 @@
 #include "feeldef.hpp"
 #include "SNassignment.hpp"
 
-SNassignment::SNassignment( char *nm, Expression *ptr) 
+SNassignment::SNassignment(const char *nm, Expression *ptr) 
   :SNunit("assignment",SN_ASSIGNMENT) 
 { 
   leftVarName    = nm; 
@@ -44,7 +44,7 @@ SNassignment::SNassignment( char *nm, Expression *ptr)
   return;
 }
 
-SNassignment::SNassignment( char *nm, Expression *ptr,int iType) 
+SNassignment::SNassignment( const char *nm, Expression *ptr,int iType) 
   :SNunit("assignment",SN_ASSIGNMENT) 
 { 
   leftVarName    = nm; 
@@ -64,7 +64,7 @@ SNassignment::SNassignment( char *nm, Expression *ptr,int iType)
 }
 
 // with integration method
-SNassignment::SNassignment(char *nm,char *qd,Expression *ptr,int iTyp) 
+SNassignment::SNassignment(const char *nm,char *qd,Expression *ptr,int iTyp) 
   :SNunit("assignment",SN_ASSIGNMENT) 
 { 
     leftVarName    = nm; 
@@ -83,7 +83,7 @@ SNassignment::SNassignment(char *nm,char *qd,Expression *ptr,int iTyp)
     return;
 }
 
-SNassignment::SNassignment( char *nm, Expression *ptr, 
+SNassignment::SNassignment( const char *nm, Expression *ptr, 
 			    int place, SNidentifierlist *lstPtr) 
     : SNunit("assignment",SN_ASSIGNMENT) 
 { 
@@ -102,7 +102,7 @@ SNassignment::SNassignment( char *nm, Expression *ptr,
   return;
 }
 
-SNassignment::SNassignment( char *nm, Expression *ptr, int place, 
+SNassignment::SNassignment( const char *nm, Expression *ptr, int place, 
 			    Expression *whereCond) 
   : SNunit("assignment",SN_ASSIGNMENT) 
 { 
