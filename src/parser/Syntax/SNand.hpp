@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  :
+ *
+ *  
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -21,7 +30,7 @@ public:
   SNand(SNunit *a1,SNunit *a2) : SNunit("and",SN_AND),arg1(a1),arg2(a2)
   {}
 
-  void print(ostream & ost) { 
+  void print(std::ostream & ost) { 
     arg1->print(ost);
     ost << "&&";
     arg2->print(ost);
