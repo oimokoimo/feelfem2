@@ -18,6 +18,8 @@
 #include <ostream>
 #include <cctype>
 
+int CstringLength(const char *);
+
 class string
 {
 private:
