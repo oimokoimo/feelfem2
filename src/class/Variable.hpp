@@ -39,7 +39,7 @@ class RegionObject;
 class Variable {
 public:
   Variable();
-  Variable(char *,int);
+  Variable(const char *,int);
   ~Variable();
   
   int isNameIs(const char *nm) {
