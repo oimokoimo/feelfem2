@@ -10,6 +10,9 @@ fem.tab.h
 
 parse
 mesh.bamg.exe
+feel.bamg.exe
+
+a.out
 
 # gcc precompiled headers
 *.gch
