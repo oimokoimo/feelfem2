@@ -15,7 +15,7 @@
  *  Repository: https://github.com/oimokoimo/feelfem2
  *
  *
- *  Notes: These function were in GiNaC 2001
+ *  Notes: These function are wrapper function for GiNaC (originally for 2001)
  *  
  */
 
