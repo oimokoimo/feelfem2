@@ -131,7 +131,7 @@ void SystemErrorAAA(SNunit *,const char *,const char *,const char *);
 void SystemErrorNameA( SNunit *,const char *);
 void SystemErrorStrA( SNunit *, string &, const char *);
 void SystemErrorAStr( SNunit *, const char *,string &);
-void SystemErrorAStrA( SNunit *,const char *, string &, char *);
+void SystemErrorAStrA( SNunit *,const char *, string &, const char *);
 void SystemErrorNameNOA( SNunit *,int,const char *);    // NameNO series of above
 void SystemErrorANameA( SNunit *,const char *,const char *);
 void SystemErrorAIA(SNunit *,const char *,int , const char *);
