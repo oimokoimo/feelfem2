@@ -27,7 +27,6 @@
 #include "string.hpp"
 #include "Variable.hpp"
 
-class std::ostream;
 class SNwrite;
 
 

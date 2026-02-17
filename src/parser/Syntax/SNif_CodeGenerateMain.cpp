@@ -61,10 +61,10 @@ void SNif::CodeGenerateMain(void *mgtPtr,Main *mainPtr)
     break;
 
   default:
-    cerr << "##################################################" << endl;
-    cerr << "# NOT IMPLEMENTED OUTPUT.                        #" << endl;
-    cerr << "# SNoutput_CodeGeneratorMain.cpp                 #" << endl;
-    cerr << "##################################################" << endl;
+    std::cerr << "##################################################" << std::endl;
+    std::cerr << "# NOT IMPLEMENTED OUTPUT.                        #" << std::endl;
+    std::cerr << "# SNoutput_CodeGeneratorMain.cpp                 #" << std::endl;
+    std::cerr << "##################################################" << std::endl;
   }
   return;
 }
