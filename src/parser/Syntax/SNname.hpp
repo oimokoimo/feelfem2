@@ -27,7 +27,7 @@
 class SNname  {
 
 public:
-  SNname( char * );
+  SNname(const char * );
   ~SNname();
 
   int LineNumber() { return lineNumber; }
