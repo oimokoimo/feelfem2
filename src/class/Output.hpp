@@ -57,7 +57,7 @@ public:
 
   int HasOption(const char *);
   void GetOption(const char *key,string &);
-  void AddOption(char *,char *);
+  void AddOption(const char *,const char *);
 
 
 private:
@@ -68,7 +68,7 @@ private:
   list <string>identifierStrLst;
   orderedPtrList <Variable *>varPtrLst;
   
-  Quadrature *quadraturePtr;   // for ewise-quad
+  Quadrature *quadraturePtr;   // for ewise-quad 
 
 
   int options;
