@@ -27,7 +27,7 @@
 
 class SNsolveParametric : public SNunit {
 public:
-  SNsolveParametric( char *nm ) :
+  SNsolveParametric( const char *nm ) :
     SNunit("solveParametric",SN_SOLVEPARAMETRIC) 
   { parametricName = nm; }
 

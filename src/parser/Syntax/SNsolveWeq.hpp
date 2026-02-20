@@ -77,7 +77,7 @@ public:
   void AddVariablePtr_Boundary( Neumann *,list <string> &,list <string>&);
 
 
-  void print(ostream &ost) {
+  void print(std::ostream &ost) {
 
     leftHandSideWeqTermsPtr->print(ost);
     ost << "=";
