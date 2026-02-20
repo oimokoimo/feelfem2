@@ -50,8 +50,8 @@ void SNassignment::CodeGenerate(void)
     break;
 
   default:
-    cerr <<"NOT SUPPORT for AS_VAR_TYPE " << asPtr->GetLeftVarAssignType()
-	 <<" SNassignment_CodeGenerator.cpp" << endl;
+    std::cerr <<"NOT SUPPORT for AS_VAR_TYPE " << asPtr->GetLeftVarAssignType()
+	 <<" SNassignment_CodeGenerator.cpp" << std::endl;
     assert(1==0);
   }
 

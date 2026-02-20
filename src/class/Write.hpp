@@ -35,7 +35,7 @@ public:
   Write(void);   // label name and number
   ~Write();
 
-  void AddLastItem(char *);
+  void AddLastItem(const char *);
   void AddLastItemType( int );
 
   list <string>&GetItemStrList(void)   { return itemStrLst ;} 

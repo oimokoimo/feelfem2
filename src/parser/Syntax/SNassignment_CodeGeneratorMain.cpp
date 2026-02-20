@@ -59,10 +59,10 @@ void SNassignment::CodeGenerateMain(void *mgtPtr,Main *mainPtr)
     break;
 
   default:
-    cerr << "##################################################" << endl;
-    cerr << "# NOT IMPLEMENTED ASSIGN.                        #" << endl;
-    cerr << "# SNassignment_CodeGeneratorMain.cpp             #" << endl;
-    cerr << "##################################################" << endl;
+    std::cerr << "##################################################" << std::endl;
+    std::cerr << "# NOT IMPLEMENTED ASSIGN.                        #" << std::endl;
+    std::cerr << "# SNassignment_CodeGeneratorMain.cpp             #" << std::endl;
+    std::cerr << "##################################################" << std::endl;
   }
   return;
 }

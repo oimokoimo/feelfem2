@@ -14,7 +14,7 @@
 #define FEELFEM_FEELFEMHPP
 
 
-#define NOTE(MESG)  if(feelfem_debug) cerr << MESG << endl
+#define NOTE(MESG)  if(feelfem_debug) std::cerr << MESG << std::endl
 
 void doNothingNow( char *);
 

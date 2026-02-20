@@ -92,13 +92,13 @@ SNsolve::SNsolve( SNidentifierlist *iptr,              // unknown function list
       break;
 			 
     default:
-      cout << "UNKNOWN code in solve parser\n";
+      std::cerr << "UNKNOWN code in solve parser\n";
     }
   }
   return;
 }
 
-void SNsolve::print(ostream &ost) 
+void SNsolve::print(std::ostream &ost) 
 {
   ost << "solve\n";
   ost << "        Unknown : ";
@@ -125,7 +125,7 @@ void SNsolve::print(ostream &ost)
   for(itr.init();!itr;++itr) {
     ost << "weq: ";
     itr()->print(ost);
-    ost << endl;
+    ost << std::endl;
   }
 
   // print dirichlet conditions

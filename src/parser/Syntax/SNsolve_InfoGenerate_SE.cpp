@@ -7,11 +7,19 @@
  *  Modified : 2002/03/27 (add boundaryIntegrand)
  *  
  *  Purpose  :
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
-#include <iostream.h>
-#include <stdlib.h>     // for debug exit(1)
+#include <iostream>
 
 #include "SNsolve.hpp"
 #include "SNname.hpp"

@@ -3,8 +3,8 @@
 # Executed-By: $(TOP)/feelfem/src
 #
 
-YACC     = yacc
-LEX      = lex
+YACC     = bison
+LEX      = flex
 PLUSPLUS = g++ 
 OPTION   =
 TOP      = 
@@ -102,7 +102,7 @@ library :
 		do (cd $$i ; make ); \
 	done
 
-y.tab.c y.tab.h : feelfem.y
+feelfem.tab.c feelfem.tab.h : feelfem.y
 	$(YACC) -dtv  feelfem.y
 	sed s/getenv\(\)/getenv\(char\*\)/ <y.tab.c >oimo.oimo
 	mv oimo.oimo y.tab.c

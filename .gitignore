@@ -2,8 +2,11 @@
 lex.yy.c
 y.tab.c
 y.tab.h
-fem.tab.h
 fem.tab.c
+fem.tab.h
+feelfem.tab.c
+feelfem.tab.h
+feelfem.output
 
 fem.tab.c
 fem.tab.h
