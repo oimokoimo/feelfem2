@@ -54,12 +54,6 @@ public:
         this->add(std::move(value));
     }
 
-    // exact feelfem1-compatible signature if old call sites do push(T)
-    void push(T value)
-    {
-        this->add(std::move(value));
-    }
-
     // optional: peek top (asserts non-empty)
     T top() const
     {

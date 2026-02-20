@@ -28,14 +28,14 @@ PROGRAM  = feelfem
 
 MAKEFILE = Makefile
 
-SRC      = y.tab.c \
+SRC      = feelfem.tab.c \
            main.cpp \
            makedate.c \
            version.c  \
            debug_execute.cpp
            
 
-OBJ      = y.tab.o  \
+OBJ      = feelfem.tab.o  \
            main.o   \
            lex.yy.o \
            version.o \
@@ -54,7 +54,7 @@ SYSLIB       = -lginac -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
 
-FEELLIB      =  ../main/main.a ../check/check.a Syntax/Syntax.a ../check/check.a ../info/info.a ../Element/Element.a ../Mesh/Mesh.a ../Object/Object.a ../Quadrature/Quadrature.a  ../Geometry/Geometry.a ../Bamg/Bamg.a ../gid/gid.a ../Discretization/Discretization.a ../CodeGenerator/CodeGenerator.a ../MakeMakefile/MakeMakefile.a ../Main/Main.a ../SolverLibrary/SolverLibrary.a ../MatrixModel/MatrixModel.a ../ProgramModel/ProgramModel.a ../Source/Source.a ../Scheme/Scheme.a ../Solve/Solve.a ../Assign/Assign.a ../Variable/Variable.a ../FiniteElement/FiniteElement.a ../Procedure/Procedure.a ../Configure/Configure.a ../Object/Object.a ../SourceLibrary/SourceLibrary.a ../basic/basic.a ../system/system.a ../Object/Object.a ../Math/Math.a  ../Object/Object.a ../TermConvert/TermConvert.a ../Element/Element.a  ../ginac/ginac.a ../check/check.a Syntax/Syntax.a  ../GeneralSchemes/GeneralSchemes.a ../Geometry/Geometry.a ../ginac/ginac.a ../Element/Element.a  ../ginac/ginac.a ../Web/Web.a
+FEELLIB      =  ../check/check.a Syntax/Syntax.a ../check/check.a ../info/info.a ../Element/Element.a ../Mesh/Mesh.a ../Object/Object.a ../Quadrature/Quadrature.a  ../Geometry/Geometry.a ../Bamg/Bamg.a ../gid/gid.a ../Discretization/Discretization.a ../CodeGenerator/CodeGenerator.a ../MakeMakefile/MakeMakefile.a ../Main/Main.a ../SolverLibrary/SolverLibrary.a ../MatrixModel/MatrixModel.a ../ProgramModel/ProgramModel.a ../Source/Source.a ../Scheme/Scheme.a ../Solve/Solve.a ../Assign/Assign.a ../Variable/Variable.a ../FiniteElement/FiniteElement.a ../Procedure/Procedure.a ../Configure/Configure.a ../Object/Object.a ../SourceLibrary/SourceLibrary.a ../basic/basic.a ../system/system.a ../Object/Object.a ../Math/Math.a  ../Object/Object.a ../TermConvert/TermConvert.a ../Element/Element.a  ../ginac/ginac.a ../check/check.a Syntax/Syntax.a  ../GeneralSchemes/GeneralSchemes.a ../Geometry/Geometry.a ../ginac/ginac.a ../Element/Element.a  ../ginac/ginac.a ../Web/Web.a
 
 
 all  :  library $(PROGRAM)

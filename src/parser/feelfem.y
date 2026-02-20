@@ -1316,25 +1316,25 @@ exprlist  :  expression              { parseSNunitStack.push($1);
   
 %%
 
-void yyerror(char *errmsg)
+void yyerror(const char *errmsg)
 {
    extern int feelfem_web;
    numberOfErrors++;
 
    if(feelfem_web) {
-   cout << feelfem_currentFileName << ":";
-   cout << numberOfLines   << ":";
-   cout << errmsg          << "\n";
+   std::cout << feelfem_currentFileName << ":";
+   std::cout << numberOfLines   << ":";
+   std::cout << errmsg          << "\n";
    }
    else {
-   cerr << feelfem_currentFileName << ":";
-   cerr << numberOfLines   << ":";
-   cerr << errmsg          << "\n";
+   std::cerr << feelfem_currentFileName << ":";
+   std::cerr << numberOfLines   << ":";
+   std::cerr << errmsg          << "\n";
    }
 
    if(numberOfErrors > MaxNumberOfErrors) {
-     cerr << feelfem_currentFileName << ":" << numberOfLines << ":" ;
-     cerr << "too many errors.\n";
+     std::cerr << feelfem_currentFileName << ":" << numberOfLines << ":" ;
+     std::cerr << "too many errors.\n";
      exit(1);
    }
    return;
