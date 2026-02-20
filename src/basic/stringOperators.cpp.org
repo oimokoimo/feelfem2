@@ -1,0 +1,119 @@
+/*
+ *  feelfem2
+ *  Operators for custom string class
+ *
+ *  Copyright (C) 2026 Hidehiro Fujio
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Clean-room implementation (no code copied)
+ */
+
+#include <cassert>
+#include "string.hpp"
+
+namespace {
+
+// nullptr を空文字扱い
+unsigned int safe_cstrlen(const char* s)
+{
+    if (!s) return 0U;
+    unsigned int n = 0U;
+    while (s[n] != '\0') ++n;
+    return n;
+}
+
+// strcmp 相当（ASCII/バイト列比較）。戻り値: -1/0/+1
+int safe_strcmp(const char* a, const char* b)
+{
+    if (!a) a = "";
+    if (!b) b = "";
+
+    while (*a != '\0' && *b != '\0')
+    {
+        const unsigned char ua = static_cast<unsigned char>(*a);
+        const unsigned char ub = static_cast<unsigned char>(*b);
+        if (ua != ub) return (ua < ub) ? -1 : 1;
+        ++a;
+        ++b;
+    }
+
+    if (*a == '\0' && *b == '\0') return 0;
+    return (*a == '\0') ? -1 : 1; // 短い方が小さい
+}
+
+} // namespace
+
+int operator<(const string& left, const string& right)
+{
+    return safe_strcmp(left.buffer, right.buffer) < 0;
+}
+
+int operator==(const string& left, const string& right)
+{
+    return safe_strcmp(left.buffer, right.buffer) == 0;
+}
+
+void string::operator=(const string& right)
+{
+    if (this == &right) return; // 自己代入防止
+
+    const unsigned int rightLen = right.length(); // 文字数（終端0除く）
+
+    // 必要なら再確保（終端0込みで +1）
+    if (rightLen + 1 > static_cast<unsigned int>(bufferlength))
+    {
+        delete[] buffer;
+
+        bufferlength = static_cast<int>(rightLen + 1);
+        checkLength(bufferlength);
+
+        buffer = new char[bufferlength];
+        assert(buffer != nullptr);
+    }
+
+    // コピー
+    for (unsigned int i = 0; i < rightLen; ++i)
+    {
+        buffer[i] = right.buffer[i];
+    }
+    buffer[rightLen] = '\0';
+}
+
+// 旧仕様互換：範囲外は '\0' を返す。
+// ただし「constなのに参照を返す」のは設計的に良くない。
+// API を変えられない前提で、スレッド安全な thread_local を使う。
+static thread_local char g_out_of_range_char = '\0';
+
+char& string::operator[](unsigned int index) const
+{
+    const unsigned int n = safe_cstrlen(buffer);
+    if (!buffer || index >= n)
+    {
+        g_out_of_range_char = '\0';
+        return g_out_of_range_char;
+    }
+    return buffer[index];
+}
+
+// conversion operators（旧仕様互換）
+// ※本当は operator char*() は消したいが、互換性優先で残す。
+string::operator const char*() const
+{
+    return buffer ? buffer : "";
+}
+
+string::operator char*()
+{
+    return buffer;
+}
+
+// string と const char* の比較
+int operator!=(const string& left, const char* right)
+{
+    return safe_strcmp(left.buffer, right) != 0;
+}
+
+int operator==(const string& left, const char* right)
+{
+    return safe_strcmp(left.buffer, right) == 0;
+}

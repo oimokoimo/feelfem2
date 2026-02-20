@@ -1,0 +1,38 @@
+/*
+ *  feelfem2
+ *  Debug / statistics helpers for custom string class
+ *
+ *  Copyright (C) 2026 Hidehiro Fujio
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Clean-room implementation (no code copied)
+ */
+
+#include <iostream>
+#include <cassert>
+#include "string.hpp"
+
+void string::checkLength(int length)
+{
+    assert(length >= 0);
+
+#ifdef FF2_STRING_STATS
+    if (length > maxBufferLength)
+    {
+        maxBufferLength = length;
+    }
+
+    ++totalObjects;
+    totalAssignedBufferLength += length;
+#else
+    (void)length;
+#endif
+}
+
+void string::checkReport()
+{
+#ifdef FF2_STRING_STATS
+    std::cout << "total objects = " << totalObjects << '\n';
+    std::cout << "total memory  = " << totalAssignedBufferLength << '\n';
+#endif
+}

@@ -1,0 +1,34 @@
+/*
+ *  feelfem2
+ *  Stream operators for custom string class
+ *
+ *  Copyright (C) 2026 Hidehiro Fujio
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Clean-room implementation (no code copied)
+ */
+
+#include <iostream>
+#include "string.hpp"
+
+std::ostream& operator<<(std::ostream& os, const string& s)
+{
+    for (std::size_t i = 0; i < s.length(); ++i)
+    {
+        os.put(s[i]);
+    }
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, string& s)
+{
+    std::string buffer;
+    is >> buffer;
+
+    if (is)
+    {
+        s = buffer.c_str();
+    }
+
+    return is;
+}

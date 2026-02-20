@@ -1,0 +1,80 @@
+/*
+ *  feelfem2
+ *  Member functions for custom string class
+ *
+ *  Copyright (C) 2026 Hidehiro Fujio
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Clean-room implementation (no code copied)
+ */
+
+#include <istream>
+#include "string.hpp"
+
+namespace {
+
+unsigned int safe_cstrlen(const char* s)
+{
+    if (!s) return 0U;
+    unsigned int n = 0U;
+    while (s[n] != '\0') ++n;
+    return n;
+}
+
+// 文字列 haystack 内で needle が最初に出現する位置を返す。
+// 見つからなければ -1。
+// needle が空文字なら 0。
+int find_substring_index(const char* haystack, const char* needle)
+{
+    if (!haystack) return -1;
+    if (!needle || needle[0] == '\0') return 0;
+
+    for (int i = 0; haystack[i] != '\0'; ++i)
+    {
+        int j = 0;
+        while (needle[j] != '\0' && haystack[i + j] != '\0' && haystack[i + j] == needle[j])
+        {
+            ++j;
+        }
+        if (needle[j] == '\0') return i; // 完全一致で終端
+    }
+    return -1;
+}
+
+} // namespace
+
+unsigned int string::length() const
+{
+    // 既存の CstringLength() を使う設計ならそれでも良いが、
+    // ここは依存を減らし安全な実装にしておく。
+    return safe_cstrlen(buffer);
+}
+
+std::istream& string::getline(std::istream& in)
+{
+    // bufferlength は「終端0込み」の確保サイズの想定。
+    // 1未満は読み込み不能なので、その場合は何もしない。
+    if (buffer && bufferlength > 0)
+    {
+        in.getline(buffer, bufferlength);
+    }
+    return in;
+}
+
+int string::contain(const char* text) const
+{
+    return find_substring_index(buffer, text);
+}
+
+void string::lower()
+{
+    if (!buffer) return;
+
+    for (char* p = buffer; *p != '\0'; ++p)
+    {
+        if (*p >= 'A' && *p <= 'Z')
+        {
+            *p = static_cast<char>(*p - 'A' + 'a');
+        }
+    }
+}

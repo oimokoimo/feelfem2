@@ -1,0 +1,101 @@
+/*
+ *  feelfem2
+ *  Constructors / destructor for custom string class
+ *
+ *  Copyright (C) 2026 Hidehiro Fujio
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *
+ *  Clean-room implementation (no code copied)
+ */
+
+#include <cassert>
+#include <algorithm>   // std::fill_n, std::copy_n
+#include "string.hpp"
+
+// (旧方式の static 定義を維持する場合)
+int  string::maxBufferLength           = 0;
+int  string::totalObjects              = 0;
+long string::totalAssignedBufferLength = 0;
+
+namespace {
+
+// 安全な C 文字列長（nullptrは空文字扱い）
+int safe_cstrlen(const char* s)
+{
+    if (!s) return 0;
+    int n = 0;
+    while (s[n] != '\0') ++n;
+    return n;
+}
+
+} // namespace
+
+string::string(int size)
+{
+    assert(size >= 0);
+
+    bufferlength = size + 1;           // null 終端ぶん
+    checkLength(bufferlength);
+
+    buffer = new char[bufferlength];
+    assert(buffer != nullptr);
+
+    std::fill_n(buffer, bufferlength, '\0');
+}
+
+string::string(const char* initialtext)
+{
+    const int n = safe_cstrlen(initialtext);
+
+    bufferlength = n + 1;
+    checkLength(bufferlength);
+
+    buffer = new char[bufferlength];
+    assert(buffer != nullptr);
+
+    if (n > 0) std::copy_n(initialtext, n, buffer);
+    buffer[n] = '\0';
+}
+
+string::string(const string& other)
+{
+    const int n = safe_cstrlen(other.buffer);
+
+    bufferlength = n + 1;
+    checkLength(bufferlength);
+
+    buffer = new char[bufferlength];
+    assert(buffer != nullptr);
+
+    if (n > 0) std::copy_n(other.buffer, n, buffer);
+    buffer[n] = '\0';
+}
+
+string::string(char c)
+{
+    bufferlength = 2;
+    checkLength(bufferlength);
+
+    buffer = new char[bufferlength];
+    assert(buffer != nullptr);
+
+    buffer[0] = c;
+    buffer[1] = '\0';
+}
+
+string::string()
+{
+    bufferlength = 1;
+    checkLength(bufferlength);
+
+    buffer = new char[bufferlength];
+    assert(buffer != nullptr);
+
+    buffer[0] = '\0';
+}
+
+string::~string()
+{
+    delete[] buffer;
+    buffer = nullptr;
+}
