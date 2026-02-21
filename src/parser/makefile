@@ -50,12 +50,13 @@ SYSINCLUDES  =
 INCLUDES     =
 
 
-#SYSLIB       = -lginac -lm -ll -lstdc++ -lc
+#SYSLIB       = -lginac -lm -ll -lstdc++ -lc  // ginac is calling here
 SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
 
-FEELLIB     = ../Xplot++/Xplot++.a ../basic/basic.a ./Syntax/Syntax.a
+FEELLIB     = ../Xplot++/Xplot++.a ../check/check.a ../basic/basic.a ./Syntax/Syntax.a ../Object/Object.a
+
 #FEELLIB      =  ../check/check.a Syntax/Syntax.a ../check/check.a ../info/info.a ../Element/Element.a ../Mesh/Mesh.a ../Object/Object.a ../Quadrature/Quadrature.a  ../Geometry/Geometry.a ../Bamg/Bamg.a ../gid/gid.a ../Discretization/Discretization.a ../CodeGenerator/CodeGenerator.a ../MakeMakefile/MakeMakefile.a ../Main/Main.a ../SolverLibrary/SolverLibrary.a ../MatrixModel/MatrixModel.a ../ProgramModel/ProgramModel.a ../Source/Source.a ../Scheme/Scheme.a ../Solve/Solve.a ../Assign/Assign.a ../Variable/Variable.a ../FiniteElement/FiniteElement.a ../Procedure/Procedure.a ../Configure/Configure.a ../Object/Object.a ../SourceLibrary/SourceLibrary.a ../basic/basic.a ../system/system.a ../Object/Object.a ../Math/Math.a  ../Object/Object.a ../TermConvert/TermConvert.a ../Element/Element.a  ../ginac/ginac.a ../check/check.a Syntax/Syntax.a  ../GeneralSchemes/GeneralSchemes.a ../Geometry/Geometry.a ../ginac/ginac.a ../Element/Element.a  ../ginac/ginac.a ../Web/Web.a
 
 
