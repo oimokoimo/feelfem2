@@ -30,7 +30,7 @@
 class SNgeomMaterialRegion : public SNunit {
 public:
   SNgeomMaterialRegion(const char *nm,SNidentifierlist *ptr) ;
-  ~SNgeomMaterialRegion();
+  ~SNgeomMaterialRegion() override = default;
 
 
   void print(std::ostream & ost) {

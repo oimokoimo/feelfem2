@@ -9,7 +9,8 @@ PLUSPLUS = g++
 OPTION   =
 TOP      = 
 INCLUDE  = -I../class
-CFLAGS   = -DUSE_PM_AISTPCP90
+CFLAGS   = -DUSE_PM_AISTPCP90 -DENABLE_NLS=0
+CFLAGS += -DYYENABLE_NLS=0 -DENABLE_NLS=0
 
 X11LIB   = ../Xplot++/Xplot++.a -L/usr/X11R6/lib -lX11
 
@@ -48,13 +49,14 @@ SYSINCLUDES  =
 
 INCLUDES     =
 
-CFLAGS       = $(OPTION) $(INCLUDES)
 
-SYSLIB       = -lginac -lm -ll -lstdc++ -lc
+#SYSLIB       = -lginac -lm -ll -lstdc++ -lc
+SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
 
-FEELLIB      =  ../check/check.a Syntax/Syntax.a ../check/check.a ../info/info.a ../Element/Element.a ../Mesh/Mesh.a ../Object/Object.a ../Quadrature/Quadrature.a  ../Geometry/Geometry.a ../Bamg/Bamg.a ../gid/gid.a ../Discretization/Discretization.a ../CodeGenerator/CodeGenerator.a ../MakeMakefile/MakeMakefile.a ../Main/Main.a ../SolverLibrary/SolverLibrary.a ../MatrixModel/MatrixModel.a ../ProgramModel/ProgramModel.a ../Source/Source.a ../Scheme/Scheme.a ../Solve/Solve.a ../Assign/Assign.a ../Variable/Variable.a ../FiniteElement/FiniteElement.a ../Procedure/Procedure.a ../Configure/Configure.a ../Object/Object.a ../SourceLibrary/SourceLibrary.a ../basic/basic.a ../system/system.a ../Object/Object.a ../Math/Math.a  ../Object/Object.a ../TermConvert/TermConvert.a ../Element/Element.a  ../ginac/ginac.a ../check/check.a Syntax/Syntax.a  ../GeneralSchemes/GeneralSchemes.a ../Geometry/Geometry.a ../ginac/ginac.a ../Element/Element.a  ../ginac/ginac.a ../Web/Web.a
+FEELLIB     = ../Xplot++/Xplot++.a ../basic/basic.a ./Syntax/Syntax.a
+#FEELLIB      =  ../check/check.a Syntax/Syntax.a ../check/check.a ../info/info.a ../Element/Element.a ../Mesh/Mesh.a ../Object/Object.a ../Quadrature/Quadrature.a  ../Geometry/Geometry.a ../Bamg/Bamg.a ../gid/gid.a ../Discretization/Discretization.a ../CodeGenerator/CodeGenerator.a ../MakeMakefile/MakeMakefile.a ../Main/Main.a ../SolverLibrary/SolverLibrary.a ../MatrixModel/MatrixModel.a ../ProgramModel/ProgramModel.a ../Source/Source.a ../Scheme/Scheme.a ../Solve/Solve.a ../Assign/Assign.a ../Variable/Variable.a ../FiniteElement/FiniteElement.a ../Procedure/Procedure.a ../Configure/Configure.a ../Object/Object.a ../SourceLibrary/SourceLibrary.a ../basic/basic.a ../system/system.a ../Object/Object.a ../Math/Math.a  ../Object/Object.a ../TermConvert/TermConvert.a ../Element/Element.a  ../ginac/ginac.a ../check/check.a Syntax/Syntax.a  ../GeneralSchemes/GeneralSchemes.a ../Geometry/Geometry.a ../ginac/ginac.a ../Element/Element.a  ../ginac/ginac.a ../Web/Web.a
 
 
 all  :  library $(PROGRAM)
@@ -72,14 +74,19 @@ library :
 
 feelfem.tab.c feelfem.tab.h : feelfem.y
 	$(YACC) -dtv  feelfem.y
-	sed s/getenv\(\)/getenv\(char\*\)/ <y.tab.c >oimo.oimo
-	mv oimo.oimo y.tab.c
+	cp feelfem.tab.h y.tab.h
+#	sed s/getenv\(\)/getenv\(char\*\)/ <y.tab.c >oimo.oimo
 
-lex.yy.o : lex.yy.c lex.h y.tab.h
+
+feelfem.tab.o :feelfem.tab.c
+	$(CC)  $(CFLAGS) $(INCLUDE) -c $< -o $@
+
+lex.yy.o : lex.yy.c lex.h feelfem.tab.h
 	$(CC) -c $(CFLAGS) lex.yy.c
 
 lex.yy.c : feelfem.lex
 	$(LEX) -8 -L feelfem.lex
+	
 
 makedate.c : makedate.sh
 	sh makedate.sh >makedate.c

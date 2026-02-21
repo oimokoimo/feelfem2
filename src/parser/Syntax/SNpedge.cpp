@@ -10,8 +10,9 @@
  *  
  */
 
-#include <math.h>             // for sqrt
-
+#include <cmath>             // for sqrt
+			     //
+using std::sqrt;
 #include "../../class/feelfuncs.hpp"
 #include "../../class/feeldef.hpp"
 

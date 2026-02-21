@@ -1,0 +1,32 @@
+/*
+ *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999-2002
+ *                       Programmed by Hidehiro  FUJIO
+ *
+ *  Filename : SNfunctionObject.cpp
+ *  Date     : 2002/09/17
+ *  Modified : 
+ *  
+ *  Purpose  :
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
+ *  
+ */
+
+#include "../parser/Syntax/SNfunction.hpp"
+
+#include "Object.hpp"
+#include "list.hpp"
+
+void Object::StoreSNfunctionPtr(SNfunction *ptr)
+{
+  snUserFunctionPtrLst.add(ptr);
+  
+  return;
+}

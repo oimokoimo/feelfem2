@@ -41,6 +41,7 @@ public:
     ost << ">=";
     arg2->print(ost);
   }
+  ~SNge()=default;
 
 #include "expr_friend.def"
 

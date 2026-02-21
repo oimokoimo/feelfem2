@@ -29,6 +29,7 @@
 class SNsymbol : public SNunit {
 public:
   SNsymbol(const char *name) : SNunit("symbol",SN_SYMBOL) { val = name; }
+  ~SNsymbol(void) = default;
 
   int  howManyNotDefinedVariable( int flag,void *ptr1,void *ptr2);
   int  howManyNotDefinedFunction( int flag,void *ptr1,void *ptr2);

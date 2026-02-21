@@ -42,6 +42,8 @@ public:
     arg2->print(ost);
   }
 
+  ~SNplus() override = default;
+
 #include "expr_friend.def"
 
 

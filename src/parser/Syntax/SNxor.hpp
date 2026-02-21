@@ -21,7 +21,7 @@ public:
   SNxor(SNunit *a1,SNunit *a2) : SNunit("xor",SN_XOR),arg1(a1),arg2(a2)
   {}
 
-  void print(ostream & ost) { 
+  void print(std::ostream & ost) { 
     arg1->print(ost);
     ost << " xor ";
     arg2->print(ost);
