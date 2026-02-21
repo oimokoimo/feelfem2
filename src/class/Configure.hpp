@@ -90,7 +90,7 @@ public:
   void SetParametricElementName(int , string &);
 
   // for geom object
-  void StoreMesherCode( char * , int );
+  void StoreMesherCode(const char * , int );
   int IsValidMesherName( string &);
   int GetMesherCodeByName( string &);
 

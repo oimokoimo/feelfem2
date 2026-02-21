@@ -1,0 +1,73 @@
+/*
+ *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999-2002
+ *                       Programmed by Hidehiro  FUJIO
+ *
+ *  Filename : init_StoreSolverLibraries.cpp
+ *  Date     : 2002/03/07
+ *  Modified : 
+ *  
+ *  Purpose  :
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
+ *  
+ */
+
+#include "Configure.hpp"
+#include "feeldef.hpp"
+
+void Configure::init_StoreSolverLibraries()
+{
+  // Store Solver Libraries
+
+  // TYPE_FEELP2SKYLINE      1
+  StorePM_LIB(NAME_PM_FEELP2,NAME_LIB_SKYLINE,TYPE_FEELP2SKYLINE);
+
+  // TYPE_FEELP2PCG          2
+  StorePM_LIB(NAME_PM_FEELP2,NAME_LIB_ASLPCG,TYPE_FEELP2PCG);
+
+  // TYPE_FEELP2ACHIM        3         // file version
+  StorePM_LIB(NAME_PM_FEELP2,NAME_LIB_ACHIMFILE,TYPE_FEELP2ACHIM);
+
+  // TYPE_FEELP2ACHIMLOC     4
+  StorePM_LIB(NAME_PM_FEELP2DRAMA,NAME_LIB_PCG,TYPE_FEELP2ACHIMLOC);
+
+  // TYPE_FEELFEM90PAMG      5
+  // StorePM_LIB(NAME_PM_FEELFEM90DRAMA,NAME_LIB_AMG,TYPE_FEELFEM90PAMG);
+	 
+  // TYPE_FEELP2IWASHITA     6
+  StorePM_LIB(NAME_PM_FEELP2,NAME_LIB_IWASHITA,TYPE_FEELP2IWASHITA);
+
+
+  // TYPE_FEELFEM90PAMG81    7
+  StorePM_LIB(NAME_PM_FEELFEM90DRAMA,NAME_LIB_AMG,TYPE_FEELFEM90PAMG81);
+
+  // TYPE_FEELFEM90SAMG20c   8         // Single AMG v20c
+  StorePM_LIB(NAME_PM_FEELFEM90,NAME_LIB_AMG,TYPE_FEELFEM90SAMG20c);
+
+  // TYPE_FEELFEM90ACHIMCG   9
+  StorePM_LIB(NAME_PM_FEELFEM90,NAME_LIB_PCG,TYPE_FEELFEM90ACHIMCG);
+
+  // TYPE_FEELP2ACHIMCG     10         // use parallel code in single
+  //  StorePM_LIB(NAME_PM_FEELP2,NAME_LIB_PCG,TYPE_FEELFEM90ACHIMCG);
+
+  // TYPE_FEELFEM90SKYLINE  13
+  StorePM_LIB(NAME_PM_FEELFEM90,NAME_LIB_SKYLINE,TYPE_FEELFEM90SKYLINE);
+
+  // TYPE_AISTPCP90IT4SLV   14
+  StorePM_LIB(NAME_PM_AISTPCP90,NAME_LIB_IT4SLV ,TYPE_AISTPCP90IT4SLV );
+
+  // TYPE_FEELFEM90LUMPING  15
+  StorePM_LIB(NAME_PM_FEELFEM90,NAME_LIB_LUMPING,TYPE_FEELFEM90LUMPING );
+
+  // TYPE_FEELFEM90MUMPSCA  16
+  StorePM_LIB(NAME_PM_FEELFEM90SMPI,NAME_LIB_MUMPSCA,TYPE_FEELFEM90SMPIMUMPSCA );
+
+  return;
+}
