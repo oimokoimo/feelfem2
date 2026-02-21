@@ -16,7 +16,7 @@ void abortExit(int iout)
   exit(iout);
 }
 
-void abortExit(char *mesg)
+void abortExit(const char *mesg)
 {
   fprintf(stderr,"abortExit feelfem : %s\n",mesg);
   exit(1);
