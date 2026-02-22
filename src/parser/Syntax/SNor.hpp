@@ -30,6 +30,8 @@ public:
   SNor(SNunit *a1,SNunit *a2) : SNunit("or",SN_OR),arg1(a1),arg2(a2)
   {}
 
+  ~SNor()=default;
+
   void print(std::ostream & ost) { 
     arg1->print(ost);
     ost << " or ";

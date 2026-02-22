@@ -29,8 +29,3 @@ SNgeomMaterialRegion::SNgeomMaterialRegion(const char *nm,SNidentifierlist *ptr)
   return;
 }
 
-SNgeomMaterialRegion::~SNgeomMaterialRegion()
-{
-  // do nothing
-  return;
-}

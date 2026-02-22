@@ -22,7 +22,9 @@
 #include <iostream>
 #include "SNunit.hpp"
 
-void SNunit::print(std::ostream &ost)
+void SNunit::print(std::ostream &ost) const
 {
   ost << "VIRTUAL FUNCTION SNunit::print is called.\n";
 }
+
+SNunit::~SNunit() = default;

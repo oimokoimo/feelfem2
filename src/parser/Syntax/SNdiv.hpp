@@ -40,6 +40,8 @@ public:
     arg2->print(ost);
   }
 
+  ~SNdiv() = default;
+
 #include "expr_friend.def"
 
 private:

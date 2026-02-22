@@ -46,9 +46,9 @@ public:
     fileNumber = currentSourceFileNo(); // in check/SystemErrorFilename.cpp
   }
 
-  virtual ~SNunit() = default;
+  virtual ~SNunit() ;
 
-  virtual void print(std::ostream&);
+  virtual void print(std::ostream&) const;
 
   // for expression
   virtual int howManyNotDefinedVariable(int, void*, void*) {
