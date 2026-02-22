@@ -114,7 +114,7 @@ void SystemErrorAAA(SNunit *snunitPtr,
   return;
 }
 
-void SystemErrorNameA(SNunit *snunitPtr, char *mesg)
+void SystemErrorNameA(SNunit *snunitPtr, const char *mesg)
 {
   checkErrors ++;
 
@@ -138,7 +138,7 @@ void SystemErrorNameA(SNunit *snunitPtr, char *mesg)
 }
 
 
-void SystemErrorStrA(SNunit *snunitPtr, string &str, char *mesg)
+void SystemErrorStrA(SNunit *snunitPtr, string &str, const char *mesg)
 {
   checkErrors ++;
   
@@ -161,7 +161,7 @@ void SystemErrorStrA(SNunit *snunitPtr, string &str, char *mesg)
   return;
 }
 
-void SystemErrorAStrA(SNunit *snunitPtr, char *m1,string &str, char *m2)
+void SystemErrorAStrA(SNunit *snunitPtr, const char *m1,string &str, const char *m2)
 {
   checkErrors ++;
   
@@ -187,7 +187,7 @@ void SystemErrorAStrA(SNunit *snunitPtr, char *m1,string &str, char *m2)
   return;
 }
 
-void SystemErrorAStr(SNunit *snunitPtr, char *m,string &str)
+void SystemErrorAStr(SNunit *snunitPtr, const char *m,string &str)
 {
   checkErrors ++;
 
@@ -214,7 +214,7 @@ void SystemErrorAStr(SNunit *snunitPtr, char *m,string &str)
 }
 
 // This is with NameNO specification.
-void SystemErrorNameNOA(SNunit *snunitPtr, int nameNo1,char *mesg)
+void SystemErrorNameNOA(SNunit *snunitPtr, int nameNo1,const char *mesg)
 {
   checkErrors ++;
   
@@ -238,7 +238,7 @@ void SystemErrorNameNOA(SNunit *snunitPtr, int nameNo1,char *mesg)
   return;
 }
 
-void SystemErrorANameA(SNunit *snunitPtr, char *mesg1,char*mesg2)
+void SystemErrorANameA(SNunit *snunitPtr, const char *mesg1,const char*mesg2)
 {
   checkErrors ++;
 
@@ -265,7 +265,7 @@ void SystemErrorANameA(SNunit *snunitPtr, char *mesg1,char*mesg2)
 }
 
 
-void SystemErrorAIA(SNunit *snunitPtr, char *mesg1,int n,char*mesg2)
+void SystemErrorAIA(SNunit *snunitPtr, const char *mesg1,int n,const char*mesg2)
 {
   checkErrors ++;
 
@@ -294,7 +294,7 @@ void SystemErrorAIA(SNunit *snunitPtr, char *mesg1,int n,char*mesg2)
 }
 
 
-void SystemErrorANameStrA(SNunit *snunitPtr, string &st,char *mesg1,char*mesg2)
+void SystemErrorANameStrA(SNunit *snunitPtr, string &st,const char *mesg1,const char*mesg2)
 {
   checkErrors ++;
 
@@ -326,7 +326,7 @@ void SystemErrorANameStrA(SNunit *snunitPtr, string &st,char *mesg1,char*mesg2)
   return;
 }
 
-void SystemErrorANameAStr(SNunit *snunitPtr, string &st,char *mesg1,char*mesg2)
+void SystemErrorANameAStr(SNunit *snunitPtr, string &st,const char *mesg1,const char*mesg2)
 {
   checkErrors ++;
 
@@ -361,7 +361,7 @@ void SystemErrorANameAStr(SNunit *snunitPtr, string &st,char *mesg1,char*mesg2)
 
 
 void SystemErrorANameADataA(SNunit *snunitPtr,
-			    char *mesg1,char*mesg2,char *mesg3)
+			    const char *mesg1,const char*mesg2,const char *mesg3)
 {
   checkErrors ++;
 
@@ -394,7 +394,7 @@ void SystemErrorANameADataA(SNunit *snunitPtr,
 }
 
 // Warnings
-void SystemWarningA(SNunit *snunitPtr, char *mesg)
+void SystemWarningA(SNunit *snunitPtr, const char *mesg)
 {
   checkWarnings ++;
 
@@ -418,7 +418,7 @@ void SystemWarningA(SNunit *snunitPtr, char *mesg)
   return;
 }
 
-void SystemWarningANameA(SNunit *snunitPtr, char *mesg1,char*mesg2)
+void SystemWarningANameA(SNunit *snunitPtr, const char *mesg1,const char*mesg2)
 {
   checkWarnings ++;
 
