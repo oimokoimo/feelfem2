@@ -35,7 +35,7 @@ public:
 
 
   // for test/main.cpp 
-  void testSetName(char *);
+  void testSetName(const char *);
   void testSetQuadraturePoints(int);
 
 //  int   GetQuadraturePoints(void);   // now in GauassPoints
