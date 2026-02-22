@@ -84,7 +84,7 @@ public:
   void SetSpaceDim( int n);
 
   // debug
-  void print(ostream &);
+  void print(std::ostream &);
 
   // test functions  
   void testSetLibraryType(int);

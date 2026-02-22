@@ -64,8 +64,8 @@ public:
   void testSetSolveNo(int no) {solveNo = no; return; }
   void testSetDcondNo( int no) { dcondNo = no; return;}
 
-  void  testSetTestExpression ( char * );
-  char *testGetTestExpression ( void   );
+  void  testSetTestExpression ( const char * );
+  const char *testGetTestExpression ( void   );
   
   orderedPtrList <Variable *> &GetVariablePtrLst(void) {
     return(varPtrLst);

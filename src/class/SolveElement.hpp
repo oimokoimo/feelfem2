@@ -154,7 +154,7 @@ public:
 
 
   // debug
-  void print(ostream &ost);
+  void print(std::ostream &ost);
 
 private:
   int solveNo;
