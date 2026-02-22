@@ -30,7 +30,7 @@
 class GeomObj {
 
 public:
-  GeomObj(int,char *);
+  GeomObj(int,const char *);
   ~GeomObj();
 
   int GetType();

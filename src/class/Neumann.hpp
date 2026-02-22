@@ -22,6 +22,7 @@
 #ifndef FEM_CLASS_NEUMANN
 #define FEM_CLASS_NEUMANN
 
+#include <iostream>
 #include "string.hpp"
 #include "orderedList.hpp"
 #include "orderedPtrList.hpp"

@@ -43,7 +43,7 @@ public:
   int getFirstOuterPointRefNo();
   int getSecondOuterPointRefNo();
 
-  char *GetName();
+  const char *GetName();
 
 
   friend class Bamg;  // to access outerPolygonPtr, holePolygonPtrLst from
