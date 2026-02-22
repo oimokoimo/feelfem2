@@ -130,8 +130,8 @@ public:
   void putStr(char *);
   //  void putStr(string &);
 
-  void print(ostream &);
-  void rev_print(ostream &);
+  void print(std::ostream &);
+  void rev_print(std::ostream &);
 
 protected:
   TermConvert *reverseTC;    // accessed also from derived EwiseQuadTC 020729

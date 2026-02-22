@@ -30,7 +30,7 @@
 class IntIntPair {
 public:
   IntIntPair( int , int );
-  ~IntIntPair(void) { ; }
+  ~IntIntPair(void)=default; 
 
   friend int operator ==(const IntIntPair &, const IntIntPair &);
 
@@ -68,7 +68,7 @@ public:
   StrStrPair(const char *,const char *);   // constructor
   StrStrPair(const char *);
 
-  ~StrStrPair(void);                       // destructor
+  ~StrStrPair(void)=default;                       // destructor
 
   int IsMatchFirstComponent( string &str) {
     return( str == first );

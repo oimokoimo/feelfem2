@@ -47,7 +47,7 @@ public:
   friend int operator  < (const Node &left, const Node &right);
 
   // debug
-  void print(ostream &ost);
+  void print(std::ostream &ost);
   
 private:
   int dimension;
