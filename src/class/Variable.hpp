@@ -133,7 +133,7 @@ public:
   void initWorkTC(void);
 
   // error check
-  void print(ostream &);
+  void print(std::ostream &);
 
 private:
   int    varType;  // variable Type  VAR_FEM, VAR_EWISE, VAR_EWISE_A
