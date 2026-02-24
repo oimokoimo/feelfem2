@@ -19,8 +19,8 @@
  *  
  */
 
-char *GetElemRoutineName( int );
-char *GetElemRoutineName( int solveNo, int elemNo ) 
+const char *GetElemRoutineName( int );
+const char *GetElemRoutineName( int solveNo, int elemNo ) 
 {return(GetElemRoutineName(solveNo)); }   //P2 limit
 
 void  doElemStarters();

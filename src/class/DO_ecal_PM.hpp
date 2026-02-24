@@ -19,7 +19,7 @@
  *  
  */
 
-  char *GetEcalRoutineName( int solveNo, int elemNo );
+  const char *GetEcalRoutineName( int solveNo, int elemNo );
   void pushEcalRoutineName( SolveElement *);
   void EcalArgumentVariableDeclarationLst(SolveElement *,
 					  orderedPtrList<Variable *>&);

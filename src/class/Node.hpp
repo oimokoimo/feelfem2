@@ -22,9 +22,9 @@
 #ifndef FEM_CLASS_NODE
 #define FEM_CLASS_NODE
 
+#include <iostream>
 #include "orderedPtrList.hpp"
 class Element;
-class ostream;
 
 class Node {
 

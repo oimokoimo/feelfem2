@@ -16,7 +16,7 @@
 
 #define NOTE(MESG)  if(feelfem_debug) std::cerr << MESG << std::endl
 
-void doNothingNow( char *);
+void doNothingNow( const char *);
 
 
 // Global control variables

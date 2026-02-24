@@ -35,7 +35,7 @@ template <class ProgramMODEL> class MainGeneratorTemplate
 
 public:
    MainGeneratorTemplate() {;}
-  ~MainGeneratorTemplate() {;}
+  ~MainGeneratorTemplate() = default;
 
   void MainRoutineInitialize  (Main *);
 

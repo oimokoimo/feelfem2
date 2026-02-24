@@ -20,8 +20,8 @@
  */
 
 
-char *GetAssignRoutineName(int);              // memory allocated here,never...
-char *GetAssignCoRoutineName(int);
+const char *GetAssignRoutineName(int);              // memory allocated here,never...
+const char *GetAssignCoRoutineName(int);
 
 // in main routine
 void DoMainScheme_assign(Main *, Assign *);

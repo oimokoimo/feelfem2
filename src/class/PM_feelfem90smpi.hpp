@@ -53,8 +53,8 @@ public:
   PM_feelfem90smpi();
   ~PM_feelfem90smpi();
   // File pointer management   [ it must be situated here! ]
-  void OpenSource( char *);      // File pointer is set in this routines
-  void OpenSource( char *,int);  // File pointer is set in this routines
+  void OpenSource( const char *);      // File pointer is set in this routines
+  void OpenSource( const char *,int);  // File pointer is set in this routines
   void CloseSource( void );
 
   // General comment functions
@@ -77,12 +77,12 @@ public:
 
 
   // General Function Implementation in this memory model
-  void MODULEzeroclearD(char *,char *);
-  void MODULEzeroclearI(char *,char *);
-  void MODULEmalloc    (char *,char *,char *,char *);
-  void MODULEmallocERT (char *,char *,char *,char *);
+  void MODULEzeroclearD(const char *,const char *);
+  void MODULEzeroclearI(const char *,const char *);
+  void MODULEmalloc    (const char *,const char *,const char *,const char *);
+  void MODULEmallocERT (const char *,const char *,const char *,const char *);
   void MODULEmallocCHK ();
-  void MODULEmallocF90 (char *,char *);
+  void MODULEmallocF90 (const char *,const char *);
 
   void MemAllocate(const char *name,const char *arg, const char *arg_size,
 		   int type);
@@ -94,8 +94,8 @@ public:
   // void MakeCallArgumentList   ( orderedPtrList <Variable *> &);
 
 
-  char *GetSourceName(const char *);
-  char *GetMainSourceName(void);  
+  const char *GetSourceName(const char *);
+  const char *GetMainSourceName(void);  
 
   /////////////////////////////////////////////////////
 
@@ -107,7 +107,7 @@ public:
   /////////////////////////////////////////////////////
   // General Function Implementation in Called routine
   /////////////////////////////////////////////////////
-  void DoArgumentSequenceFromMain(char *, orderedPtrList <Variable *> &);
+  void DoArgumentSequenceFromMain(const char *, orderedPtrList <Variable *> &);
   void DoDeclareVariablesFromMainPM( orderedPtrList <Variable *> );
 
   void ArgumentVariableDeclarationLst(list <Variable *>&);
@@ -137,7 +137,7 @@ void DoMainScheme_solve(Main *,Solve *);
   void GenerateCoSolveIpdinfoRoutine( Solve *);  // ipdinfo routine generator
 
 
-  char *GetSolveRoutineName ( int );
+  const char *GetSolveRoutineName ( int );
   void  pushSolveRoutineName( int );
   void  pushElemRoutineName ( int );    // P2 difference  only one elem routine
   void  pushNeumannRoutineName(int ,int );
@@ -157,8 +157,8 @@ void DoMainScheme_solve(Main *,Solve *);
   ///////////////////////////
   // Elem related routines //
   ///////////////////////////
-  char *GetElemRoutineName( int );
-  char *GetElemRoutineName( int solveNo, int elemNo ) 
+  const char *GetElemRoutineName( int );
+  const char *GetElemRoutineName( int solveNo, int elemNo ) 
     {return(GetElemRoutineName(solveNo)); }   //P2 limit
 
   void  doElemStarters();
@@ -177,7 +177,7 @@ void DoMainScheme_solve(Main *,Solve *);
   ///////////////////////////
   string SuperRinjiEcalP2DRAMA(const char *);
 
-  char *GetEcalRoutineName( int solveNo, int elemNo );
+  const char *GetEcalRoutineName( int solveNo, int elemNo );
   void pushEcalRoutineName( SolveElement *);
   void EcalArgumentVariableDeclarationLst(SolveElement *,
 					  orderedPtrList<Variable *>&);
@@ -234,7 +234,7 @@ void DoMainScheme_solve(Main *,Solve *);
   ////////////////////////////////
 
 #include "DO_dirichlet_PM.hpp"
-  char *GetDirichletRoutineName( int , int  );
+  const char *GetDirichletRoutineName( int , int  );
   //  char *dirichletP2DOTEMP( char *);  /* change '(ip)' -> '_dpt' */
 
   //  void  DoDirichletArgumentVariableDefinitionsPM(Dirichlet *);
@@ -247,8 +247,8 @@ void DoMainScheme_solve(Main *,Solve *);
   //////////////////////////////
   // Neumann related routines //
   //////////////////////////////  
-  char *GetNeumannRoutineName( int , int );
-  void pushSuperDotempneumannFEMval(char *, char *);
+  const char *GetNeumannRoutineName( int , int );
+  void pushSuperDotempneumannFEMval(const char *, const char *);
 
 #include "DO_neumann_PM.hpp"
 

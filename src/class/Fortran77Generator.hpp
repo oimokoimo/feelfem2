@@ -49,12 +49,12 @@ public:
 
   void comment();    // line  ----------
   void com();        // small *
-  void COMMENTlong(char *);
+  void COMMENTlong(const char *);
 
   // Memory allocation   f_alloc family
   // 
-  void mallocF77     (char *varname, char *comment, char *size, char *type);
-  void mallocF77imode(char *varname, char *comment, char *size, char *type);
+  void mallocF77     (const char *varname, const char *comment, const char *size, const char *type);
+  void mallocF77imode(const char *varname, const char *comment, const char *size, const char *type);
   void mallocF77check(void);
 
 

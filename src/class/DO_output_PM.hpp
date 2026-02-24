@@ -19,8 +19,8 @@
  *
  */
 
-char *GetOutputRoutineName(int);              // memory allocated here,never...
-char *GetOutputCoRoutineName(int);
+const char *GetOutputRoutineName(int);              // memory allocated here,never...
+const char *GetOutputCoRoutineName(int);
 
 // in main routine
 void DoMainScheme_output(Main *, Output *);

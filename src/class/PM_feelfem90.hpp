@@ -81,12 +81,12 @@ public:
 
 
   // General Function Implementation in this memory model
-  void MODULEzeroclearD(char *,char *);
-  void MODULEzeroclearI(char *,char *);
-  void MODULEmalloc    (char *,char *,char *,char *);
-  void MODULEmallocERT (char *,char *,char *,char *);
+  void MODULEzeroclearD(const char *,const char *);
+  void MODULEzeroclearI(const char *,const char *);
+  void MODULEmalloc    (const char *,const char *,const char *,const char *);
+  void MODULEmallocERT (const char *,const char *,const char *,const char *);
   void MODULEmallocCHK ();
-  void MODULEmallocF90 (char *,char *);
+  void MODULEmallocF90 (const char *,const char *);
 
   void MemAllocate(const char *name,const char *arg, const char *arg_size,
 		   int type);
@@ -98,8 +98,8 @@ public:
   // void MakeCallArgumentList   ( orderedPtrList <Variable *> &);
 
 
-  char *GetSourceName(const char *);
-  char *GetMainSourceName(void);  
+  const char *GetSourceName(const char *);
+  const char *GetMainSourceName(void);  
 
   /////////////////////////////////////////////////////
 
@@ -143,7 +143,7 @@ void DoMainScheme_solve(Main *,Solve *);
   void GenerateCoSolveIpdinfoRoutine( Solve *);  // ipdinfo routine generator
 
 
-  char *GetSolveRoutineName ( int );
+  const char *GetSolveRoutineName ( int );
   void  pushSolveRoutineName( int );
   void  pushElemRoutineName ( int );    // P2 difference  only one elem routine
   void  pushNeumannRoutineName(int ,int );
@@ -184,7 +184,7 @@ void DoMainScheme_solve(Main *,Solve *);
   ////////////////////////////////
 
 #include "DO_dirichlet_PM.hpp"
-  char *GetDirichletRoutineName( int , int  );
+  const char *GetDirichletRoutineName( int , int  );
   //  char *dirichletP2DOTEMP( char *);  /* change '(ip)' -> '_dpt' */
 
   //  void  DoDirichletArgumentVariableDefinitionsPM(Dirichlet *);
@@ -197,8 +197,8 @@ void DoMainScheme_solve(Main *,Solve *);
   //////////////////////////////
   // Neumann related routines //
   //////////////////////////////  
-  char *GetNeumannRoutineName( int , int );
-  void pushSuperDotempneumannFEMval(char *, char *);
+  const char *GetNeumannRoutineName( int , int );
+  void pushSuperDotempneumannFEMval(const char *, const char *);
 
 #include "DO_neumann_PM.hpp"
 

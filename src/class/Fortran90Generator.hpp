@@ -57,10 +57,10 @@ public:
 
   void comment();    // line  ----------
   void com();        // small *
-  void COMMENTlong(char *);
+  void COMMENTlong(const char *);
 
   // Memory allocation   allocate insentric function
-  void mallocF90(char *);
+  void mallocF90(const char *);
   void mallocF90check(void);
 
 

@@ -83,20 +83,20 @@ public:
 
 
   // General Function Implementation in this memory model
-  void MODULEzeroclearD(char *,char *);
-  void MODULEzeroclearI(char *,char *);
-  void MODULEmalloc    (char *,char *,char *,char *);
-  void MODULEmallocERT (char *,char *,char *,char *);
+  void MODULEzeroclearD(const char *,const char *);
+  void MODULEzeroclearI(const char *,const char *);
+  void MODULEmalloc    (const char *,const char *,const char *,const char *);
+  void MODULEmallocERT (const char *,const char *,const char *,const char *);
   void MODULEmallocCHK ();
-  void MODULEmallocF90 (char *,char *);
+  void MODULEmallocF90 (const char *,const char *);
 
   // General Function Implementation in Main routine
   // void MakeCalledArugumentList( char *, orderedPtrList <Variable *> &);
   // void MakeCallArgumentList   ( orderedPtrList <Variable *> &);
 
 
-  char *GetSourceName(char *);
-  char *GetMainSourceName(void);  
+  const char *GetSourceName(const char *);
+  const char *GetMainSourceName(void);  
 
 
   // Temporary generator for main routine
@@ -107,7 +107,7 @@ public:
   /////////////////////////////////////////////////////
   // General Function Implementation in Called routine
   /////////////////////////////////////////////////////
-  void DoArgumentSequenceFromMain(char *, orderedPtrList <Variable *> &);
+  void DoArgumentSequenceFromMain(const char *, orderedPtrList <Variable *> &);
   void DoDeclareVariablesFromMainPM( orderedPtrList <Variable *> );
 
   void ArgumentVariableDeclarationLst(list <Variable *>&);
@@ -141,7 +141,7 @@ void GenerateMaterialVarInitializeRoutine(void);
   void GenerateCoSolveEdevRoutine( Solve *);  // edev routine generator
   void GenerateCoSolveExtDataRoutine( Solve *); // mksolve#extdata.f90
 
-  char *GetSolveRoutineName ( int );
+  const char *GetSolveRoutineName ( int );
   void  pushSolveRoutineName( int );
   void  pushElemRoutineName ( int );    // P2 difference  only one elem routine
   void  pushNeumannRoutineName(int ,int );
@@ -179,7 +179,7 @@ void GenerateMaterialVarInitializeRoutine(void);
   ////////////////////////////////
   // Dirichlet related routines //
   ////////////////////////////////
-  char *GetDirichletRoutineName( int , int  );
+  const char *GetDirichletRoutineName( int , int  );
   //  char *dirichletP2DOTEMP( char *);  /* change '(ip)' -> '_dpt' */
 
 #include "DO_dirichlet_PM.hpp"
@@ -194,9 +194,9 @@ void GenerateMaterialVarInitializeRoutine(void);
   //////////////////////////////
   // Neumann related routines //
   //////////////////////////////  
-  char *GetNeumannRoutineName( int , int );
-  // void pushSuperDotempneumannFEMval(char *, char *);
-  void pushSuperDotempDRAMAneumannFEMval(char *, char *);
+  const char *GetNeumannRoutineName( int , int );
+  // void pushSuperDotempneumannFEMval(const char *, char *);
+  void pushSuperDotempDRAMAneumannFEMval(const char *, const char *);
 
 #include "DO_neumann_PM.hpp"
 

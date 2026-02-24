@@ -71,10 +71,10 @@ public:
   void SourceStarters();
 
   // General Function Implementation in this memory model
-  void MODULEzeroclearD(char *,char *);
-  void MODULEzeroclearI(char *,char *);
-  void MODULEmalloc    (char *,char *,char *,char *);
-  void MODULEmallocERT (char *,char *,char *,char *);
+  void MODULEzeroclearD(const char *,const char *);
+  void MODULEzeroclearI(const char *,const char *);
+  void MODULEmalloc    (const char *,const char *,const char *,const char *);
+  void MODULEmallocERT (const char *,const char *,const char *,const char *);
   void MODULEmallocCHK ();
 
   // General Function Implementation in Main routine
@@ -82,8 +82,8 @@ public:
   // void MakeCallArgumentList   ( orderedPtrList <Variable *> &);
 
 
-  char *GetSourceName(char *);
-  char *GetMainSourceName(void);  
+  const char *GetSourceName(const char *);
+  const char *GetMainSourceName(void);  
 
 
 
@@ -119,7 +119,7 @@ void GenerateMaterialVarInitializeRoutine(void);
   void GenerateCoSolve_mksdbuf ( Solve *);  // co-co generator for mksdbuf
   void GenerateCoSolve_mkexnode( Solve *);  // co-co generator for mkexnode
 
-  char *GetSolveRoutineName ( int );
+  const char *GetSolveRoutineName ( int );
   void  pushSolveRoutineName( int );
   void  pushElemRoutineName ( int );    // P2 difference  only one elem routine
   void  pushNeumannRoutineName(int ,int );
@@ -141,7 +141,7 @@ void GenerateMaterialVarInitializeRoutine(void);
   // Elem related routines //
   ///////////////////////////
 
-  string SuperRinjiEcalP2DRAMA(char *);
+  string SuperRinjiEcalP2DRAMA(const char *);
 
 
 #include "DO_elem_PM.hpp"
@@ -150,9 +150,9 @@ void GenerateMaterialVarInitializeRoutine(void);
   ////////////////////////////////
   // Dirichlet related routines //
   ////////////////////////////////
-  char *GetDirichletRoutineName( int , int  );
+  const char *GetDirichletRoutineName( int , int  );
 
-  char *dirichletP2DOTEMP( char *);  /* change '(ip)' -> '_dpt' */
+  const char *dirichletP2DOTEMP( const char *);  /* change '(ip)' -> '_dpt' */
 
   void  DoDirichletArgumentVariableDefinitionsPM(Dirichlet *);
   void  doDirichletAutoVariableDefinitionsPM(Dirichlet *);
@@ -162,9 +162,9 @@ void GenerateMaterialVarInitializeRoutine(void);
   //////////////////////////////
   // Neumann related routines //
   //////////////////////////////  
-  char *GetNeumannRoutineName( int , int );
+  const char *GetNeumannRoutineName( int , int );
 
-  void pushSuperDotempDRAMAneumannFEMval(char *, char *);
+  void pushSuperDotempDRAMAneumannFEMval(const char *, const char *);
 
 #include "DO_neumann_PM.hpp"
   

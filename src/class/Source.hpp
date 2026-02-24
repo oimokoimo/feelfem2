@@ -37,8 +37,8 @@ public:
   ~Source();
   
 
-  void startSource( char *);          // Normal open with no hierarchy
-  void startSource( char * , int );   // Open file with dependency level number
+  void startSource( const char *);          // Normal open with no hierarchy
+  void startSource( const char * , int );   // Open file with dependency level number
 
   void endSource  ( void  );
 

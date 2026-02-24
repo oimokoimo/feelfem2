@@ -24,7 +24,7 @@
   void pushInteger4Ptr1(void);   // integer,dimension(:),pointer            ::
   void pushInteger4Ptr2(void);   // integer,dimension(:,:),pointer          ::
   void pushInteger4In(void);     // integer,intent(in)                      ::
-  void pushTypeDefCC(char *);    // STRING            ....                  ::
+  void pushTypeDefCC(const char *);    // STRING            ....                  ::
   void pushLogical(void);        // locical                                 ::
 
   void writeInteger4sc(const char *);    // integer                        

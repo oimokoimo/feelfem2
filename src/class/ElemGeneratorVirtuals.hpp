@@ -29,7 +29,7 @@ class ElemGeneratorVirtuals {
 public:
 
   ElemGeneratorVirtuals() {; }
-  ~ElemGeneratorVirtuals() {; }
+  ~ElemGeneratorVirtuals() = default;
 
   //  virtual void  DoElemStarters();
 
