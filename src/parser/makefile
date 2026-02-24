@@ -23,6 +23,8 @@ CC                      = $(PLUSPLUS)
 
 SUBDIRS  = ../basic  \
             ./Syntax \
+	   ../Geometry \
+	   ../check    \
            ../Xplot++
 
 PROGRAM  = feelfem
@@ -51,11 +53,30 @@ INCLUDES     =
 
 
 #SYSLIB       = -lginac -lm -ll -lstdc++ -lc  // ginac is calling here
+
+FLIB          = -L../lib \
+		-lSyntax \
+		-lConfigure \
+		-lGeometry \
+		-lMath \
+	       	-lObject \
+	       	-lProcedure \
+	        -lQuadrature \
+		-lGeneralSchemes \
+	        -lSolve \
+	        -lVariable \
+		-lXplot++ \
+		-lbasic \
+		-lcheck \
+		-lFiniteElement \
+ 	        -lmain \
+		-lSyntax
+
 SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
 
-FEELLIB     = ../Xplot++/Xplot++.a ../check/check.a ../basic/basic.a ./Syntax/Syntax.a ../Object/Object.a
+FEELLIB     = ../Xplot++/Xplot++.a ../check/check.a ./Syntax/Syntax.a ../Variable/Variable.a ../Procedure/Procedure.a ../Solve/Solve.a ../Math/Math.a ../FiniteElement/FiniteElement.a ../Geometry/Geometry.a ../Object/Object.a ../Quadrature/Quadrature.a ../Configure/Configure.a ../basic/basic.a ../Math/Math.a ../check/check.a
 
 #FEELLIB      =  ../check/check.a Syntax/Syntax.a ../check/check.a ../info/info.a ../Element/Element.a ../Mesh/Mesh.a ../Object/Object.a ../Quadrature/Quadrature.a  ../Geometry/Geometry.a ../Bamg/Bamg.a ../gid/gid.a ../Discretization/Discretization.a ../CodeGenerator/CodeGenerator.a ../MakeMakefile/MakeMakefile.a ../Main/Main.a ../SolverLibrary/SolverLibrary.a ../MatrixModel/MatrixModel.a ../ProgramModel/ProgramModel.a ../Source/Source.a ../Scheme/Scheme.a ../Solve/Solve.a ../Assign/Assign.a ../Variable/Variable.a ../FiniteElement/FiniteElement.a ../Procedure/Procedure.a ../Configure/Configure.a ../Object/Object.a ../SourceLibrary/SourceLibrary.a ../basic/basic.a ../system/system.a ../Object/Object.a ../Math/Math.a  ../Object/Object.a ../TermConvert/TermConvert.a ../Element/Element.a  ../ginac/ginac.a ../check/check.a Syntax/Syntax.a  ../GeneralSchemes/GeneralSchemes.a ../Geometry/Geometry.a ../ginac/ginac.a ../Element/Element.a  ../ginac/ginac.a ../Web/Web.a
 
@@ -66,7 +87,7 @@ all  :  library $(PROGRAM)
 $(PROGRAM)   :  $(FEELLIB) $(OBJ)
 	touch makedate.sh
 	make makedate.o
-	$(CC) -o $(PROGRAM) $(OBJ) $(LIB) $(FEELLIB)  $(X11LIB)
+	$(CC) -o $(PROGRAM) $(OBJ) $(FLIB) $(LIB) $(X11LIB) ./Syntax/Syntax.a  2>&1 |tee /dev/tty| wc -l
 
 library :
 	@for i in $(SUBDIRS); \
