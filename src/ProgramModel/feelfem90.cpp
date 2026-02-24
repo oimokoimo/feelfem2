@@ -484,7 +484,7 @@ void PM_feelfem90::PopReturn()                     // General in PM
 /////////////////////////////////////////////////////////////////
 // General components for generating subroutines
 /////////////////////////////////////////////////////////////////
-void PM_feelfem90::pushTypeDefCC(char *s)
+void PM_feelfem90::pushTypeDefCC(const char *s)
 {
   int len = stringLength(s);
   pushSource(s);

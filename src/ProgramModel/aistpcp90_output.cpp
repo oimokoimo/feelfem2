@@ -34,7 +34,7 @@
 #include "../check/check_funcs.hpp"
 
 
-char *PM_aistpcp90::GetOutputRoutineName(int n)
+const char *PM_aistpcp90::GetOutputRoutineName(int n)
 {
   assert(n>0);
   int len = stringLength("output");

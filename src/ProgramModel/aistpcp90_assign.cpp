@@ -33,7 +33,7 @@
 #include "GeomObj.hpp"
 #include "RegionObject.hpp"
 
-char *PM_aistpcp90::GetAssignRoutineName(int n)
+const char *PM_aistpcp90::GetAssignRoutineName(int n)
 {
   assert(n>0);
   int len = stringLength("let");
@@ -68,7 +68,7 @@ void PM_aistpcp90::pushAssignRoutineName(Assign *asPtr)
 
 
 // CO-ROUTINE
-char *PM_aistpcp90::GetAssignCoRoutineName(int n)
+const char *PM_aistpcp90::GetAssignCoRoutineName(int n)
 {
   assert(n>0);
   int len = stringLength("colet");

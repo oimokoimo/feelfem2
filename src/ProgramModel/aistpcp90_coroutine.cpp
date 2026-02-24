@@ -83,7 +83,7 @@ void PM_aistpcp90::GenerateCoSolveIpdinfoRoutine(Solve *solvePtr)
   SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
 
   char  hereRoutineName[BUFSIZ];
-  char *hereSourceName;
+  const char *hereSourceName;
 
   int solveNo;
   int solveElementNo = 1;   // P2 FIXED to 1
@@ -312,7 +312,7 @@ void PM_aistpcp90::GenerateCoSolveEdevRoutine(Solve *solvePtr)
   SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
 
   char  hereRoutineName[BUFSIZ];
-  char *hereSourceName;
+  const char *hereSourceName;
 
   int solveNo;
   int solveElementNo = 1;   // P2 FIXED to 1

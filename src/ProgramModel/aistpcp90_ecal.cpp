@@ -27,8 +27,13 @@
 
 #include "EcalGeneratorTemplate.hpp"
 
+// c++20 require
+#include "Element.hpp"
+#include "EcalInfo.hpp"
+#include "DiscretizedComponent.hpp"
 
-char *PM_aistpcp90::GetEcalRoutineName( int solveNo, int elemNo) 
+
+const char *PM_aistpcp90::GetEcalRoutineName( int solveNo, int elemNo) 
 {
   int stringLength(const char *);
   int length = stringLength("ecal?");

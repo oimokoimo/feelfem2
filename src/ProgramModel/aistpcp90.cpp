@@ -73,7 +73,7 @@ void PM_aistpcp90::CloseSource()
 
 void PM_aistpcp90::pushSolveRoutineName( int no )
 {
-  char *ptr;
+  const char *ptr;
 
   ptr = GetSolveRoutineName( no );
   pushSource(ptr);
@@ -81,7 +81,7 @@ void PM_aistpcp90::pushSolveRoutineName( int no )
 }
 
 
-char *PM_aistpcp90::GetSourceName(const char *routineName)
+const char *PM_aistpcp90::GetSourceName(const char *routineName)
 {
   int   len = stringLength(routineName)+3+2;   // +2 = 90  (.f -> f90)
   char *ptr = new char[len];
