@@ -16,8 +16,8 @@
 
 #include "feeldef.hpp"
 #include "SolveElement.hpp"
+#include "Solve.hpp"
 
-class Solve;
 
 class ElemScheme {
 
