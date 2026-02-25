@@ -69,8 +69,11 @@ FLIB          = -L../lib \
 		-lProgramModel \
 		-lcheck \
 		-lFiniteElement \
+		-lMatrixModel \
 		-lElement \
+		-lSolve \
 		-lTermConvert \
+		-lFiniteElement \
  	        -lmain \
 		-lSource \
 		-lsystem\
