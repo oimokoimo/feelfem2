@@ -67,13 +67,14 @@ FLIB          = -L../lib \
 	        -lVariable \
 		-lXplot++ \
 		-lProgramModel \
-		-lbasic \
 		-lcheck \
 		-lFiniteElement \
 		-lElement \
+		-lTermConvert \
  	        -lmain \
 		-lSource \
-		-lsystem
+		-lsystem\
+                -lbasic 
 
 
 SYSLIB       = -lm -ll -lstdc++ -lc
