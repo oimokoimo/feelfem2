@@ -28,18 +28,50 @@
 #include "MakefileObject.hpp"
 
 
+// Source.cpp (どこか1か所だけ！)
+
+FILE* Source::fpSource = nullptr;
+int   Source::divideFlag = 0;
+int   Source::numberOfSourceFiles = 0;
+
+// orderedPtrList の static も全部ここで定義が必要
+orderedPtrList<MakefileObject*> Source::f90_basic_list;
+orderedPtrList<MakefileObject*> Source::f90_library_list;
+orderedPtrList<MakefileObject*> Source::f90_model_list;
+orderedPtrList<MakefileObject*> Source::f90_problem_list;
+orderedPtrList<MakefileObject*> Source::f90_main_list;
+
+orderedPtrList<MakefileObject*> Source::f77_basic_list;
+orderedPtrList<MakefileObject*> Source::f77_library_list;
+orderedPtrList<MakefileObject*> Source::f77_model_list;
+orderedPtrList<MakefileObject*> Source::f77_problem_list;
+orderedPtrList<MakefileObject*> Source::f77_main_list;
+
+orderedPtrList<MakefileObject*> Source::c_basic_list;
+orderedPtrList<MakefileObject*> Source::c_library_list;
+orderedPtrList<MakefileObject*> Source::c_model_list;
+orderedPtrList<MakefileObject*> Source::c_problem_list;
+orderedPtrList<MakefileObject*> Source::c_main_list;
+
+orderedPtrList<MakefileObject*> Source::cpp_basic_list;
+orderedPtrList<MakefileObject*> Source::cpp_library_list;
+orderedPtrList<MakefileObject*> Source::cpp_model_list;
+orderedPtrList<MakefileObject*> Source::cpp_problem_list;
+orderedPtrList<MakefileObject*> Source::cpp_main_list;
+
+
 //Constructor
 Source::Source( const char *name)
 {
-  assert(fpSource == NULL);
+  assert(fpSource == nullptr);
   
-  //  fpSource = fopen(name,"w");
-  //  if(fpSource == NULL) {
-  //    std::cerr << "Cannot open " << FEELFEM_SRC_FNAME << " to create.\n";
-  //    abortExit(1);
-  //  }
-   //  std::cerr <"DEBUG IN SOURCE(CHAR *)\n";  for debug
-   //  fpSource = stderr;                  for debug
+    fpSource = fopen(name,"w");
+    if(fpSource == nullptr) {
+      std::cerr << "Cannot open " << FEELFEM_SRC_FNAME << " to create.\n";
+      abortExit(1);
+    }
+    //std::cerr <"DEBUG IN SOURCE(CHAR *)\n";  for debug
+    //fpSource = stderr;                  for debug
   return;
 }
 
@@ -60,8 +92,8 @@ Source::~Source() =default;
 
 FILE * Source::GetSourceFP(void)
 {
-  if(fpSource == NULL) {
-    std::cerr << "File pointer is NULL in Source::GetSourceFP() \n";
+  if(fpSource == nullptr) {
+    std::cerr << "File pointer is  in Source::GetSourceFP() \n";
     abortExit(1);
   }
   return(fpSource);
@@ -70,13 +102,13 @@ FILE * Source::GetSourceFP(void)
 
 void Source::startSource(const char *str)       // this is called OpenSource 
 {
-  if(divideFlag == 1 && fpSource != NULL) {
-    std::cerr << "fpSource is not NULL while calling startSource()\n";
+  if(divideFlag == 1 && fpSource != nullptr) {
+    std::cerr << "fpSource is not nullptr while calling startSource()\n";
     abortExit(1);
   }
 
   fpSource = fileOpenToWrite(str);
-  if(fpSource == NULL) {
+  if(fpSource == nullptr) {
     std::cerr << "Cannot open " <<str << " to write.\n";
     abortExit(1);
   }
@@ -89,13 +121,13 @@ void Source::startSource(const char *str)       // this is called OpenSource
 
 void Source::startSource(const char *str , int makeFlag)
 {
-  if(divideFlag == 1 && fpSource != NULL) {
+  if(divideFlag == 1 && fpSource !=nullptr) {
     std::cerr << "fpSource is not NULL while calling startSource()\n";
     abortExit(1);
   }
 
   fpSource = fileOpenToWrite(str);
-  if(fpSource == NULL) {
+  if(fpSource == nullptr) {
     std::cerr << "Cannot open " <<str << " to write.\n";
     abortExit(1);
   }
@@ -108,12 +140,12 @@ void Source::startSource(const char *str , int makeFlag)
 
 void Source::endSource(void)
 {
-  if(fpSource == NULL) {
-    std::cerr <<"Try to close NULL pointer in endSource()\n";
+  if(fpSource == nullptr) {
+    std::cerr <<"Try to close nullptr pointer in endSource()\n";
     abortExit(1);
   }
   fclose(fpSource);
-  fpSource = NULL;
+  fpSource = nullptr;
 
   return;
 }
