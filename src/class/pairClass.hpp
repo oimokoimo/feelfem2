@@ -68,7 +68,7 @@ public:
   StrStrPair(const char *,const char *);   // constructor
   StrStrPair(const char *);
 
-  ~StrStrPair(void)=default;                       // destructor
+  ~StrStrPair(void);                       // destructor
 
   int IsMatchFirstComponent( string &str) {
     return( str == first );
