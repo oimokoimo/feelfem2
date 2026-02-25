@@ -23,6 +23,7 @@
 #ifndef FEM_CLASS_FORTRAN90GENERATOR
 #define FEM_CLASS_FORTRAN90GENERATOR
 
+#include <cstdio>
 
 #define F90_TEXT_LENGTH   78
 #define F90_TEXT_FROM     60

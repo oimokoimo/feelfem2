@@ -20,6 +20,15 @@
  *
  *
  *  Purpose  : General function prototype declarations
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -30,7 +39,7 @@
 
 char *getdate(void);   // system/getdate.cpp(1999/10/27)
 int   streq(const char *,const char *);
-void  dbgGeneratorReport( char *, char *);  // 2000/03/24
+void  dbgGeneratorReport( const char *, const char *);  // 2000/03/24
 int   getSpaceDimension(void);              // 2000/10/20
 int   stringLength(const char *);           // 2000/12/26 strlen
 int   strindex(const char *,const char *);  // 2001/01/31 strindex

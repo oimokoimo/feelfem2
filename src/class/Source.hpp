@@ -33,7 +33,7 @@ class Source {
   
 public:
   Source();         // Normal Constructor for nested class
-  Source(char *);   // Initializer 
+  Source(const char *);   // Initializer 
   ~Source();
   
 
