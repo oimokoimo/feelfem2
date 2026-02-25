@@ -66,11 +66,15 @@ FLIB          = -L../lib \
 	        -lSolve \
 	        -lVariable \
 		-lXplot++ \
+		-lProgramModel \
 		-lbasic \
 		-lcheck \
 		-lFiniteElement \
+		-lElement \
  	        -lmain \
-		-lSyntax
+		-lSource \
+		-lsystem
+
 
 SYSLIB       = -lm -ll -lstdc++ -lc
 
