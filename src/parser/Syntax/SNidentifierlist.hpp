@@ -28,12 +28,12 @@
 class SNidentifierlist : public SNunit {
 public:
   explicit SNidentifierlist(int);
-  ~SNidentifierlist() override;
+  ~SNidentifierlist() ;
 
   SNname*& operator[](int i) { return contents[i]; }
   SNname*  operator[](int i) const { return contents[i]; }
 
-  void print(std::ostream&) override;
+  void print(std::ostream&) ;
 
   void StoreContentsInStringLst(list<string>&);
 
