@@ -1,0 +1,94 @@
+/*
+ *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999
+ *                       Programmed by Hidehiro  FUJIO
+ *
+ *  Filename : MT_P2CRSelem.cpp
+ *  Date     : 1999/12/10
+ *  Modified : 1999/12/10
+ *  Modified : 2002/02/02 orderedPtrList
+ *  
+ *  Purpose  : Element assembly routine for model P2/CRS
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
+ *  
+ */
+#include "MT_P2CRS.hpp"
+
+
+void MT_P2CRS::DoElemRoutineHeaderMT(SolveElement *sePtr)
+{
+  doElemArgumentSequenceMT(sePtr);
+  doElemStarters();                // just call SourceStarters();
+
+  doElemDeclareArgumentVariablesPM( sePtr );
+
+  doElemVariableDefinitionsMT();                
+
+}
+
+void MT_P2CRS::doElemArgumentSequenceMT(SolveElement *sePtr)
+{
+  pushSource("      subroutine ");
+  pushElemRoutineName(sePtr->GetSolveNo(),sePtr->GetElemNo());
+  pushSource("(x,y,ielem,matno,nelem,np,");
+  flushSource();
+
+  pushSource("     $ ");
+  pushMatrixArgumentsCalled();
+  pushSource(",IPD");
+  flushSource();
+  
+  pushSource("     $     ");
+  orderedPtrList <Variable *> varPtrLst = sePtr->GetVariablePtrLst();
+  listIterator <Variable *> itr(varPtrLst);
+  for(itr.init(); !itr;++itr) {
+    string a;
+    pushSource(",");
+    NameVariableInCalled(itr(),a);
+    pushSource(a);
+  }
+  pushSource(")");
+  flushSource();
+
+  return;
+}
+
+void MT_P2CRS::DoElemAssembleMatrix(int flag)
+{
+
+  writeSource("      do 300 j=1,NDF");
+  writeSource("        jp   = ikp(j)");
+  writeSource("        iptf = iptrcol(jp)");
+  writeSource("        iptt = iptrcol(jp+1)-1");
+  writeSource("        do 400 k=1,NDF");
+  writeSource("          kp=ikp(k)");
+  writeSource("          do 500 L=iptf,iptt    ");
+  writeSource("            if(indrow(L) .EQ. kp) goto 505");
+  writeSource(" 500      continue");
+  writeSource("*--- err         ");
+  writeSource("          write(*,*) 'cannot find'    ");
+  writeSource("          stop 'elem'");
+  writeSource("*--- err");
+  writeSource(" 505      continue         ");
+  writeSource("          valmat(L) = valmat(L)+ea(j,k)");
+  writeSource(" 400    continue");
+  writeSource(" 300  continue    ");
+  comment();
+
+  writeSource("      do 600 j=1,NDF");
+  writeSource("        vfg(ikp(j))=vfg(ikp(j))+eb(j)");
+  writeSource(" 600  continue");
+  comment();
+
+  return;
+}
+
+
+

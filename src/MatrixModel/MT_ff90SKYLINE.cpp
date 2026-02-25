@@ -1,0 +1,372 @@
+/*
+ *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999,2000
+ *                       Programmed by Hidehiro  FUJIO
+ *
+ *  Filename : MT_ff90SKYLINE.cpp
+ *  Date     : 2002/03/05  (Made from MT_ff90AMGCRS.cpp)
+ *  Modified : 
+ *  
+ *  Purpose  :
+ *  
+ *  1. Constructors/destructors
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
+ *  
+ */
+
+#include "ElemGeneratorTemplate.hpp"
+#include "MT_ff90SKYLINE.hpp"
+
+
+// 1. Constructors, destructors
+
+MT_ff90SKYLINE::MT_ff90SKYLINE() 
+{
+  return;   // do nothing now
+}
+
+MT_ff90SKYLINE::~MT_ff90SKYLINE() 
+{
+  return;   // do nothing now
+}
+
+// 2. CoSolve Routine definitions
+//    ElemGenerator Main  
+
+void MT_ff90SKYLINE::GenerateCoSolveElemGenerator (Solve *solvePtr)
+{
+  ElemGeneratorTemplate<MT_ff90SKYLINE> *ptrEG =
+    new ElemGeneratorTemplate<MT_ff90SKYLINE>();
+  ptrEG->NormalAssembly(solvePtr,solvePtr->GetIthSolveElementPtr(0)); //P2 limi
+
+  return;
+}
+
+
+void MT_ff90SKYLINE::F90useSolveMT( void )
+{
+  writeSource("! Matrix data structure related modules");
+  writeSource("use mod_mat_skyline");
+  com();
+  
+  return;
+}
+
+////////////////////////////////////////////////////
+//  General routine
+////////////////////////////////////////////////////
+void MT_ff90SKYLINE::pushMatrixArgumentsCalled()
+{
+  pushSource("vkgs,vkgd,vkgi,ncof,vfg,kld,kh,neq");
+  return;
+}
+
+void MT_ff90SKYLINE::writeMatrixDeclarations()
+{
+  //real(kind=REAL8),dimension(:) ,pointer :: vkgs,vkgd,vkgi")
+  //integer,dimension(:)          ,pointer :: kld,kh");
+  writeReal8Ptr1("vkgs,vkgd,vkgi,vfg"); 
+  writeInteger4Ptr1("kld,kh");
+  writeInteger4sc("ncof");
+  return;
+}
+
+//  solve routine matrix dependent parts
+void MT_ff90SKYLINE::DoSolveVariableDefinitionsMT()
+{
+  COMMENTlong("Matrix related variables");
+
+  writeMatrixDeclarations();
+
+  writeInteger4Ptr1("kha");      // for work     
+  com();
+
+  return;
+}
+
+void MT_ff90SKYLINE::DoSolveInitializerMT(Solve *solvePtr)
+{
+  // do nothing for skyline solver
+  return;
+}
+
+
+void MT_ff90SKYLINE::pushMatrixArgumentsAllocated(void)
+{
+  pushMatrixArgumentsCalled();             // same in Fortran 90
+  return;
+}
+
+
+
+// ### Matrix allocation in solve routine
+
+void MT_ff90SKYLINE::DoSolveMatrixAllocate( Solve *)
+{
+  COMMENTlong("Matrix array allocation  (Skyline:Program Model feelfem90)");
+
+  MemAllocate("kld","neq+1","neq+1",TYPE_INTEGER4);
+  MemAllocate("kh" ,"neq"  ,"neq"  ,TYPE_INTEGER4);
+  MemAllocate("kha","npmax","npmax",TYPE_INTEGER4);
+  com();
+
+  MODULEzeroclearI("kha","npmax");
+  com();
+
+  writeSource("call cal_ht_a(ielem,nelem,np,kha,npmax)");
+  com();
+  
+  writeSource("! make KH array");
+  writeSource("call cal_ht(kha,kh,ipf,ipd,npmax,neq)");
+  com();
+  
+  writeSource("! make kld");
+  writeSource("call make_kld(kh,kld,neq,ncof)");
+  com();
+
+  MemDeallocate("kha","npmax","npmax",TYPE_INTEGER4);
+  com();  
+
+  writeSource("! vkgs(upper) vkgi(lower) vkgd(diagonal)");
+  MemAllocate("vkgs","ncof","ncof",TYPE_REAL8);
+  MemAllocate("vkgi","ncof","ncof",TYPE_REAL8);
+  MemAllocate("vkgd","neq" ,"neq", TYPE_REAL8);
+  MemAllocate("vfg" ,"neq" ,"neq", TYPE_REAL8);
+
+  com();
+
+  MODULEzeroclearD("vkgs","ncof");
+  MODULEzeroclearD("vkgi","ncof");
+  MODULEzeroclearD("vkgd","neq" );
+  MODULEzeroclearD("vfg" ,"neq" );
+  com();
+
+  return;
+}
+
+
+////////////////////////////////////////////////////
+//  call assemble routine
+////////////////////////////////////////////////////
+void MT_ff90SKYLINE::DoSolveCallAssembleRoutine( Solve *solvePtr)
+{
+  int fem_exchange_variables;
+  SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
+  orderedPtrList <Variable *> varPtrLst = sePtr->GetVariablePtrLst();
+  
+  fem_exchange_variables = 0;
+  listIterator <Variable *> itr(varPtrLst);
+  for(itr.init(); !itr;++itr) {
+    if(itr()->GetType() == VAR_FEM) fem_exchange_variables++;
+  }
+
+  
+  COMMENTlong(" Assemble routine call");
+  pushSource("call ");
+  pushElemRoutineName( solvePtr->GetSolveNo());
+  pushSource("(ielem,matno,nelem,np,              &");
+  flushSource();
+
+  pushSource( "      ");
+  pushCoordinateSource();
+  pushSource(",ipf,ipd,npmax                       &");
+  flushSource();
+
+  // related variables (FEM,EWISE,SCALAR variables)
+  pushSource( "     ");
+  for(itr.init(); !itr;++itr) {
+    pushSource(",");
+    pushVariableInCalled(itr());
+  }
+
+  pushSource(",");
+  pushMatrixArgumentsAllocated();
+  pushSource(")");
+  flushSource();
+  com();
+
+  return;
+}
+
+
+////////////////////////////////////////////////////
+//  call Neumann data routine
+////////////////////////////////////////////////////
+void MT_ff90SKYLINE::DoSolveCallLinearNeumannData( Solve *solvePtr)
+{
+  int nconds = solvePtr->GetNconds();
+
+  if(nconds == 0) {
+    COMMENTlong("No Neumann Condition");
+    return;
+  }
+
+  COMMENTlong("Neumann Conditions");
+  
+  for(int i=0;i<nconds;i++) {
+
+    doIthNeumannCallInSolvePM(solvePtr,i);
+
+    //    pushSource("call ");
+    //    pushNeumannRoutineName(solvePtr->GetSolveNo(),i+1);
+    //    pushSource("(nbedtno(");
+    //    pushSourceInt(i+1);
+    //    pushSource("),firstEdatPtr,                   &");
+    //    flushSource();
+    //
+    //    pushSource("     npmax,");
+    //    pushCoordinateSource();
+    //    pushSource(",ipf,ipd                             &");
+    //    flushSource();  
+    //
+    //    pushSource("    ");
+    //    /* Additional variables */
+    //    orderedPtrList<Variable *>varPtrLst = solvePtr->GetIthNeumannVariablePtrLst(i);
+    //    listIterator <Variable *>itr(varPtrLst);
+    //
+    //    /* Domain variables */
+    //    pushVariableListInSolve( varPtrLst );
+
+    
+    pushSource(",");
+    pushMatrixArgumentsAllocated();
+    pushSource(")");
+    flushSource();
+
+    doIthNeumannCallInSolvePM2(solvePtr,i);
+
+
+    com();
+  }
+
+  return;
+}
+
+////////////////////////////////////////////////////
+//  call Dirichlet data routine
+////////////////////////////////////////////////////
+void MT_ff90SKYLINE::DoSolveCallLinearDirichletData( Solve *solvePtr)
+{
+  int dconds = solvePtr->GetDconds();
+
+  if(dconds == 0) {
+    COMMENTlong("No Dirichlet Condition");
+    return;
+  }
+
+  COMMENTlong("Dirichlet Conditions");
+  
+  for(int i=0;i<dconds;i++) {
+
+    doIthDirichletCallInSolvePM(solvePtr,i);
+
+    //    pushSource("! No.");
+    //    pushSourceInt(i+1);
+    //    flushSource();
+    //
+    //    pushSource("call ");
+    //    pushDirichletRoutineName(solvePtr->GetSolveNo(),i+1);
+    //    pushSource("(nsetno(");
+    //    pushSourceInt(i+1);
+    //    pushSource("),firstNsetPtr,                &");
+    //    flushSource();
+    //
+    //    pushSource( "       ");
+    //    pushCoordinateSource();
+    //    pushSource(",ipf,ipd,npmax                           &");
+    //    flushSource();
+    //
+    //    pushSource("       ");
+    //    pushVariableListInCalled(solvePtr->GetIthDirichletVariablePtrLst(i));
+
+
+    pushSource(",");
+    pushMatrixArgumentsCalled();
+    pushSource(")");
+    flushSource();
+
+    doIthDirichletCallInSolvePM2(solvePtr,i);   // end do
+
+  }
+
+  com();
+  return;
+}
+
+///////////////////////////////////////
+// Edev routine calling sequence to edev
+///////////////////////////////////////
+
+void MT_ff90SKYLINE::DoSolveCallEdevRoutine( Solve *solvePtr)
+{
+
+  COMMENTlong("Call Edev Routine");
+
+  pushSource("call ");
+  pushEdevRoutineName( solvePtr->GetSolveNo(), 1 );  // P2FIX  NEG is 1
+  pushSource("(vfg,ipd, &");
+  flushSource();
+
+  pushSource("  ielem,nelem,np");
+  SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0);   // P2FIX NEG is 1
+  pushVariableListInCalled( sePtr->GetUnknownVariablePtrLst());
+  pushSource(")");
+  flushSource();
+  
+  comment();
+
+  return;
+}
+
+void MT_ff90SKYLINE::DoSolveFreeMemoryMT()
+{
+  COMMENTlong("deallocate matrix related arrays");
+
+  writeSource("if(associated(kld)) then");
+  writeSource(" deallocate(kld)");
+  writeSource("end if");
+  com();
+
+  writeSource("if(associated(kh)) then");
+  writeSource(" deallocate(kh)");
+  writeSource("end if");
+  com();
+
+  writeSource("if(associated(vkgi)) then");
+  writeSource(" deallocate(vkgi)");
+  writeSource("end if");
+  com();
+
+  writeSource("if(associated(vkgs)) then");
+  writeSource(" deallocate(vkgs)");
+  writeSource("end if");
+  com();
+
+  writeSource("if(associated(vkgd)) then");
+  writeSource(" deallocate(vkgd)");
+  writeSource("end if");
+  com();
+
+  writeSource("deallocate(vfg)");
+  com();
+}
+
+void MT_ff90SKYLINE::DoSolveMakeUpdateInformationMT()
+{
+  // AMG make information and initialize amg
+  COMMENTlong("Matrix dependent initialization");
+  writeSource("! none required for AMGCRS");
+  //  writeSource("call amg_initialize()");
+  //  writeSource("!call initcommon()");
+  //  writeSource("!call amg_alloc_clearcounters()");
+  com();
+
+  return;
+}
