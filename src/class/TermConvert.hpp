@@ -101,7 +101,7 @@ public:
 
   void GetConvertedUserFuncStrList(list <string> &);
   void GetConvertedUserFuncStrInReverseList( list <string> &);
-  void StoreIgnoreSymbolLstForConvertedStrLst(char *nm);
+  void StoreIgnoreSymbolLstForConvertedStrLst(const char *nm);
 
   // for boundary normal component
   // TermConvert_SpecialStore_Boundary.cpp
@@ -127,7 +127,7 @@ public:
   void putChar(char);  // write outputBuf
   void putIdentifier(void);
   void putIdentifierReverse(void);   // simple reverse (2002/04/01)
-  void putStr(char *);
+  void putStr(const char *);
   //  void putStr(string &);
 
   void print(std::ostream &);
