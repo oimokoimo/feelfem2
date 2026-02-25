@@ -43,7 +43,7 @@ public:
     return (type); 
   }
 
-  void SetExprStr(char *);
+  void SetExprStr(const  char *);
   void SetNodePtr( Node *);
   void SetBoundaryNodePtr( Node *);
 
@@ -65,7 +65,7 @@ public:
   Interpolation *GetBoundaryInterp_tetra(void);
   Interpolation *GetBoundaryInterp_cube(void);
 
-  void print(ostream &ost);
+  void print(std::ostream &ost);
 
 private:
   int   type;        // INTERP_TYPE_NODAL,

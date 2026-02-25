@@ -23,8 +23,8 @@
 
 void setGinacExprToCharBuf(char *buf,int bufsiz);  // for MakeBoundaryElement_*
 
-void setExprGinacEvaluate(char *);
-void subsExprGinacEvaluate(int,char *);
+void setExprGinacEvaluate(const char *);
+void subsExprGinacEvaluate(int,const char *);
 void subsExprGinacEvaluate(int,double);
 int  isExprGinacNumeric(void);
 double getDoubleExprGinac(void);
