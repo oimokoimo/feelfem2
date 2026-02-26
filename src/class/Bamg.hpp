@@ -117,7 +117,7 @@ public:
   Bamg();
   ~Bamg();
 
-  void makeBamgGeom( char *filename );   // generate geometry file
+  void makeBamgGeom( const char *filename );   // generate geometry file
 
 
 
