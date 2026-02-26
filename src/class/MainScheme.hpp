@@ -27,7 +27,7 @@ class Main;
 class MainScheme {
 public:
   MainScheme();
-  virtual ~MainScheme() = default;
+  virtual ~MainScheme();
 
   // Scheme Libraries
   void NormalMainProgram( Main *);
