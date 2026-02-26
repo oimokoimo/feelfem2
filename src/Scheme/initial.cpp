@@ -22,10 +22,6 @@
 // Solve class
 int Solve::solves       = 0;
 
-// Source class
-FILE *Source::fpSource   = NULL;
-int   Source::divideFlag = 0;
-
 // SolveScheme class
 int SolveScheme::solveSchemes = 0;
 

@@ -41,6 +41,7 @@
 //}
 
 // static variable in class Source declaration
+/*
 int Source::numberOfSourceFiles = 0;         // initialization 
 orderedPtrList <MakefileObject *> Source::f90_basic_list;
 orderedPtrList <MakefileObject *> Source::f90_library_list;
@@ -65,6 +66,7 @@ orderedPtrList <MakefileObject *> Source::cpp_library_list;
 orderedPtrList <MakefileObject *> Source::cpp_model_list;
 orderedPtrList <MakefileObject *> Source::cpp_problem_list;
 orderedPtrList <MakefileObject *> Source::cpp_main_list;
+*/
 
 
 void Source::StoreSourceUniq(const char *name, int makeFlag)
