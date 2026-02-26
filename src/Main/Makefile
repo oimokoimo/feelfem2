@@ -15,7 +15,7 @@ HDRS     =
 .cpp.o:
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
 
-PROGRAM  = main.a
+PROGRAM  = Main.a
 OBJS     = feelfem.o 
 
 all : $(PROGRAM)
