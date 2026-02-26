@@ -6,13 +6,12 @@
  *  Date     : 1999/11/18
  *  Modified : 1999/11/18
  *  Modified : 2001/01/31 LINKLEVEL_SOLVE added
- *  
+ *
  *  Purpose  : Solve routine generator template
- *  
+ *
  *             SolveScheme class deals with only pure abstract scheme.
  *             SolveGeneratorTemplate deals with implementation
  *                                    (ex. let XXX = OP(YYY) etc.)
- *  
  */
 
 #ifndef FEM_CLASS_SOLVEGENERATORTEMPLATE
@@ -21,279 +20,227 @@
 #include "feelfuncs.hpp"
 #include "SolveScheme.hpp"
 
-// if possible, it should be template
+// forward declarations（ヘッダ依存を軽くする）
+class Solve;
 
-template <class MatMODEL> class SolveGeneratorTemplate
-  : public MatMODEL, public SolveScheme {
+template <class MatMODEL>
+class SolveGeneratorTemplate : public MatMODEL, public SolveScheme {
 public:
-  SolveGeneratorTemplate() {;}            // do nothing NOW!!!!!!!!!!!!!!!!!!!!
-  ~SolveGeneratorTemplate(){;}
+  SolveGeneratorTemplate() = default;
+  ~SolveGeneratorTemplate() = default;
 
-  //Several Initializers
-  void SetSolveNo2SolveGeneratorTemplate( int no ){
+  // Several Initializers
+  void SetSolveNo2SolveGeneratorTemplate(int no)
+  {
     solveNo     = no;
-    routineName = GetSolveRoutineName( no );
-
-    return;
+    routineName = this->GetSolveRoutineName(no); // two-phase lookup 対応
   }
 
   void SolveRoutineInitialize   (Solve *);
   void SolveRoutineTerminate    (Solve *);
 
   void SolveRoutineHeader       (Solve *);   // Language dependent
-  
   void SolveParameters          (Solve *);
-
-  void SolveVariableDefinitions (Solve *);  
-
+  void SolveVariableDefinitions (Solve *);
   void SolveInitializer         (Solve *);
-  
   void SolveDegreeOfFreedom     (Solve *);
-
-  void SolveAssemblyPreparation  (Solve *);
-
+  void SolveAssemblyPreparation (Solve *);
   void SolveBoundaryDataPreparation (Solve *);
-  
   void SolveMatrixAllocate      (Solve *);
-
   void SolveCallAssembleRoutine (Solve *);
-
   void SolveNeumannConditions   (Solve *);
-
   void SolveDirichletConditions (Solve *);
-
   void SolvePostProcess         (Solve *);   // edev routine
-
   void SolveTerminateSequence   (Solve *);
-
   void SolveReturnSequence      (Solve *);
 
   /////////////////////////////////////////////////////////////////////
 
   // Library dependent functions (SolveHeader)
-  virtual void DoSolveRoutineHeaderInLIB( char *,Solve *);
-  
+  virtual void DoSolveRoutineHeaderInLIB(const char *, Solve *);
+
   // Library dependent functions (SolveVariableDefinitions)
   virtual void SolverLibraryParameters();
   virtual void SolverLibraryVariableDefinition();
 
   // Library dependent functions (SolveCallSolvers)
-  virtual void SolveCallSolverRoutine   (Solve *);
-  virtual void GenerateCoSolveRoutinesLIB(Solve *);  
-
+  virtual void SolveCallSolverRoutine    (Solve *);
+  virtual void GenerateCoSolveRoutinesLIB(Solve *);
 
 private:
-  char *routineName;
-  char *sourceName;
-  int   solveNo;
-  
+  const char *routineName = nullptr;
+  const char *sourceName  = nullptr;
+  int         solveNo     = 0;
 };
 
 ///////////////////////////////////////////////////////////
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveRoutineInitialize(Solve *solvePtr)
-{
-  solveNo = solvePtr->GetSolveNo();
-  routineName = GetSolveRoutineName( solveNo );   // PM routine
-  sourceName  = GetSourceName(routineName);  // Source file name
-  OpenSource(sourceName,LINKLEVEL_SOLVE);  // PM routine
 
-  return;
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveRoutineInitialize(Solve *solvePtr)
+{
+  solveNo     = solvePtr->GetSolveNo();
+  routineName = this->GetSolveRoutineName(solveNo);   // PM routine
+  sourceName  = this->GetSourceName(routineName);     // Source file name
+  this->OpenSource(sourceName, LINKLEVEL_SOLVE);      // PM routine
 }
 
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveRoutineTerminate(Solve *solvePtr)
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveRoutineTerminate(Solve *solvePtr)
 {
-  CloseSource();            // PM routine
-/*
-  ElemGeneratorTemplate<MatMODEL> *ptrEG =
-    new ElemGeneratorTemplate<MatMODEL>();
-    ptrEG->DistributedAssembly(solve,solve.GetIthSolveElementPtr(0)); //P2 limi
-    */
-
+  this->CloseSource();            // PM routine
 
   // coroutine generation
-  GenerateCoSolveElemGenerator( solvePtr );   // MT  call ElemGeneratorTemplate
-                                              // Written in MT_*****
-  //  GenerateCoSolveMathRoutineGenerator(solvePtr);
-  //  cerr << "SolveGenaratorTemplate::SolveRoutineTerminate(){\n" <<
-  //    "                         GenerateCoSolveMathRoutineGenerator(); \n"
-  //  << endl;
+  this->GenerateCoSolveElemGenerator(solvePtr);  // MT (ElemGeneratorTemplate呼び)
+                                                 // Written in MT_*****
 
-
-  GenerateCoSolveRoutinesLIB(solvePtr);       // dependent on LIB
-  GenerateCoSolveRoutines(solvePtr);          // dependent on PM, 
-
-  return;
+  this->GenerateCoSolveRoutinesLIB(solvePtr);    // dependent on LIB
+  this->GenerateCoSolveRoutines(solvePtr);       // dependent on PM
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveRoutineHeader(Solve *solvePtr)
-{ 
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveRoutineHeader(Solve *solvePtr)
+{
+  // Language dependent, main part is in LIB class
+  this->DoSolveRoutineHeaderInLIB(routineName, solvePtr);
 
-  // Language dependent
-  // Main part is in LIB class
-
-  DoSolveRoutineHeaderInLIB(routineName, solvePtr );
-
-  //
-  //  DoArgumentSequenceFromMain( routineName, solve.VariablePtrLst() ); //PM
-  //  DoSolveStarters();                                                 //PM
-
-
-  return;
-}
-  
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveParameters          (Solve *solvePtr)
-{ 
-  
-  DoSolveParametersPM( solvePtr );           //PM
-  SolverLibraryParameters();              //LIB
-
-  return;
+  // this->DoArgumentSequenceFromMain(routineName, solvePtr->VariablePtrLst()); // PM (if used)
+  // this->DoSolveStarters();                                                  // PM (if used)
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveVariableDefinitions (Solve *solvePtr)
-{ 
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveParameters(Solve *solvePtr)
+{
+  this->DoSolveParametersPM(solvePtr);  // PM
+  this->SolverLibraryParameters();     // LIB
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveVariableDefinitions(Solve *solvePtr)
+{
   // Auto variables
-
-  DoSolveVariableDefinitionsPM(solvePtr); //Matrix independent variable parts)
-  DoSolveVariableDefinitionsMT();        //Matrix dependent variable parts)
+  this->DoSolveVariableDefinitionsPM(solvePtr); // Matrix independent variable parts
+  this->DoSolveVariableDefinitionsMT();         // Matrix dependent variable parts
 
   // Library dependent variables
-  SolverLibraryVariableDefinition();  //LIB
-  return;
+  this->SolverLibraryVariableDefinition();      // LIB
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveInitializer         (Solve *solvePtr)
-{ 
-  DoSolveInitialDefPM ( solvePtr );  // data statements nenfre, etc.
-
-  DoSolveInitializerMT( solvePtr );
-  DoSolveInitializerPM( solvePtr );
-  return;
-}  
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveDegreeOfFreedom     (Solve *solvePtr)
-{ 
-  DoSolveDegreeOfFreedom(solvePtr);
-  return;
-}  
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveAssemblyPreparation (Solve *solvePtr)
-{ 
-  DoSolveAssemblyPreparation(solvePtr);
-  return;
-}  
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveBoundaryDataPreparation( Solve *solvePtr)
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveInitializer(Solve *solvePtr)
 {
-  DoSolveBoundaryDataPreparation( solvePtr );
-  return;
+  this->DoSolveInitialDefPM(solvePtr);   // data statements nenfre, etc.
+
+  this->DoSolveInitializerMT(solvePtr);
+  this->DoSolveInitializerPM(solvePtr);
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveMatrixAllocate      (Solve *solvePtr)
-{ 
-  DoSolveMatrixAllocate (solvePtr);
-  return;
-}
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveCallAssembleRoutine (Solve *solvePtr)
-{ 
-  DoSolveCallAssembleRoutine (solvePtr);                    //MT
-  DoSolveReport(solvePtr->GetSolveNo(),"Assemble routine");
-  return;
-}
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveNeumannConditions   (Solve *solvePtr)
-{ 
-  DoSolveCallLinearNeumannData( solvePtr );                 // MT
-  DoSolveReport(solvePtr->GetSolveNo(),"Neumann routine");
-  return;
-}
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveDirichletConditions (Solve *solvePtr)
-{ 
-  DoSolveCallLinearDirichletData( solvePtr );
-  DoSolveReport(solvePtr->GetSolveNo(),"Dirichlet routine");
-  return;
-}  
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolvePostProcess         (Solve *solvePtr)   // edev routine
-{ 
-  DoSolveReport(solvePtr->GetSolveNo(),"Solver routine");
-  DoSolveCallEdevRoutine(solvePtr);
-  return;
-}
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveTerminateSequence   (Solve *solvePtr)
-{ 
-  //  cout << "SolveTerminateSequence\n";
-  return;
-}
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveReturnSequence   (Solve *solvePtr)
-{ 
-  DoSolveFreeMemoryMT();              // MT dependent free memory
-  doSolveFreeMemoryPM(solvePtr);      // PM dependent free memory
-  DoSolveReturnSequence(solvePtr);
-  return;
-}
-  
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolveCallSolverRoutine (Solve *solvePtr)
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveDegreeOfFreedom(Solve *solvePtr)
 {
-  dbgGeneratorReport("SolveGeneratorTemplate::SolveCallSolverRoutine",
-  	             "virtual function in SolveGeneratorTemplate.hpp called");
-  return;
+  this->DoSolveDegreeOfFreedom(solvePtr);
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-GenerateCoSolveRoutinesLIB(Solve *)
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveAssemblyPreparation(Solve *solvePtr)
 {
-  dbgGeneratorReport("SolveGeneratorTemplate::GenerateCoSolveRoutinesLIB",
-  	             "virtual function in SolveGeneratorTemplate.hpp called");
-  return;
+  this->DoSolveAssemblyPreparation(solvePtr);
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolverLibraryParameters()
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveBoundaryDataPreparation(Solve *solvePtr)
 {
-  dbgGeneratorReport("SolveGeneratorTemplate::DoSolveParametersLIB",
-  	             "virtual function in SolveGeneratorTemplate.hpp called");
-  return;
+  this->DoSolveBoundaryDataPreparation(solvePtr);
 }
 
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-SolverLibraryVariableDefinition()
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveMatrixAllocate(Solve *solvePtr)
 {
-  dbgGeneratorReport("SolveGeneratorTemplate::DoSolveParametersLIB",
-  	             "virtual function in solverLibraryVariableDefinition.hpp called");
-  return;
+  this->DoSolveMatrixAllocate(solvePtr);
 }
 
-
-
-template <class MatMODEL> void SolveGeneratorTemplate<MatMODEL>::
-DoSolveRoutineHeaderInLIB(char *oimo,Solve *solvePtr)
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveCallAssembleRoutine(Solve *solvePtr)
 {
-  dbgGeneratorReport("SolveGeneratorTemplate<MatMODEL>::DoSolveRoutineInLIB()",
-  	             "virtual function in SolveGeneratorTemplate.hpp called");
-  return;
+  this->DoSolveCallAssembleRoutine(solvePtr);                   // MT
+  this->DoSolveReport(solvePtr->GetSolveNo(), "Assemble routine");
 }
 
-#endif
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveNeumannConditions(Solve *solvePtr)
+{
+  this->DoSolveCallLinearNeumannData(solvePtr);                 // MT
+  this->DoSolveReport(solvePtr->GetSolveNo(), "Neumann routine");
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveDirichletConditions(Solve *solvePtr)
+{
+  this->DoSolveCallLinearDirichletData(solvePtr);
+  this->DoSolveReport(solvePtr->GetSolveNo(), "Dirichlet routine");
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolvePostProcess(Solve *solvePtr)
+{
+  this->DoSolveReport(solvePtr->GetSolveNo(), "Solver routine");
+  this->DoSolveCallEdevRoutine(solvePtr);
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveTerminateSequence(Solve *)
+{
+  // do nothing
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveReturnSequence(Solve *solvePtr)
+{
+  this->DoSolveFreeMemoryMT();          // MT dependent free memory
+  this->doSolveFreeMemoryPM(solvePtr);  // PM dependent free memory
+  this->DoSolveReturnSequence(solvePtr);
+}
+
+///////////////////////////////////////////////////////////////////
+// default virtual hooks (safe stubs)
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolveCallSolverRoutine(Solve *)
+{
+  this->dbgGeneratorReport(
+      "SolveGeneratorTemplate::SolveCallSolverRoutine",
+      "virtual function in SolveGeneratorTemplate.hpp called");
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::GenerateCoSolveRoutinesLIB(Solve *)
+{
+  this->dbgGeneratorReport(
+      "SolveGeneratorTemplate::GenerateCoSolveRoutinesLIB",
+      "virtual function in SolveGeneratorTemplate.hpp called");
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolverLibraryParameters()
+{
+  this->dbgGeneratorReport(
+      "SolveGeneratorTemplate::SolverLibraryParameters",
+      "virtual function in SolveGeneratorTemplate.hpp called");
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::SolverLibraryVariableDefinition()
+{
+  this->dbgGeneratorReport(
+      "SolveGeneratorTemplate::SolverLibraryVariableDefinition",
+      "virtual function in SolveGeneratorTemplate.hpp called");
+}
+
+template <class MatMODEL>
+inline void SolveGeneratorTemplate<MatMODEL>::DoSolveRoutineHeaderInLIB(const char *, Solve *)
+{
+  this->dbgGeneratorReport(
+      "SolveGeneratorTemplate<MatMODEL>::DoSolveRoutineHeaderInLIB",
+      "virtual function in SolveGeneratorTemplate.hpp called");
+}
+
+#endif // FEM_CLASS_SOLVEGENERATORTEMPLATE

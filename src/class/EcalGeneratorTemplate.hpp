@@ -1,14 +1,12 @@
 /*
- *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999
+ *  feelfem version 1.0  Copyright(c)  NEC Corporation 1999-2002
  *                       Programmed by Hidehiro  FUJIO
  *
- *  Filename : ElemGeneratorTemplate.hpp
- *  Date     : 1999/12/09
- *  Modified : 1999/12/09
- *  Modified : 2001/01/31  ADD LINKLEVEL_ELEM
- *  Modified : 2001/11/29  ADD Vector Assemble version
+ *  Filename : EcalGeneratorTemplate.hpp
+ *  Date     : 2002/02/19
+ *  Modified :
  *
- *  Purpose  : Element assembly routine generator
+ *  Purpose  :
  *
  *
  *  feelfem2 (modernized/ported)
@@ -19,175 +17,147 @@
  *
  *  Notes:
  *
- *
  */
 
-#ifndef FEM_CLASS_ELEMGENERATOR
-#define FEM_CLASS_ELEMGENERATOR
+#ifndef FEM_CLASS_ECALGENERATOR
+#define FEM_CLASS_ECALGENERATOR
 
-#include <iostream>   // for std::cout (constructor debug message)
 #include "SolveElement.hpp"
-#include "ElemScheme.hpp"
-#include "ElemGeneratorVirtuals.hpp"
+#include "DiscretizedComponent.hpp"
 
-template <class MatMODEL>
-class ElemGeneratorTemplate : public MatMODEL, public ElemScheme {
+#include "EcalScheme.hpp"
+#include "EcalInfo.hpp"
+
+// forward declarations
+class Solve;
+
+template <class ProgMODEL>
+class EcalGeneratorTemplate : public ProgMODEL, public EcalScheme {
 public:
-  ElemGeneratorTemplate() { ; }
-  ElemGeneratorTemplate(SolveElement *) {
-    std::cout << "Do nothing ElemGeneratorTemplate constructor(SolveElement*)\n";
-  }
-  ~ElemGeneratorTemplate() { ; }
+  EcalGeneratorTemplate() = default;
+  ~EcalGeneratorTemplate() = default;
 
-  void ElemRoutineInitialize  (Solve *,SolveElement *);
-  void ElemRoutineTerminate   (void);
+  // EcalScheme overrides
+  void EcalRoutineInitialize  (Solve *, SolveElement *) override;
+  void EcalRoutineTerminate   (SolveElement *) override;
 
-  void ElemRoutineHeader      (SolveElement *);
-  void ElemParameters         (SolveElement *);
-  void ElemVariableDefinitions(SolveElement *);
-  void ElemInitializer        (SolveElement *);
-  void ElemElementLoopStart   (SolveElement *,int);  // int is flag for own/ex
-  void ElemCallEcalRoutine    (SolveElement *,int);
-  void ElemAssembleMatrix     (SolveElement *,int);
-  void ElemElementLoopEnd     (SolveElement *,int);
-  void ElemReturnSequence     (SolveElement *);
+  void EcalRoutineHeader      (SolveElement *) override;
+  void EcalParameters         (SolveElement *) override;
+  void EcalVariableDefinitions(SolveElement *) override;
+  void EcalInitializer        (SolveElement *) override;
 
-  // for vector processing
-  void ElemQuadratureLoopStart (SolveElement *,int);  // int is Quadrature No.
-  void ElemQuadratureLoopEnd   (SolveElement *,int);
-  void ElemQuadLoopPreparation (SolveElement *,int);
-  void ElemQuadLoopMakeAllElement(SolveElement *,int);
+  void EcalElementMatInitialize(SolveElement *) override;
+
+  // start loop
+  void EcalQuadLoopStart     (int, SolveElement *) override;
+  void EcalCalcJacobian      (int, SolveElement *) override;
+  void EcalSetValAtGaussP    (int, SolveElement *) override;
+  void EcalCalcElementMatRHS (int, SolveElement *) override;
+  void EcalQuadLoopEnd       (int, SolveElement *) override;
+
+  void EcalReturnSequence     (SolveElement *) override;
 
 private:
-  int   solveNo;
-  int   elemNo;
-  char *routineName;
-  char *sourceName;
+  int         solveNo   = 0;
+  int         ecalNo    = 0;
+  const char *routineName = nullptr;
+  const char *sourceName  = nullptr;
+
+  EcalInfo   *ecalInfoPtr  = nullptr; // 既存設計を尊重（所有権は別途）
 };
 
 ///////////////////////////////////////////////////////////
 // Implementation
 ///////////////////////////////////////////////////////////
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemRoutineInitialize(Solve *solvePtr,
-                                                            SolveElement *solveElementPtr)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalRoutineInitialize(
+    Solve *solvePtr, SolveElement *solveElementPtr)
 {
-  solveNo     = solvePtr->GetSolveNo();
-  elemNo      = solveElementPtr->GetElemNo();
-  routineName = this->GetElemRoutineName(solveNo, elemNo);
+  solveNo = solvePtr->GetSolveNo();
+  ecalNo  = solveElementPtr->GetElemNo();  // elem = ecal
+
+  routineName = this->GetEcalRoutineName(solveNo, ecalNo);
   sourceName  = this->GetSourceName(routineName);
-  this->OpenSource(sourceName, LINKLEVEL_ELEM);
-  return;
+  this->OpenSource(sourceName, LINKLEVEL_ECAL);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemRoutineTerminate(void)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalRoutineTerminate(SolveElement *sePtr)
 {
   this->CloseSource();
-  return;
+
+  // generate eset routine
+  this->GenerateCoSolveEcalRoutines(sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemRoutineHeader(SolveElement *solveElementPtr)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalRoutineHeader(SolveElement *solveElementPtr)
 {
-  this->DoElemRoutineHeaderMT(solveElementPtr);    // MT model
-  return;
+  this->DoEcalRoutineHeader(solveElementPtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemParameters(SolveElement *solveElementPtr)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalParameters(SolveElement *solveElementPtr)
 {
-  this->DoElemParameters(solveElementPtr);           // PM
-  return;
+  this->DoEcalParameters(solveElementPtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemVariableDefinitions(SolveElement *solveElementPtr)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalVariableDefinitions(
+    SolveElement *solveElementPtr)
 {
-  this->DoElemVariableDefinitionsPM(solveElementPtr);    // PM
-  return;
+  this->DoEcalVariableDefinitions(solveElementPtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemInitializer(SolveElement *solveElementPtr)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalInitializer(SolveElement *)
 {
-  this->DoElemInitializer(solveElementPtr);       // PM  data ienp,iedp, call eset
-  return;
+  // 元コード通り：今は何もしない
+  // this->DoEcalInitializer(solveElementPtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemElementLoopStart(SolveElement *solveElementPtr,
-                                                           int flag)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalElementMatInitialize(SolveElement *sePtr)
 {
-  (void)solveElementPtr; // kept for interface compatibility; not used here
-  this->DoElemElementLoopStart(flag);                // PM
-  return;
+  this->DoEcalElementMatInitialize(sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemQuadratureLoopStart(SolveElement *solveElementPtr,
-                                                              int quadNo)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalQuadLoopStart(int quadNo, SolveElement *sePtr)
 {
-  this->DoElemQuadratureLoopStart(solveElementPtr, quadNo); // PM
-  return;
+  this->DoEcalQuadLoopStart(quadNo, sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemQuadLoopPreparation(SolveElement *solveElementPtr,
-                                                              int quadNo)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalCalcJacobian(int quadNo, SolveElement *sePtr)
 {
-  this->DoElemQuadLoopPreparation(solveElementPtr, quadNo); // PM
-  return;
+  this->DoEcalCalcJacobian(quadNo, sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemQuadLoopMakeAllElement(SolveElement *solveElementPtr,
-                                                                 int quadNo)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalSetValAtGaussP(int quadNo, SolveElement *sePtr)
 {
-  this->DoElemQuadLoopMakeAllElement(solveElementPtr, quadNo); // PM
-  return;
+  this->DoEcalSetValAtGaussP(quadNo, sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemCallEcalRoutine(SolveElement *solveElementPtr,
-                                                          int flag)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalCalcElementMatRHS(
+    int quadNo, SolveElement *sePtr)
 {
-  this->DoElemCallEcalRoutine(solveElementPtr, flag);  // PM
-  return;
+  this->DoEcalCalcElementMatRHS(quadNo, sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemAssembleMatrix(SolveElement *solveElementPtr,
-                                                         int flag)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalQuadLoopEnd(int quadNo, SolveElement *sePtr)
 {
-  (void)solveElementPtr; // kept for interface compatibility; not used here
-  this->DoElemAssembleMatrix(flag);                   // MT
-  return;
+  this->DoEcalQuadLoopEnd(quadNo, sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemElementLoopEnd(SolveElement *solveElementPtr,
-                                                         int flag)
+template <class ProgMODEL>
+inline void EcalGeneratorTemplate<ProgMODEL>::EcalReturnSequence(SolveElement *sePtr)
 {
-  (void)solveElementPtr; // kept for interface compatibility; not used here
-  this->DoElemElementLoopEnd(flag);                   // PM
-  return;
+  this->DoEcalReturnSequence(sePtr);
 }
 
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemQuadratureLoopEnd(SolveElement *solveElementPtr,
-                                                            int flag)
-{
-  this->DoElemQuadratureLoopEnd(solveElementPtr, flag); // PM
-  return;
-}
-
-template <class MatMODEL>
-void ElemGeneratorTemplate<MatMODEL>::ElemReturnSequence(SolveElement *solveElementPtr)
-{
-  this->DoElemReturnSequence(solveElementPtr);                   // PM
-  return;
-}
-
-#endif // FEM_CLASS_ELEMGENERATOR
+#endif // FEM_CLASS_ECALGENERATOR

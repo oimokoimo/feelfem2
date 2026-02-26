@@ -12,7 +12,7 @@
 
 #ifndef FEELFEM_FEELFEMHPP
 #define FEELFEM_FEELFEMHPP
-
+#include <iostream>
 
 #define NOTE(MESG)  if(feelfem_debug) std::cerr << MESG << std::endl
 

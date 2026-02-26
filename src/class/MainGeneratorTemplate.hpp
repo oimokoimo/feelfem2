@@ -80,8 +80,8 @@ public:
 private:
   int   solveNo;
   int   elemNo;
-  char *routineName;
-  char *sourceName;
+  const char *routineName;
+  const char *sourceName;
 };
 
 ///////////////////////////////////////////////////////////
