@@ -22,10 +22,10 @@
 #ifndef FEM_ASSIGN_CLASS
 #define FEM_ASSIGN_CLASS
 
+#include <iostream>
 #include "Variable.hpp"
 #include "orderedPtrList.hpp"
 
-class ostream;
 
 class SNassignment;
 class GeomObj;
@@ -138,7 +138,7 @@ public:
 
   friend SNassignment;
 
-  void print(ostream &);
+  void print(std::ostream &);
 
 private:
 
