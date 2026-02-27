@@ -34,10 +34,11 @@ typedef int SNweqTerms;
 typedef int SNweqTerm;
 typedef int SNsolveNeumannPairs;
  
-#include "y.tab.h"
+#include "feelfem.tab.h"
 #include "lex.h" 
  
  int numberOfLines;   /* Lines processed by lex */
+ int yylineno = 1;
 
  char *freshString(char *);   
 
@@ -171,7 +172,7 @@ on              return(ON);
 "'"             return('\'');
 "$"             return('$');
 [ \t]+          ;
-\n              numberOfLines++;
+\n              numberOfLines++; yylineno++;
 %%
 
 #include <stdlib.h>

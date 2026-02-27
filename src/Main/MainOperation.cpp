@@ -37,11 +37,7 @@ Main::Main()
 
 
 
-Main::~Main()
-{
-  // do nothing;
-  return;
-}
+Main::~Main() = default;
 
 
 void Main::AddVariablePtr( Variable *vPtr )
