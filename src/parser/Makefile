@@ -60,14 +60,14 @@ PROGRAM  = feelfem
 
 MAKEFILE = Makefile
 
-SRC      = y.tab.c \
+SRC      = feelfem.tab.c \
            main.cpp \
            makedate.c \
            version.c  \
            debug_execute.cpp
            
 
-OBJ      = y.tab.o  \
+OBJ      = feelfem.tab.o  \
            main.o   \
            lex.yy.o \
            version.o \
@@ -82,7 +82,8 @@ INCLUDES     =
 
 CFLAGS       = $(OPTION) $(INCLUDES)
 
-SYSLIB       = -lginac -lm -ll -lstdc++ -lc
+#SYSLIB       = -lginac -lm -ll -lstdc++ -lc
+SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
 
