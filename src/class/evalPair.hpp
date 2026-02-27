@@ -73,7 +73,7 @@ public:
   }
 
 
-  ~evalPair();
+  ~evalPair() = default;
 
   void setValue( double val )
   {

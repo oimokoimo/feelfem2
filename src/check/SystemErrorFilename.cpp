@@ -26,7 +26,7 @@
 static list <string> sourceFileList;
 static int sourceNo = 0;
 
-void storeSourceFileName( char *filename)
+void storeSourceFileName( const char *filename)
 {
   sourceFileList.addlast( filename );
   sourceNo++;

@@ -96,7 +96,7 @@ all  :  library $(PROGRAM)
 $(PROGRAM)   :  $(FEELLIB) $(OBJ)
 	touch makedate.sh
 	make makedate.o
-	$(CC) -o $(PROGRAM) $(OBJ) $(LIB) $(FEELLIB)  $(X11LIB)
+	$(CC) -o $(PROGRAM) $(OBJ) $(LIB) $(FEELLIB)  $(X11LIB) 2>&1 |tee /dev/tty| wc -l
 
 library :
 	@for i in $(SUBDIRS); \
@@ -108,7 +108,7 @@ feelfem.tab.c feelfem.tab.h : feelfem.y
 	sed s/getenv\(\)/getenv\(char\*\)/ <y.tab.c >oimo.oimo
 	mv oimo.oimo y.tab.c
 
-lex.yy.o : lex.yy.c lex.h y.tab.h
+lex.yy.o : lex.yy.c lex.h feelfem.tab.h
 	$(CC) -c $(CFLAGS) lex.yy.c
 
 lex.yy.c : feelfem.lex

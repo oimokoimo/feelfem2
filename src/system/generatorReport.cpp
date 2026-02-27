@@ -16,7 +16,7 @@
 
 #define DBG
 
-void dbgGeneratorReport( char *module, char *mesg )
+void dbgGeneratorReport(const char *module,const char *mesg )
 {
   static int flag = 0;
   FILE      *fpDBG;
