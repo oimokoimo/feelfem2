@@ -7,6 +7,15 @@
  *  Modified : 2003/01/04
  *  
  *  Purpose  : MUMPS Centralized assembled matrix input
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -18,19 +27,16 @@
 
 
 //Default constructor 
-LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::LIB_feelfem90smpiMUMPSCA()
+template <> LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::LIB_feelfem90smpiMUMPSCA()
 {
   return;   // do nothing
 }
 
 
 //Default Destructor
-LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::~LIB_feelfem90smpiMUMPSCA()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::~LIB_feelfem90smpiMUMPSCA() = default;
 
-void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   DoSolveMakeUpdateInformationMT();       // update information making(for some solvers)
 
@@ -66,7 +72,7 @@ void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolveCallSolverRoutine(Solve
   return;
 }
 
-void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::F90useSolveLIB(void)
+template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::F90useSolveLIB(void)
 {
   writeSource("! MUMPSCA solver related modules");
   //  writeSource("! inclue 'amg_samg'  ! interface definition");
@@ -76,13 +82,13 @@ void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::F90useSolveLIB(void)
 }
 
 
-void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryParameters(void)
+template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryParameters(void)
 {
   doNothingNow("void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryVariableDefinition(void)
+template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryVariableDefinition(void)
 {
   COMMENTlong("Solver Library dependent variables(MUMPSCA)");
   writeSource("! all values are in type(DMUMPS_STRUC) ");
@@ -92,7 +98,7 @@ void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryVariableDefinit
   return;
 }
 //
-void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::
+template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
@@ -117,13 +123,13 @@ DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
   return;
 }
 
-void LIB_feelfem90smpiMUMPSCA<MT_ff90smpiMUMPSCA>::
+template <> void LIB_feelfem90smpiMUMPSCA<MT_ff90smpiMUMPSCA>::
 GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 {
   SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
 
   char  hereRoutineName[BUFSIZ];
-  char *hereSourceName;
+  const char *hereSourceName;
 
   int solveElementNo = 1;   // P2 FIXED to 1
 
@@ -138,7 +144,7 @@ GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 
 
 //Library dependent solve-co routine generator
-void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::
+template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::
 GenerateCoSolveRoutinesLIB(Solve *solvePtr)
 {
   GenerateCoSolveSolverParamRoutine(solvePtr);  // nothing in MUMPSCA

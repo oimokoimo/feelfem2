@@ -59,6 +59,7 @@ FLIB          = -L../lib \
 		-lConfigure \
 		-lGeometry \
 		-lMath \
+		-lAssign \
 	       	-lObject \
 	       	-lProcedure \
 	        -lQuadrature \
@@ -72,10 +73,13 @@ FLIB          = -L../lib \
 		-lMatrixModel \
 		-lElement \
 		-lSolve \
+		-lScheme \
 		-lTermConvert \
 		-lFiniteElement \
+		-lConfigure \
  	        -lmain \
 		-lSource \
+		-lObject \
 		-lsystem\
                 -lbasic 
 

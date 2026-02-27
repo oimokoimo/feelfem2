@@ -18,19 +18,16 @@
 
 
 //Default constructor 
-LIB_feelfem90wasblk <MT_ff90AMGCRS>::LIB_feelfem90wasblk()
+template <> LIB_feelfem90wasblk <MT_ff90AMGCRS>::LIB_feelfem90wasblk()
 {
   return;   // do nothing
 }
 
 
 //Default Destructor
-LIB_feelfem90wasblk <MT_ff90AMGCRS>::~LIB_feelfem90wasblk()
-{
-  return;  // do nothing;
-}
+template <>LIB_feelfem90wasblk <MT_ff90AMGCRS>::~LIB_feelfem90wasblk()=default;
 
-void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   DoSolveMakeUpdateInformationMT();       // update information making(for some solvers)
 
@@ -95,7 +92,7 @@ void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolveCallSolverRoutine(Solve *solvePtr
   return;
 }
 
-void LIB_feelfem90wasblk <MT_ff90AMGCRS>::F90useSolveLIB(void)
+template<> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::F90useSolveLIB(void)
 {
   writeSource("! wasblk solver related modules");
   writeSource("! use mod_wasblk    ! interface definition");
@@ -105,7 +102,7 @@ void LIB_feelfem90wasblk <MT_ff90AMGCRS>::F90useSolveLIB(void)
 }
 
 
-void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryParameters(void)
+template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryParameters(void)
 {
   writeSource("! wasblk parameters");
   writeSource("integer,parameter     :: nkinds = 2           ! temporary");
@@ -115,7 +112,7 @@ void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryParameters(void)
   return;
 }
 
-void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryVariableDefinition(void)
+template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryVariableDefinition(void)
 {
   COMMENTlong("Solver Library dependent variables(wasblk)");
   writeSource("real(kind=REAL8),dimension(:),pointer :: resvec");
@@ -139,7 +136,7 @@ void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryVariableDefinition(void)
   return;
 }
 //
-void LIB_feelfem90wasblk <MT_ff90AMGCRS>::
+template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
@@ -167,13 +164,13 @@ DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
   return;
 }
 
-void LIB_feelfem90wasblk<MT_ff90AMGCRS>::
+template <> void LIB_feelfem90wasblk<MT_ff90AMGCRS>::
 GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 {
   SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
 
   char  hereRoutineName[BUFSIZ];
-  char *hereSourceName;
+  const char *hereSourceName;
 
   int solveElementNo = 1;   // P2 FIXED to 1
 
@@ -380,7 +377,7 @@ GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 
 
 //Library dependent solve-co routine generator
-void LIB_feelfem90wasblk <MT_ff90AMGCRS>::
+template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::
 GenerateCoSolveRoutinesLIB(Solve *solvePtr)
 {
   GenerateCoSolveSolverParamRoutine(solvePtr);

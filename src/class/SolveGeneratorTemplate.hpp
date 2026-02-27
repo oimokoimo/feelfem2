@@ -206,7 +206,7 @@ inline void SolveGeneratorTemplate<MatMODEL>::SolveReturnSequence(Solve *solvePt
 template <class MatMODEL>
 inline void SolveGeneratorTemplate<MatMODEL>::SolveCallSolverRoutine(Solve *)
 {
-  this->dbgGeneratorReport(
+  dbgGeneratorReport(
       "SolveGeneratorTemplate::SolveCallSolverRoutine",
       "virtual function in SolveGeneratorTemplate.hpp called");
 }
@@ -214,7 +214,7 @@ inline void SolveGeneratorTemplate<MatMODEL>::SolveCallSolverRoutine(Solve *)
 template <class MatMODEL>
 inline void SolveGeneratorTemplate<MatMODEL>::GenerateCoSolveRoutinesLIB(Solve *)
 {
-  this->dbgGeneratorReport(
+  dbgGeneratorReport(
       "SolveGeneratorTemplate::GenerateCoSolveRoutinesLIB",
       "virtual function in SolveGeneratorTemplate.hpp called");
 }
@@ -222,7 +222,7 @@ inline void SolveGeneratorTemplate<MatMODEL>::GenerateCoSolveRoutinesLIB(Solve *
 template <class MatMODEL>
 inline void SolveGeneratorTemplate<MatMODEL>::SolverLibraryParameters()
 {
-  this->dbgGeneratorReport(
+  dbgGeneratorReport(
       "SolveGeneratorTemplate::SolverLibraryParameters",
       "virtual function in SolveGeneratorTemplate.hpp called");
 }
@@ -230,7 +230,7 @@ inline void SolveGeneratorTemplate<MatMODEL>::SolverLibraryParameters()
 template <class MatMODEL>
 inline void SolveGeneratorTemplate<MatMODEL>::SolverLibraryVariableDefinition()
 {
-  this->dbgGeneratorReport(
+  dbgGeneratorReport(
       "SolveGeneratorTemplate::SolverLibraryVariableDefinition",
       "virtual function in SolveGeneratorTemplate.hpp called");
 }
@@ -238,7 +238,7 @@ inline void SolveGeneratorTemplate<MatMODEL>::SolverLibraryVariableDefinition()
 template <class MatMODEL>
 inline void SolveGeneratorTemplate<MatMODEL>::DoSolveRoutineHeaderInLIB(const char *, Solve *)
 {
-  this->dbgGeneratorReport(
+  dbgGeneratorReport(
       "SolveGeneratorTemplate<MatMODEL>::DoSolveRoutineHeaderInLIB",
       "virtual function in SolveGeneratorTemplate.hpp called");
 }

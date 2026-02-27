@@ -7,6 +7,15 @@
  *  Modified : 2000/03/24
  *  
  *  Purpose  : Baserman's distributed CRS matrix library solver
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 #include "feelfem.hpp"
@@ -17,7 +26,7 @@
 
 
 //Default constructor 
-LIB_feelP2AchimLoc <MT_P2CRSLOC>::LIB_feelP2AchimLoc()
+template <> LIB_feelP2AchimLoc <MT_P2CRSLOC>::LIB_feelP2AchimLoc()
 {
   return;   // do nothing
 }
@@ -25,12 +34,9 @@ LIB_feelP2AchimLoc <MT_P2CRSLOC>::LIB_feelP2AchimLoc()
 
 
 //Default Destructor
-LIB_feelP2AchimLoc <MT_P2CRSLOC>::~LIB_feelP2AchimLoc()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelP2AchimLoc <MT_P2CRSLOC>::~LIB_feelP2AchimLoc() = default;
 
-void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolveCallSolverRoutine(Solve *solvePtr)
+template<> void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   wrtDEBUGcode("* LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolveCallSolverRoutine");
 
@@ -69,7 +75,7 @@ void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolveCallSolverRoutine(Solve *solvePtr)
 
 // SolverLibrary dependent program portions
 
-void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryParameters(void)
+template <> void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryParameters(void)
 {
   wrtDEBUGcode("* LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryParameters");
 
@@ -77,7 +83,7 @@ void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryParameters(void)
   return;
 }
 
-void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryArgumentVariableDefinition(void)
+template <> void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryArgumentVariableDefinition(void)
 {
   wrtDEBUGcode("* LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryArgumentVariableDefinition");
 
@@ -85,7 +91,7 @@ void LIB_feelP2AchimLoc <MT_P2CRSLOC>::SolverLibraryArgumentVariableDefinition(v
   return;
 }
 
-void LIB_feelP2AchimLoc <MT_P2CRSLOC>::
+template <> void LIB_feelP2AchimLoc <MT_P2CRSLOC>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   wrtDEBUGcode("LIB_feelP2AchimLoc <MT_P2CRSLOC>::DoSolveRoutineHeaderInLIB");

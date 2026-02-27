@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  :
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 #include "MT_P2SID.hpp"
@@ -15,7 +24,7 @@
 
 
 //Default constructor 
-LIB_feelP2iwashita <MT_P2SID>::LIB_feelP2iwashita()
+template <> LIB_feelP2iwashita <MT_P2SID>::LIB_feelP2iwashita()
 {
   return;   // do nothing
 }
@@ -23,12 +32,9 @@ LIB_feelP2iwashita <MT_P2SID>::LIB_feelP2iwashita()
 
 
 //Default Destructor
-LIB_feelP2iwashita <MT_P2SID>::~LIB_feelP2iwashita()
-{
-  return;  // do nothing;
-}
+template <>LIB_feelP2iwashita <MT_P2SID>::~LIB_feelP2iwashita() = default;
 
-void LIB_feelP2iwashita <MT_P2SID>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelP2iwashita <MT_P2SID>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   writeSource("*=========================");
   writeSource("* CALL iwashita SOLVER    ");
@@ -65,7 +71,7 @@ void LIB_feelP2iwashita <MT_P2SID>::SolveCallSolverRoutine(Solve *solvePtr)
 }
 
 //
-void LIB_feelP2iwashita <MT_P2SID>::
+template <> void LIB_feelP2iwashita <MT_P2SID>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   DoArgumentSequenceFromMain( routineName, solvePtr->VariablePtrLst() ); //PM

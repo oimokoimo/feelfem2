@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  : cg110loc version to use in single
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -16,7 +25,7 @@
 
 
 //Default constructor 
-LIB_feelP2AchimCG <MT_P2CRS>::LIB_feelP2AchimCG()
+template<>LIB_feelP2AchimCG <MT_P2CRS>::LIB_feelP2AchimCG()
 {
   return;   // do nothing
 }
@@ -24,12 +33,9 @@ LIB_feelP2AchimCG <MT_P2CRS>::LIB_feelP2AchimCG()
 
 
 //Default Destructor
-LIB_feelP2AchimCG <MT_P2CRS>::~LIB_feelP2AchimCG()
-{
-  return;  // do nothing;
-}
+template<> LIB_feelP2AchimCG <MT_P2CRS>::~LIB_feelP2AchimCG() = default;
 
-void LIB_feelP2AchimCG <MT_P2CRS>::SolveCallSolverRoutine(Solve *solvePtr)
+template <>void LIB_feelP2AchimCG <MT_P2CRS>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   wrtDEBUGcode("LIB_feelP2AchimCG <MT_P2CRS>::SolveCallSolverRoutine");
 
@@ -66,7 +72,7 @@ void LIB_feelP2AchimCG <MT_P2CRS>::SolveCallSolverRoutine(Solve *solvePtr)
 }
 
 //
-void LIB_feelP2AchimCG <MT_P2CRS>::
+template <> void LIB_feelP2AchimCG <MT_P2CRS>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   wrtDEBUGcode("* LIB_feelP2AchimCG <MT_P2CRS>::DoSolveRoutineHeaderInLIB");

@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  : Lumping solver
+ *
+ *  
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -18,19 +27,16 @@
 
 
 //Default constructor 
-LIB_feelfem90Lumping <MT_ff90LUMPING>::LIB_feelfem90Lumping()
+template <> LIB_feelfem90Lumping <MT_ff90LUMPING>::LIB_feelfem90Lumping()
 {
   return;   // do nothing
 }
 
 
 //Default Destructor
-LIB_feelfem90Lumping <MT_ff90LUMPING>::~LIB_feelfem90Lumping()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelfem90Lumping <MT_ff90LUMPING>::~LIB_feelfem90Lumping() = default;
 
-void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   DoSolveMakeUpdateInformationMT();       // update information making(for some solvers)
 
@@ -49,7 +55,7 @@ void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolveCallSolverRoutine(Solve *solveP
   return;
 }
 
-void LIB_feelfem90Lumping <MT_ff90LUMPING>::F90useSolveLIB(void)
+template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::F90useSolveLIB(void)
 {
   writeSource("! solver related modules");
   //  writeSource("use mod_skyline_solver");
@@ -59,13 +65,13 @@ void LIB_feelfem90Lumping <MT_ff90LUMPING>::F90useSolveLIB(void)
 }
 
 
-void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryParameters(void)
+template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryParameters(void)
 {
   //  doNothingNow("void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryVariableDefinition(void)
+template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryVariableDefinition(void)
 {
   COMMENTlong("Solver Library dependent variables(Skyline)");
   //  pushReal8Ptr1();
@@ -77,7 +83,7 @@ void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryVariableDefinition(void
   return;
 }
 //
-void LIB_feelfem90Lumping <MT_ff90LUMPING>::
+template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
@@ -106,7 +112,7 @@ DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
   return;
 }
 
-void LIB_feelfem90Lumping<MT_ff90LUMPING>::
+template <> void LIB_feelfem90Lumping<MT_ff90LUMPING>::
 GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 {
   // no routine is necessary for lumping
@@ -116,7 +122,7 @@ GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 
 
 //Library dependent solve-co routine generator
-void LIB_feelfem90Lumping <MT_ff90LUMPING>::
+template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::
 GenerateCoSolveRoutinesLIB(Solve *solvePtr)
 {
   GenerateCoSolveSolverParamRoutine(solvePtr);

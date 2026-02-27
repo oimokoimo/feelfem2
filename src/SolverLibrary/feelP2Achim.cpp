@@ -15,7 +15,7 @@
 
 
 //Default constructor 
-LIB_feelP2Achim <MT_P2CRS>::LIB_feelP2Achim()
+template<> LIB_feelP2Achim <MT_P2CRS>::LIB_feelP2Achim()
 {
   return;   // do nothing
 }
@@ -23,12 +23,9 @@ LIB_feelP2Achim <MT_P2CRS>::LIB_feelP2Achim()
 
 
 //Default Destructor
-LIB_feelP2Achim <MT_P2CRS>::~LIB_feelP2Achim()
-{
-  return;  // do nothing;
-}
+template<>  LIB_feelP2Achim <MT_P2CRS>::~LIB_feelP2Achim() = default;
 
-void LIB_feelP2Achim <MT_P2CRS>::SolveCallSolverRoutine(Solve *solvePtr)
+template<> void LIB_feelP2Achim <MT_P2CRS>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   wrtDEBUGcode("* LIB_feelP2Achim <MT_P2CRS>::SolveCallSolverRoutine");
 
@@ -51,7 +48,7 @@ void LIB_feelP2Achim <MT_P2CRS>::SolveCallSolverRoutine(Solve *solvePtr)
 }
 
 //
-void LIB_feelP2Achim <MT_P2CRS>::DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) 
+template<> void LIB_feelP2Achim <MT_P2CRS>::DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) 
 {
   wrtDEBUGcode("* LIB_feelP2Achim <MT_P2CRS>::DoSolveRoutineHeaderInLIB");
 

@@ -7,6 +7,15 @@
  *  Modified : 1999/11/11
  *  
  *  Purpose  :
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -16,20 +25,17 @@
 #include "LIB_feelP2Skyline.hpp"
 
 //template <class MatMODEL> LIB_feelP2Skyline <MatMODEL>::~LIB_feelP2Skyline()
-LIB_feelP2Skyline <MT_P2Skyline>::LIB_feelP2Skyline()
+template <> LIB_feelP2Skyline <MT_P2Skyline>::LIB_feelP2Skyline()
 {
   return;  // do nothing
 }
 
 
 //template <class MatMODEL> LIB_feelP2Skyline <MatMODEL>::~LIB_feelP2Skyline()
-LIB_feelP2Skyline <MT_P2Skyline>::~LIB_feelP2Skyline()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelP2Skyline <MT_P2Skyline>::~LIB_feelP2Skyline()=default;
 
 //template <class MatMODEL> LIB_feelP2Skyline <MatMODEL>::SolveCallSolverRoutine()
-void LIB_feelP2Skyline <MT_P2Skyline>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelP2Skyline <MT_P2Skyline>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   writeSource("*=========================");
   writeSource("* CALL SKYLINE SOLVER     ");
@@ -56,20 +62,20 @@ void LIB_feelP2Skyline <MT_P2Skyline>::SolveCallSolverRoutine(Solve *solvePtr)
 
 // SolverLibrary dependent program portions
 
-void LIB_feelP2Skyline <MT_P2Skyline>::SolverLibraryParameters(void)
+template <> void LIB_feelP2Skyline <MT_P2Skyline>::SolverLibraryParameters(void)
 {
   doNothingNow("void LIB_feelP2Skyline <MT_P2Skyline>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelP2Skyline <MT_P2Skyline>::SolverLibraryArgumentVariableDefinition(void)
+template <> void LIB_feelP2Skyline <MT_P2Skyline>::SolverLibraryArgumentVariableDefinition(void)
 {
   doNothingNow("void LIB_feelP2Skyline <MT_P2Skyline>::SolverLibraryArgumentVariableDefinition(void)");
   return;
 }
 
 //
-void LIB_feelP2Skyline <MT_P2Skyline>::
+template<> void LIB_feelP2Skyline <MT_P2Skyline>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   DoArgumentSequenceFromMain( routineName, solvePtr->VariablePtrLst() ); //PM

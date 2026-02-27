@@ -18,20 +18,17 @@
 
 
 //Default constructor 
-LIB_feelfem90AchimCG <MT_ff90AMGCRS>::LIB_feelfem90AchimCG()
+template <> LIB_feelfem90AchimCG <MT_ff90AMGCRS>::LIB_feelfem90AchimCG()
 {
   return;   // do nothing
 }
 
 
 //Default Destructor
-LIB_feelfem90AchimCG <MT_ff90AMGCRS>::~LIB_feelfem90AchimCG()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelfem90AchimCG <MT_ff90AMGCRS>::~LIB_feelfem90AchimCG() = default;
 
 
-void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   //  DoSolveMakeUpdateInformationMT(); 
   // update information making(for some solvers)
@@ -80,7 +77,7 @@ void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolveCallSolverRoutine(Solve *solvePt
   return;
 }
 
-void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::F90useSolveLIB(void)
+template <> void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::F90useSolveLIB(void)
 {
   writeSource("! AMG solver related modules");
   writeSource("use mod_achim_cg");
@@ -90,13 +87,13 @@ void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::F90useSolveLIB(void)
 }
 
 
-void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryParameters(void)
+template <> void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryParameters(void)
 {
   doNothingNow("void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryVariableDefinition(void)
+template <> void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryVariableDefinition(void)
 {
   COMMENTlong("Solver Library dependent variables");
   writeSource("real(kind=REAL8),dimension(:),pointer :: resvec");
@@ -115,7 +112,7 @@ void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryVariableDefinition(void)
 }
 
 //
-void LIB_feelfem90AchimCG<MT_ff90AMGCRS>::
+template <> void LIB_feelfem90AchimCG<MT_ff90AMGCRS>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   DoArgumentSequenceFromMain( routineName, solvePtr->VariablePtrLst() ); //PM
@@ -135,7 +132,7 @@ DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
 
 
-void LIB_feelfem90AchimCG<MT_ff90AMGCRS>::
+template <> void LIB_feelfem90AchimCG<MT_ff90AMGCRS>::
 GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 {
   SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
@@ -154,7 +151,7 @@ GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 }
 
 //Library dependent solve-co routine generator
-void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::
+template <> void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::
 GenerateCoSolveRoutinesLIB(Solve *solvePtr)
 {
   GenerateCoSolveSolverParamRoutine(solvePtr);    // iu, etc set

@@ -8,6 +8,15 @@
  *  
  *  Purpose  : Baserman's distributed CRS matrix library solver
  *  
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
+ *
  */
 
 #include "feelfem.hpp"
@@ -18,19 +27,16 @@
 
 
 //Default constructor 
-LIB_feelfem90Skyline <MT_ff90SKYLINE>::LIB_feelfem90Skyline()
+template <> LIB_feelfem90Skyline <MT_ff90SKYLINE>::LIB_feelfem90Skyline()
 {
   return;   // do nothing
 }
 
 
 //Default Destructor
-LIB_feelfem90Skyline <MT_ff90SKYLINE>::~LIB_feelfem90Skyline()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelfem90Skyline <MT_ff90SKYLINE>::~LIB_feelfem90Skyline() = default;
 
-void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   DoSolveMakeUpdateInformationMT();       // update information making(for some solvers)
 
@@ -53,7 +59,7 @@ void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolveCallSolverRoutine(Solve *solveP
   return;
 }
 
-void LIB_feelfem90Skyline <MT_ff90SKYLINE>::F90useSolveLIB(void)
+template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::F90useSolveLIB(void)
 {
   writeSource("! skyline solver related modules");
   writeSource("use mod_skyline_solver");
@@ -63,13 +69,13 @@ void LIB_feelfem90Skyline <MT_ff90SKYLINE>::F90useSolveLIB(void)
 }
 
 
-void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryParameters(void)
+template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryParameters(void)
 {
   doNothingNow("void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryVariableDefinition(void)
+template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryVariableDefinition(void)
 {
   COMMENTlong("Solver Library dependent variables(Skyline)");
   //  pushReal8Ptr1();
@@ -83,7 +89,7 @@ void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryVariableDefinition(void
   return;
 }
 //
-void LIB_feelfem90Skyline <MT_ff90SKYLINE>::
+template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
@@ -112,7 +118,7 @@ DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
   return;
 }
 
-void LIB_feelfem90Skyline<MT_ff90SKYLINE>::
+template <> void LIB_feelfem90Skyline<MT_ff90SKYLINE>::
 GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 {
   // no routine is necessary for skyline
@@ -122,7 +128,7 @@ GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 
 
 //Library dependent solve-co routine generator
-void LIB_feelfem90Skyline <MT_ff90SKYLINE>::
+template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::
 GenerateCoSolveRoutinesLIB(Solve *solvePtr)
 {
   GenerateCoSolveSolverParamRoutine(solvePtr);

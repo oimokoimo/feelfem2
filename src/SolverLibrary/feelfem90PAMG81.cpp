@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  : Baserman's distributed CRS matrix library solver
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -18,19 +27,16 @@
 
 
 //Default constructor 
-LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::LIB_feelfem90PAMG81()
+template <> LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::LIB_feelfem90PAMG81()
 {
   return;   // do nothing
 }
 
 
 //Default Destructor
-LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::~LIB_feelfem90PAMG81()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::~LIB_feelfem90PAMG81() = default;
 
-void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   DoSolveMakeUpdateInformationMT();       // update information making(for some solvers)
 
@@ -237,7 +243,7 @@ void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolveCallSolverRoutine(Solve *solvePt
   return;
 }
 
-void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::F90useSolveLIB(void)
+template <> void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::F90useSolveLIB(void)
 {
   writeSource("! AMG solver related modules");
   writeSource("use mod_amg_penv");
@@ -250,13 +256,13 @@ void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::F90useSolveLIB(void)
 }
 
 
-void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolverLibraryParameters(void)
+template <> void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolverLibraryParameters(void)
 {
   doNothingNow("void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolverLibraryVariableDefinition(void)
+template <> void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolverLibraryVariableDefinition(void)
 {
   COMMENTlong("Solver Library dependent variables");
   writeSource("real(kind=REAL8),dimension(:),pointer :: resvec");
@@ -293,7 +299,7 @@ void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::SolverLibraryVariableDefinition(void)
 }
 
 //
-void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::
+template <> void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
@@ -322,13 +328,13 @@ DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
   return;
 }
 
-void LIB_feelfem90PAMG81<MT_ff90PAMGCRS>::
+template <> void LIB_feelfem90PAMG81<MT_ff90PAMGCRS>::
 GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 {
   SolveElement *sePtr = solvePtr->GetIthSolveElementPtr(0); // P2 FIXED
 
   char  hereRoutineName[BUFSIZ];
-  char *hereSourceName;
+  const char *hereSourceName;
 
   int solveElementNo = 1;   // P2 FIXED to 1
 
@@ -628,7 +634,7 @@ GenerateCoSolveSolverParamRoutine(Solve *solvePtr)
 
 
 //Library dependent solve-co routine generator
-void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::
+template <> void LIB_feelfem90PAMG81 <MT_ff90PAMGCRS>::
 GenerateCoSolveRoutinesLIB(Solve *solvePtr)
 {
   GenerateCoSolveSolverParamRoutine(solvePtr);

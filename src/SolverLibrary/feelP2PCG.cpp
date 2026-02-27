@@ -7,6 +7,15 @@
  *  Modified : 1999/11/22
  *  
  *  Purpose  :
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 #include "feelfem.hpp"
@@ -16,7 +25,7 @@
 #include "LIB_feelP2PCG.hpp"
 
 //template <class MatMODEL> LIB_feelP2PCG <MatMODEL>::~LIB_feelP2PCG()
-LIB_feelP2PCG <MT_P2PCG>::LIB_feelP2PCG()
+template <> LIB_feelP2PCG <MT_P2PCG>::LIB_feelP2PCG()
 {
 //  cerr << "Constructor must be with Solve class\n";
 //  exit(1);
@@ -24,13 +33,10 @@ LIB_feelP2PCG <MT_P2PCG>::LIB_feelP2PCG()
 
 
 //template <class MatMODEL> LIB_feelP2PCG <MatMODEL>::~LIB_feelP2PCG()
-LIB_feelP2PCG <MT_P2PCG>::~LIB_feelP2PCG()
-{
-  return;  // do nothing;
-}
+template <> LIB_feelP2PCG <MT_P2PCG>::~LIB_feelP2PCG() = default;
 
 //template <class MatMODEL> LIB_feelP2PCG <MatMODEL>::SolveCallSolverRoutine()
-void LIB_feelP2PCG <MT_P2PCG>::SolveCallSolverRoutine(Solve *solvePtr)
+template <> void LIB_feelP2PCG <MT_P2PCG>::SolveCallSolverRoutine(Solve *solvePtr)
 {
   writeSource("*=========================");
   writeSource("* CALL WEBRMS SOLVER      ");
@@ -72,20 +78,18 @@ void LIB_feelP2PCG <MT_P2PCG>::SolveCallSolverRoutine(Solve *solvePtr)
 }
 
 
-void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryParameters(void)
-{
-  doNothingNow("void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryParameters(void)");
+template <> void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryParameters(void) { doNothingNow("void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryParameters(void)");
   return;
 }
 
-void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryArgumentVariableDefinition(void)
+template <> void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryArgumentVariableDefinition(void)
 {
   doNothingNow("void LIB_feelP2PCG <MT_P2PCG>::SolverLibraryArgumentVariableDefinition(void)");
   return;
 }
 
 //
-void LIB_feelP2PCG <MT_P2PCG>::
+template <> void LIB_feelP2PCG <MT_P2PCG>::
 DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
 
   DoArgumentSequenceFromMain( routineName, solvePtr->VariablePtrLst() ); //PM
