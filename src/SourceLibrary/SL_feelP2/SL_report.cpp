@@ -1,0 +1,339 @@
+/*
+ *  feelfem v1.0 NEC Corporation (C) 1999,2000,2001
+ *                   Programmed  by  Hidehiro FUJIO
+ *
+ *  Filename : SL_report.cpp
+ *  Date     : 2002/04/19 01:54
+ *  Purpose  : Library module generator
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
+ *
+ */
+#include "SL_feelP2.hpp"
+
+static int come_yet_report = 0;
+
+
+void SL_feelP2::SL_report(int makeFlag)
+{
+  const char *sourceName;
+
+  if(come_yet_report == 1)  return;
+  else                  come_yet_report = 1;
+
+  sourceName = GetSourceName("report");
+  OpenSource(sourceName,makeFlag);
+
+  // ORIGINAL SOURCE STARTS-----------------
+
+
+  writeSource("      subroutine report( cha )");
+  writeSource("      implicit real*8 (a-h,o-z)");
+  writeSource("      character cha*(*)");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("      data timlog/0.0d0/");
+  writeSource("      save timlog");
+  com();
+  writeSource("      tim = erapstime()");
+  writeSource("      write(io_out,900) tim ,tim - timlog , cha");
+  com();
+  writeSource(" 900  format(1x,f11.3,1x,'   [',f11.3,'] :  ',a)");
+  writeSource("      timlog = tim");
+  writeSource("      return");
+  writeSource("      end");
+  writeSource("      subroutine rep_head");
+  writeSource("      character date*17");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("      write(io_out,800)");
+  writeSource(" 800  format('FEEL P2 (Ver 0.00) PROCEDURE REPORT  [NEC Corporation 1993");
+  writeSource("     $-1997]')");
+  writeSource("      call getdate(date)");
+  com();
+  writeSource("      write(io_out,801) date");
+  writeSource(" 801  format('                             START   ',a16)");
+  com();
+  com();
+  com();
+  writeSource("      write(io_out,*)");
+  writeSource("      write(io_out,900)");
+  writeSource("      write(io_out,910)");
+  writeSource("      write(io_out,920)");
+  writeSource(" 900  format('   Sum-up         Sub-Proc        Proc STATUS')");
+  writeSource(" 910  format('   CPU time       CPU time        REPORT     ')");
+  writeSource(" 920  format('-------------   -------------    -------------------------");
+  writeSource("     $----------')");
+  writeSource("      return");
+  writeSource("      end");
+  writeSource("      subroutine rep_var");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("* npmax");
+  writeSource("      write(io_out,200) npmax");
+  writeSource("* xyz");
+  writeSource("      write(io_out,201) ndim,np_x,np_fem-1");
+  writeSource("* fem");
+  writeSource("      if(nvars_fem .eq. 0) then");
+  writeSource("         write(io_out,202)");
+  writeSource("      else");
+  writeSource("         write(io_out,203) nvars_fem,np_fem,np_ewise-1");
+  writeSource("      endif");
+  writeSource("* ew");
+  writeSource("      if(nvars_ewise .eq. 0) then");
+  writeSource("         write(io_out,204)");
+  writeSource("      else");
+  writeSource("         write(io_out,205) nvars_ewise,np_ewise,");
+  writeSource("     $                     np_work_get_falloc()-1");
+  writeSource("       endif");
+  writeSource("      write(io_out,206) (np_work_get_falloc()-1)*2");
+  com();
+  writeSource(" 200  format('                              :  NODES   ',i5)");
+  writeSource(" 201  format('                              :  DIMENSION  ',i2,' ',i7,'-");
+  writeSource("     $',i7)");
+  writeSource(" 202  format('                              :  NO FEM   VARIABLE')");
+  writeSource(" 203  format('                              :  FEM VARS   ',i2,' ',i7,'-");
+  writeSource("     $',i7)");
+  writeSource(" 204  format('                              :  NO EWISE VARIABLE')");
+  writeSource(" 205  format('                              :  EWISE VARS ',i2,' ',i7,'-");
+  writeSource("     $',i7)");
+  writeSource(" 206  format('                              :  SPACE FOR VARS',i7,'bytes");
+  writeSource("     $')");
+  writeSource("      return");
+  writeSource("      end");
+  writeSource("      subroutine rep_msize(neq,ncof)");
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("      write(io_out,200) neq");
+  writeSource("      write(io_out,210) ncof");
+  writeSource("      write(io_out,220) np_work_get_falloc(),");
+  writeSource("     $                  np_work_get_falloc()*4");
+  com();
+  writeSource(" 200  format('                              :  NEQ      ',i8)");
+  writeSource(" 210  format('                              :  NCOF     ',i8)");
+  writeSource(" 220  format('                              :  HEAP MAX ',i8,'(',i9,'byt");
+  writeSource("     $es)')");
+  com();
+  writeSource("      return");
+  writeSource("      end");
+  writeSource("      subroutine rep_CG(iter,zansa)");
+  writeSource("      real*8 zansa");
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("      write(io_out,200) iter");
+  writeSource("      write(io_out,210) zansa");
+  com();
+  writeSource(" 200  format('                              :  ITERATION ',i8)");
+  writeSource(" 210  format('                              :  RESIDUAL  ',E15.7)");
+  com();
+  writeSource("      return");
+  writeSource("      end");
+  writeSource("      subroutine rep_non(NITER)");
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("      write(io_out,200) NITER");
+  writeSource(" 200  format('                              :  ITERATION',i8)");
+  com();
+  writeSource("      return");
+  writeSource("      end");
+  writeSource("      subroutine rep_last");
+  writeSource("      implicit real*8 (a-h,o-z)");
+  writeSource("      character date*17");
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      parameter (MAX_FEEL = 10000000)");
+  writeSource("      parameter (MAX_DOMAIN = 10)");
+  writeSource("      parameter (MAX_EDATSET = 38)");
+  writeSource("      parameter (MAX_NODESET = 20)");
+  writeSource("      parameter (MAX_NUMSET = 10)");
+  writeSource("      parameter (MAX_EWISE  = 20)");
+  writeSource("      parameter (MAX_IP    = 5)");
+  writeSource("      parameter (MAX_SOLVE = 1)");
+  writeSource("c --------------------------------------------------------------------");
+  com();
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      common /feel_geo/ndim,npmax,ndomain,nedat,nnodeset,nnumdat,nip");
+  writeSource("      common /feel_ctl/mode_ex,mode_output,max_heap");
+  writeSource("      common /feel_var/np_x,np_y,np_z,nvars_fem,nvars_ewise,");
+  writeSource("     &                 np_fem,np_ewise,np_heap");
+  writeSource("      common /feel_fil/io_in,io_tmp,io_out,io_stderr,");
+  writeSource("     &                 io_edat,io_node,io_num,io_fem");
+  writeSource("      common /feel_dat/n_edat(MAX_EDATSET,3),");
+  writeSource("     &                 n_nset(MAX_NODESET,2),n_num(MAX_NUMSET),");
+  writeSource("     &                 n_ewise(MAX_EWISE,2),n_nodeno(MAX_IP)");
+  writeSource("      common /feel_sol/n_sstat(MAX_SOLVE),n_smaxp(MAX_SOLVE)");
+  writeSource("c --------------------------------------------------------------------");
+  writeSource("      tim  = erapstime()");
+  writeSource("      call getdate(date)");
+  writeSource("      call f_alloc_get_info(idummy,max_heap)");
+  com();
+  writeSource("      write(io_out,100)");
+  writeSource("      write(io_out,110) tim");
+  writeSource("      write(io_out,120) max_heap");
+  writeSource("      write(io_out,130) date");
+  writeSource("      write(io_out,100)");
+  com();
+  writeSource("      close(unit=io_out)");
+  com();
+  writeSource("      return");
+  com();
+  writeSource(" 100  format('==========================================================");
+  writeSource("     $==========')");
+  writeSource(" 110  format(' FEEL P2 PROCESS TERMINATE    TOTAL CPU TIME  ',F11.3,' se");
+  writeSource("     $conds')");
+  writeSource(" 120  format('                              MAX ARRAY SIZE  ',I11,' word");
+  writeSource("     $s')");
+  writeSource(" 130  format('                              FINISH DATE      ',A16)");
+  com();
+  writeSource("      end");
+  com();
+  com();
+  com();
+
+  // ORIGINAL SOURCE END-------------------
+
+  CloseSource();
+
+  return;
+}
