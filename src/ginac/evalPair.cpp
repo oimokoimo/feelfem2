@@ -13,10 +13,6 @@
 #include "evalPair.hpp"
 #include "string.hpp"
 
-evalPair::~evalPair()
-{
-  varName.~string();
-}
 
 
 int operator ==(const evalPair &left, const evalPair &right)

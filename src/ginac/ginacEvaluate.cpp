@@ -15,7 +15,7 @@
 
 #include <assert.h>
 #include <stdio.h>       // for BUFSIZ
-#include <strstream.h>
+//#include <strstream.h>
 #include <ginac/ginac.h>
 
 using namespace GiNaC;
