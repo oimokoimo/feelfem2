@@ -1,0 +1,6 @@
+polynomial/elem/cl_asm_GF2.lo: polynomial/elem/cl_asm_GF2.S \
+ /usr/include/stdc-predef.h ../autoconf/cl_config.h \
+ ../include/cln/host_cpu.h
+/usr/include/stdc-predef.h:
+../autoconf/cl_config.h:
+../include/cln/host_cpu.h:

@@ -1,0 +1,15 @@
+insert_help("operators", "!\t" "postfix factorial");
+insert_help("operators", "^\t" "powering");
+insert_help("operators", "+\t" "unary plus");
+insert_help("operators", "-\t" "unary minus");
+insert_help("operators", "*\t" "multiplication");
+insert_help("operators", "/\t" "division");
+insert_help("operators", "+\t" "addition");
+insert_help("operators", "-\t" "subtraction");
+insert_help("operators", "<\t" "less than");
+insert_help("operators", ">\t" "greater than");
+insert_help("operators", "<=\t" "less or equal");
+insert_help("operators", ">=\t" "greater or equal");
+insert_help("operators", "==\t" "equal");
+insert_help("operators", "!=\t" "not equal");
+insert_help("operators", "=\t" "symbol assignment");

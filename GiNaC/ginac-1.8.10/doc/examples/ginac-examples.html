@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<!-- Created by GNU Texinfo 6.8, https://www.gnu.org/software/texinfo/ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>GiNaC Examples</title>
+
+<meta name="description" content="GiNaC Examples">
+<meta name="keywords" content="GiNaC Examples">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="makeinfo">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="#Top" rel="start" title="Top">
+<link href="#SEC_Contents" rel="contents" title="Table of Contents">
+<style type="text/css">
+<!--
+a.copiable-anchor {visibility: hidden; text-decoration: none; line-height: 0em}
+a.summary-letter {text-decoration: none}
+blockquote.indentedblock {margin-right: 0em}
+div.display {margin-left: 3.2em}
+div.example {margin-left: 3.2em}
+kbd {font-style: oblique}
+pre.display {font-family: inherit}
+pre.format {font-family: inherit}
+pre.menu-comment {font-family: serif}
+pre.menu-preformatted {font-family: serif}
+span.nolinebreak {white-space: nowrap}
+span.roman {font-family: initial; font-weight: normal}
+span.sansserif {font-family: sans-serif; font-weight: normal}
+span:hover a.copiable-anchor {visibility: visible}
+ul.no-bullet {list-style: none}
+-->
+</style>
+
+
+</head>
+
+<body lang="en">
+<h1 class="settitle" align="center">GiNaC Examples</h1>
+
+
+<div class="chapter" id="Top">
+
+
+<span id="GiNaC-Examples"></span><h2 class="majorheading">GiNaC Examples</h2>
+
+<p>This is a collection of code examples using GiNaC.
+</p>
+
+<span id="Input-_002f-Output"></span><h2 class="chapter">1 Input / Output</h2>
+
+<ul class="section-toc">
+<li><a href="#Archiving-expressions-archive1_002ecpp" accesskey="1">Archiving expressions <a href="archive1.cpp">(source)</a></a></li>
+<li><a href="#Input-and-output-of-expressions" accesskey="2">Input and output of expressions</a></li>
+</ul>
+<div class="section" id="Archiving-expressions-archive1_002ecpp">
+<h3 class="section">1.1 Archiving expressions <a href="archive1.cpp">(source)</a></h3>
+
+<p>Two expression are stored in an archive on the disk and are restored again.
+</p>
+</div>
+<div class="section" id="Input-and-output-of-expressions">
+<h3 class="section">1.2 Input and output of expressions</h3>
+
+<ul class="section-toc">
+<li><a href="#Expression-input-derivative_002ecpp" accesskey="1">Expression input <a href="derivative.cpp">(source)</a></a></li>
+</ul>
+<div class="subsection" id="Expression-input-derivative_002ecpp">
+<h4 class="subsection">1.2.1 Expression input <a href="derivative.cpp">(source)</a></h4>
+
+<p>Interactively input expression and compute its derivative with respect
+to the &ldquo;x&rdquo; variable.
+</p>
+</div>
+</div>
+</div>
+<div class="chapter" id="Monte-Carlo-Integration">
+<h2 class="chapter">2 Monte Carlo Integration</h2>
+
+<ul class="section-toc">
+<li><a href="#Example-showing-compile_005fex-compile1_002ecpp" accesskey="1">Example showing compile_ex <a href="compile1.cpp">(source)</a></a></li>
+<li><a href="#Using-VEGAS-from-CUBA-compile2_002ecpp" accesskey="2">Using VEGAS from CUBA <a href="compile2.cpp">(source)</a></a></li>
+<li><a href="#Example-showing-link_005fex-compile3_002ecpp" accesskey="3">Example showing link_ex <a href="compile3.cpp">(source)</a></a></li>
+</ul>
+<div class="section" id="Example-showing-compile_005fex-compile1_002ecpp">
+<h3 class="section">2.1 Example showing compile_ex <a href="compile1.cpp">(source)</a></h3>
+
+<p>Simple example showing compile_ex with one free variable. Timing between CLN and C double numerics is done.
+</p>
+</div>
+<div class="section" id="Using-VEGAS-from-CUBA-compile2_002ecpp">
+<h3 class="section">2.2 Using VEGAS from CUBA <a href="compile2.cpp">(source)</a></h3>
+
+<p>An expression in two variables is integrated by using VEGAS from the
+<a href="http://www.feynarts.de/cuba/">CUBA library</a>.
+</p>
+</div>
+<div class="section" id="Example-showing-link_005fex-compile3_002ecpp">
+<h3 class="section">2.3 Example showing link_ex <a href="compile3.cpp">(source)</a></h3>
+
+<p>Demonstrates the use of link_ex. Program has to be called more than once to see the effect.
+</p>
+</div>
+</div>
+<div class="chapter" id="Lanczos-Approximation">
+<h2 class="chapter">3 Lanczos Approximation</h2>
+
+<p>The program lanczos.cpp calculates coefficients for use in the Lanczos
+approximation of the gamma function. The Lanczos approximation is used by
+the function inside GiNaC that approximates the gamma function numerically.
+See the comments in the source file for more information.
+</p>
+<hr></div>
+
+
+
+</body>
+</html>

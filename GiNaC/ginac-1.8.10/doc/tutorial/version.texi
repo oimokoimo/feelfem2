@@ -1,0 +1,4 @@
+@set UPDATED 11 February 2026
+@set UPDATED-MONTH February 2026
+@set EDITION 1.8.10
+@set VERSION 1.8.10

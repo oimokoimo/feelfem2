@@ -1,0 +1,9 @@
+base/digitseq/cl_asm.lo: base/digitseq/cl_asm.S \
+ /usr/include/stdc-predef.h ../autoconf/cl_config.h \
+ ../include/cln/host_cpu.h base/digitseq/cl_DS_endian.h \
+ base/cl_gmpconfig.h
+/usr/include/stdc-predef.h:
+../autoconf/cl_config.h:
+../include/cln/host_cpu.h:
+base/digitseq/cl_DS_endian.h:
+base/cl_gmpconfig.h:

@@ -1,0 +1,4 @@
+base/cl_version.lo: base/cl_version.cc /usr/include/stdc-predef.h \
+ ../include/cln/version.h
+/usr/include/stdc-predef.h:
+../include/cln/version.h:
