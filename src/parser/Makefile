@@ -24,7 +24,7 @@ SUBDIRS  = ../basic  \
             ./Syntax \
            ../Math   \
            ../FiniteElement \
-           ../main   \
+           ../Main   \
 	   ../Configure \
 	   ../SourceLibrary \
 	   ../check  \
