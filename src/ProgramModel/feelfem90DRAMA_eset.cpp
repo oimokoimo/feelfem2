@@ -299,7 +299,7 @@ void PM_feelfem90DRAMA::doEsetCalcInterpolationSub( int quadNo,
 
     string exprStrForGinac = tc.convertExpressionString(iPtr->GetExprString());
 
-    void esetDerivative(const char *,int,const char *,int);
+    void esetDerivative(const char *,int,char *,int);
     char exprBuf[MAX_FORMULA_BUF];
 
     switch(type) {

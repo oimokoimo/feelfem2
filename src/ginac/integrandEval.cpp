@@ -145,7 +145,7 @@ void GetRightHandSide(char *formula, int totalDOF, int *coeffSblNoVec,
 // ------------------------------------------------------------
 // esetDerivative: TYPE_DIFF_X/Y/Z -> diff(_m1/_m2/_m3)
 // ------------------------------------------------------------
-void esetDerivative(char *formula, int type, char *buf, int bufsiz)
+void esetDerivative(const char *formula, int type, char *buf, int bufsiz)
 {
     ex e(formula, all_syms_lst());
 

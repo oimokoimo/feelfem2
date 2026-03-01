@@ -83,7 +83,7 @@ INCLUDES     =
 
 CFLAGS       = $(OPTION) $(INCLUDES)
 
-SYSLIB       = -L/usr/local/lib -lginac -lm -ll -lstdc++ -lc
+SYSLIB       = -L/usr/local/lib -lginac -lcln -lm -ll -lstdc++ -lc
 #SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
