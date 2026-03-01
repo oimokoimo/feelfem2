@@ -7,6 +7,15 @@
  *  Modified : 
  *  
  *  Purpose  : Evaluate coordinates and update SNpoint classes
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -21,12 +30,7 @@ meshEvalGinac::meshEvalGinac()
   // do nothing 
 }
 
-meshEvalGinac::~meshEvalGinac()
-{
-  // do nothing  (may be delete the list)   // oimo-delete
-
-  // must free evalPair * memory            // oimo-delete
-}
+meshEvalGinac::~meshEvalGinac() = default;
 
 
 int meshEvalGinac::meshDoubleVar(SNmeshDoubleVar *dPtr)

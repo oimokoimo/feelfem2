@@ -7,14 +7,23 @@
  *  Modified : 2002/04/01
  *  
  *  Purpose  : no string here, (STL string is used in ginac)
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
 #include "feeldef.hpp"
 #include "feelfuncs.hpp"  //abortExit
 
-#include <assert.h>
-#include <stdio.h>       // for BUFSIZ
+#include <cassert>
+#include <cstdio>       // for BUFSIZ
 //#include <strstream.h>
 #include <ginac/ginac.h>
 
@@ -42,8 +51,9 @@ static ex e;
 
 void setExprGinacEvaluate(char *buf)
 {
-
-  ex f(buf,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 ));
+  GiNaC::lst syms = { x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 };
+//  ex f(buf,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 ));
+  ex f(buf,syms);
   e = f;
 
   //  e = ex (buf,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 ));
@@ -52,7 +62,10 @@ void setExprGinacEvaluate(char *buf)
 
 void subsExprGinacEvaluate(int no, char *expr )
 {
-  ex val(expr,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12));
+	
+//  ex val(expr,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12));
+  GiNaC::lst syms = { x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 };
+  ex val(expr,syms);
 
   switch(no) {
   case 0:
@@ -197,16 +210,19 @@ double getDoubleExprGinac(void)
 
   return(ret);
 }
+#include <sstream>
+#include <cstring>
+#include <cassert>
 
-void setGinacExprToCharBuf(char *buf,int bufsiz)
+void setGinacExprToCharBuf(char* buf, int bufsiz)
 {
-  int stringLength(const char *);
-  ostrstream ostr(buf,bufsiz);
+    std::ostringstream oss;
+    oss << e;
 
-  *buf = '\0';
-  ostr << e << '\0';
+    std::string s = oss.str();
 
-  assert(stringLength(buf) < bufsiz-1);
-  
-  return;
+    assert(static_cast<int>(s.size()) < bufsiz);
+
+    std::strncpy(buf, s.c_str(), bufsiz - 1);
+    buf[bufsiz - 1] = '\0';
 }

@@ -10,6 +10,15 @@
  *  
  *             Different from meshEvalGinac, this class must be
  *             made for each quadrature block.
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  *  
  */
 
@@ -31,12 +40,7 @@ quadratureEvalGinac::quadratureEvalGinac()
   // do nothing 
 }
 
-quadratureEvalGinac::~quadratureEvalGinac()
-{
-  // do nothing  (may be delete the list)   // oimo-delete
-
-  // must free evalPair * memory            // oimo-delete
-}
+quadratureEvalGinac::~quadratureEvalGinac() = default;
 
 
 int quadratureEvalGinac::quadratureDoubleVar(SNquadratureDoubleVar *dPtr)

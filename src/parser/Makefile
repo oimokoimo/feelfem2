@@ -83,8 +83,8 @@ INCLUDES     =
 
 CFLAGS       = $(OPTION) $(INCLUDES)
 
-#SYSLIB       = -lginac -lm -ll -lstdc++ -lc
-SYSLIB       = -lm -ll -lstdc++ -lc
+SYSLIB       = -L/usr/local/lib -lginac -lm -ll -lstdc++ -lc
+#SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)
 
@@ -97,7 +97,7 @@ all  :  library $(PROGRAM)
 $(PROGRAM)   :  $(FEELLIB) $(OBJ)
 	touch makedate.sh
 	make makedate.o
-	$(CC) -o $(PROGRAM) $(OBJ) $(LIB) $(FEELLIB)  $(X11LIB) 2>&1 |tee /dev/tty| wc -l
+	$(CC) -o $(PROGRAM) $(OBJ) $(LIB) $(FEELLIB)  $(SYSLIB) $(X11LIB) 2>&1 |tee /dev/tty| wc -l
 
 library :
 	@for i in $(SUBDIRS); \
