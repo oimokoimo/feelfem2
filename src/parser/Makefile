@@ -106,8 +106,6 @@ library :
 
 feelfem.tab.c feelfem.tab.h : feelfem.y
 	$(YACC) -dtv  feelfem.y
-	sed s/getenv\(\)/getenv\(char\*\)/ <y.tab.c >oimo.oimo
-	mv oimo.oimo y.tab.c
 
 lex.yy.o : lex.yy.c lex.h feelfem.tab.h
 	$(CC) -c $(CFLAGS) lex.yy.c

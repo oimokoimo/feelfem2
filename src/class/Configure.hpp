@@ -114,7 +114,9 @@ private:
   ptrList <StrStrIntPair *> pglibPairLst;      // PM-LIB-code pair
   ptrList <StrStrPair *>    pglibDefaultPairLst; // default solver for each PM
 
-  ptrList <string>          solverNameLst;     // no individual code
+//  ptrList <string>          solverNameLst;     // no individual code
+  list <string>          solverNameLst;     // ptrList is modernized only for ptr* 
+
 
   ptrList <StrIntPair *>    mesherNameLst;
 

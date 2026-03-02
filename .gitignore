@@ -10,6 +10,8 @@ feelfem.output
 
 oimo
 
+GiNaC
+
 fem.tab.c
 fem.tab.h
 
@@ -24,6 +26,9 @@ a.out
 
 # build artifacts
 *.o
+*.lo
+*.Plo
+.libs/
 *.a
 *.so
 *.mod

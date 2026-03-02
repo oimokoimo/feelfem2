@@ -53,7 +53,7 @@ protected:
   link<T>* ptrToFirstLink;
 
   friend class listIterator<T>;
-  friend class ptrList<T>;
+//  friend class ptrList<T>;
 };
 
 template <class T>

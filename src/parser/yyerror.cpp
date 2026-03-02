@@ -4,7 +4,7 @@
 extern "C" int yylineno;     // bison/flexで使うなら
 extern "C" char* yytext;     // flexで使うなら
 
-extern "C" void yyerror(const char* s)
+extern "C" void yyerrornew(const char* s)
 {
   std::fprintf(stderr, "parse error: %s", s);
   if (yytext)   std::fprintf(stderr, " near '%s'", yytext);

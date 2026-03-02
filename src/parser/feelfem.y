@@ -182,6 +182,7 @@ int numberOfErrors;
   SNweqTerm           *asSNweqTerm;
   SNsolveNeumannPairs *asSNsolveNeumannPairs;
 }
+%define parse.error verbose
 
 %token GEOM            /*  geom  */
 %token MESH            /*  mesh  */

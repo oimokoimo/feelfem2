@@ -16,7 +16,7 @@ int  yylex();
 void disposeString( char * );
 
 }
-void yyerror(char *);
+void yyerror(const char *);
 
 int  CRinCOMMENT(char *);
 
