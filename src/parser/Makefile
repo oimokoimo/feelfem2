@@ -9,7 +9,7 @@ PLUSPLUS = g++
 OPTION   =
 TOP      = 
 INCLUDE  = -I../class
-CFLAGS   = -DUSE_PM_AISTPCP90
+CFLAGS   = -DUSE_PM_AISTPCP90 -g -O0 -fno-omit-frame-pointer -fsanitize=address
 
 X11LIB   = ../Xplot++/Xplot++.a -L/usr/X11R6/lib -lX11
 
@@ -81,7 +81,7 @@ SYSINCLUDES  =
 
 INCLUDES     =
 
-CFLAGS       = $(OPTION) $(INCLUDES)
+CFLAGS       = $(OPTION) $(INCLUDES) -g -O0 -fno-omit-frame-pointer -fsanitize=address
 
 SYSLIB       = -L/usr/local/lib -lginac -lcln -lm -ll -lstdc++ -lc
 #SYSLIB       = -lm -ll -lstdc++ -lc
@@ -97,7 +97,7 @@ all  :  library $(PROGRAM)
 $(PROGRAM)   :  $(FEELLIB) $(OBJ)
 	touch makedate.sh
 	make makedate.o
-	$(CC) -o $(PROGRAM) $(OBJ) $(FEELLIB) ../Main/Main.a  $(SYSLIB) $(X11LIB) 2>&1 |tee /dev/tty| wc -l
+	$(CC) -o $(PROGRAM) $(OBJ) $(FEELLIB)  $(SYSLIB) $(X11LIB) -fsanitize=address 2>&1 |tee /dev/tty| wc -l
 
 library :
 	@for i in $(SUBDIRS); \

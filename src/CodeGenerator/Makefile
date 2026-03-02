@@ -2,7 +2,7 @@ PLUSPLUS = g++
 F77      = f77
 F90      = f90
 CC       = $(PLUSPLUS)
-CFLAGS   = -DUSE_PM_AISTPCP90
+CFLAGS   = -DUSE_PM_AISTPCP90 -g -O0 -fno-omit-frame-pointer -fsanitize=address
 
 INCLUDES = -I../class
 
