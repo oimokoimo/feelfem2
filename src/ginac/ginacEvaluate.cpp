@@ -49,7 +49,7 @@ static symbol z("z");
 
 static ex e;
 
-void setExprGinacEvaluate(char *buf)
+void setExprGinacEvaluate(const char *buf)
 {
   GiNaC::lst syms = { x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 };
 //  ex f(buf,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 ));
@@ -60,7 +60,7 @@ void setExprGinacEvaluate(char *buf)
   return;
 }
 
-void subsExprGinacEvaluate(int no, char *expr )
+void subsExprGinacEvaluate(int no, const char *expr )
 {
 	
 //  ex val(expr,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12));

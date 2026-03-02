@@ -12,9 +12,9 @@ using GiNaC::symbol;
 
 // ここはあなたのプロジェクト側で x,y,z がどう定義されているかに合わせる。
 // 既にどこかで global symbol x,y,z を持っているなら extern 宣言だけにするのが無難。
-extern symbol x;
-extern symbol y;
-extern symbol z;
+//extern symbol x;
+//extern symbol y;
+//extern symbol z;
 
 // ---- 共通: 不正 deriv_param を確実に return で終わらせる ----
 [[noreturn]] inline ex illegal_deriv_param(const char* fname, unsigned p) {

@@ -72,7 +72,7 @@ void Element::MakeBoundaryElement_tri(TermConvert &tc)
     setExprGinacEvaluate( exprBufPtr );
 
     // restrict to x-axis
-    subsExprGinacEvaluate( 1, 0.0);  // s == 0
+    subsExprGinacEvaluate( 1, "0.0");  // s == 0
 
     // coordinate transfer
     subsExprGinacEvaluate( 0, "(a01+1.0)/2.0");

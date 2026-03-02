@@ -97,7 +97,7 @@ all  :  library $(PROGRAM)
 $(PROGRAM)   :  $(FEELLIB) $(OBJ)
 	touch makedate.sh
 	make makedate.o
-	$(CC) -o $(PROGRAM) $(OBJ) $(LIB) $(FEELLIB)  $(SYSLIB) $(X11LIB) 2>&1 |tee /dev/tty| wc -l
+	$(CC) -o $(PROGRAM) $(OBJ) $(FEELLIB) ../Main/Main.a  $(SYSLIB) $(X11LIB) 2>&1 |tee /dev/tty| wc -l
 
 library :
 	@for i in $(SUBDIRS); \

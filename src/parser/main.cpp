@@ -201,7 +201,7 @@ int main( int argc, char **argv)
 
   if(feelfem_debug) debug_execute();     // In parser directory
 
-//  feelfem();                             // In main directory
+  feelfem();                             // In main directory
                                          // main/feelfem.cpp
-  std::cout <<"Currently feelfem() is commented out. " << std::endl;
+//  std::cout <<"Currently feelfem() is commented out. " << std::endl;
 }

@@ -16,7 +16,7 @@ HDRS     =
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
 
 PROGRAM  = Main.a
-OBJS     = feelfem.o 
+OBJS     = feelfem.o  MainOperation.o
 
 all : $(PROGRAM)
 

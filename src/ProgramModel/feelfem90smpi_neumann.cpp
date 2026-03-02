@@ -785,7 +785,7 @@ void PM_feelfem90smpi::doNeumannEsetCalcInterpolationSub(Neumann *nPtr,
 
     string exprStrForGinac = tc.convertExpressionString(iPtr->GetExprString());
 
-    void esetDerivative(const char *,int,const char *,int);
+    void esetDerivative(const char *,int,char *,int);
     char exprBuf[MAX_FORMULA_BUF];
 
     switch(diffType) {
