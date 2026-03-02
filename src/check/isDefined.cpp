@@ -46,7 +46,7 @@ int isCoordinate( string &nm )
 
   dim = feelfemobj.GetSpaceDimension();
 
-  if(nm[1] != '\0') {
+  if(nm.length() != 1) {
     return(NO);             // coordinate must be only one letter
   }
 
@@ -63,7 +63,7 @@ int isCoordinateX( string &nm )
 
   dim = feelfemobj.GetSpaceDimension();
 
-  if(nm[1] != '\0') {
+  if(nm.length() != 1) {
     return(NO);             // coordinate must be only one letter
   }
 
@@ -77,7 +77,7 @@ int isCoordinateY( string &nm )
 
   dim = feelfemobj.GetSpaceDimension();
 
-  if(nm[1] != '\0') {
+  if(nm.length() != 1) {
     return(NO);             // coordinate must be only one letter
   }
 
@@ -91,7 +91,7 @@ int isCoordinateZ( string &nm )
 
   dim = feelfemobj.GetSpaceDimension();
 
-  if(nm[1] != '\0') {
+  if(nm.length() != 1) {
     return(NO);             // coordinate must be only one letter
   }
 
@@ -107,7 +107,7 @@ int isNormalComponent( string &nm)
 
 int isSystemNX( string &nm )
 {
-  if(nm[2] != '\0' ) {
+  if(nm.length() != 2 ) {
     return(NO);             // nx is two letters
   }
   if(nm[0] != 'n')            return(NO);
@@ -121,7 +121,7 @@ int isSystemNY( string &nm )
 
   dim = feelfemobj.GetSpaceDimension();
 
-  if(nm[2] != '\0') {
+  if(nm.length() != 2) {
     return(NO);             // normals are two letters
   }
 
@@ -136,7 +136,7 @@ int isSystemNZ( string &nm )
 
   dim = feelfemobj.GetSpaceDimension();
 
-  if(nm[2] != '\0') {
+  if(nm.length() != 2) {
     return(NO);             // normals are two letters
   }
 
