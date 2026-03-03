@@ -20,6 +20,8 @@
  */
 
 #include <cassert>
+#include <string>
+#include <cstring>
 
 #include "feelfuncs.hpp"
 #include "PM_feelfem90.hpp"
@@ -35,6 +37,11 @@
 
 const char *PM_feelfem90::GetEcalRoutineName( int solveNo, int elemNo) 
 {
+  std::string s = "ecal" + std::to_string(solveNo);
+  char * ret = new char[s.size() + 1];
+  std::memcpy(ret, s.c_str(), s.size()+1);
+  return ret;
+  /*
   int stringLength(const char *);
   int length = stringLength("ecal?");
   if(solveNo > 9) {
@@ -50,6 +57,7 @@ const char *PM_feelfem90::GetEcalRoutineName( int solveNo, int elemNo)
   sprintf(ptr,"ecal%d",solveNo);
 
   return(ptr);
+  */
 }
 
 void PM_feelfem90::pushEcalRoutineName(SolveElement *sePtr)

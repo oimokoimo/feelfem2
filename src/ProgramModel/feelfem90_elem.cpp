@@ -22,6 +22,10 @@
  *  Notes:
  *  
  */
+
+#include <string>
+#include <cstring>
+
 #include "feelfuncs.hpp"
 
 #include "Quadrature.hpp"
@@ -63,13 +67,22 @@ string PM_feelfem90::SuperRinjiEcalP2DRAMA(const  char *s)
 
 const char *PM_feelfem90::GetElemRoutineName( int solveNo )
 {
+
+	/*
   int length = stringLength("elem?");
   if(solveNo > 9) {
     length++;
-    if(solveNo >99) {
-	    std::cerr <<"solve number too large(GetElemRoutineName)\n";
-      abortExit(1);
+    */
+ if(solveNo >99) {
+    std::cerr <<"solve number too large(GetElemRoutineName)\n";
+    abortExit(1);
     }
+ std::string s = "elem" + std::to_string(solveNo);
+ char * ptr = new char[s.size() + 1];
+ std::memcpy(ptr, s.c_str(), s.size() + 1);
+
+ return ptr;
+    /*
   }
 
   char *ptr = new char[length];
@@ -77,6 +90,7 @@ const char *PM_feelfem90::GetElemRoutineName( int solveNo )
   sprintf(ptr,"elem%d",solveNo);
 
   return(ptr);
+  */
 }
 
 void PM_feelfem90::pushElemRoutineName(int solveNo)
@@ -84,7 +98,7 @@ void PM_feelfem90::pushElemRoutineName(int solveNo)
   const char *ptr;
   ptr = GetElemRoutineName(solveNo);
   pushSource(ptr);
-  delete ptr;
+  delete[] ptr;
 
   return;
 }
