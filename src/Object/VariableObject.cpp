@@ -101,6 +101,7 @@ Variable * Object::GetVariablePtrWithName(const char *name)
   for(itr.init(); !itr ; ++itr) {
     if(itr()->isNameIs(name)) {
       Variable *ret = itr();
+      return ret;
     }
   }
   
