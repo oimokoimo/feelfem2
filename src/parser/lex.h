@@ -30,5 +30,6 @@ void yyerror(const char *);
 int  CRinCOMMENT(char *);
 
 extern int  numberOfLines;   /* Initialized in initLex */
+extern int  yylineno;        /* Initialized in initLex */
 
 

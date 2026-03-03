@@ -68,7 +68,6 @@ SRC      = feelfem.tab.c \
            
 
 OBJ      = feelfem.tab.o  \
-	   yyerror.o \
            main.o   \
            lex.yy.o \
            version.o \
