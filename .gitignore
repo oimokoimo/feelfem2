@@ -35,6 +35,7 @@ a.out
 *.mod.c
 *.tmp
 *.log
+*.f90
 build/
 
 # editor / OS
