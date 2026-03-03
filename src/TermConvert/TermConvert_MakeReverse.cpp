@@ -139,7 +139,7 @@ void TermConvert::ReverseAddVariableFEM( Variable *vPtr)
   for(int i=0;i<freedom;i++) {
 
     // from _mXX
-    sprintf(buf,"_m%d%c",i+stno,'\0');
+    sprintf(buf,"ff_m%d%c",i+stno,'\0');
 
     // to fem_, ew_ etc.
     switch(vPtr->GetType()) {
@@ -170,7 +170,7 @@ void TermConvert::ReverseAddVariableEWISEquad( Variable *vPtr )
   
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"ew_%s_q%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 
@@ -184,7 +184,7 @@ void TermConvert::ReverseAddVariableEWISEmaterial( Variable *vPtr )
 
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"ew_%s_m%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 
@@ -198,7 +198,7 @@ void TermConvert::ReverseAddVariableMaterial( Variable *vPtr )
 
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"m_%s%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 
@@ -212,7 +212,7 @@ void TermConvert::ReverseAddVariableScalar( Variable *vPtr )
 
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"sc_%s%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 

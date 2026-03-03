@@ -316,12 +316,21 @@ void GalerkinMethod::GalerkinTestFunction(DiscretizedComponent *dcPtr,
   void integrandDerivative(char *,int , char *, int);
 
   for(int i=0;i<freedom;i++) {
+
+   std::cerr<<"GalerkinTestFunction \n";
+   std::cerr<<"freedom = "<<i <<"\n";
+   std::cerr<<"testFuncNo = "<< ePtr->GetEstNo() +1<<"\n";
     
     int testFuncNo = ePtr->GetEstNo()+i;
     
     tcPtr->SetTestFunctionSymbol( testFunctionStr, testFuncNo );
 
+    std::cerr <<"testFunctionStr = "<<testFunctionStr <<"\n";
+    std::cerr <<"weqIntegrandStr = "<<weqIntegrandStr <<"\n";
+
     char *ret = tcPtr->convertExpressionString( weqIntegrandStr );
+
+    std::cerr <<"return of convertExpression str = "<<ret<< "\n";
 
     for(int j=0;j<totalDOF;j++) {
       void integrandEval(char *);   // ginac/integrandEval.cpp

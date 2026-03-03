@@ -44,7 +44,7 @@ static const std::vector<symbol>& m_syms()
         std::vector<symbol> v;
         v.reserve(253);
         for (int i = 1; i <= 253; ++i) {
-            v.emplace_back("_m" + std::to_string(i));
+            v.emplace_back("ff_m" + std::to_string(i));
         }
         return v;
     }();
@@ -90,12 +90,13 @@ static void ex_to_cbuf(const ex& e, char* buf, int bufsiz)
 // ------------------------------------------------------------
 void integrandEval(char *formula)
 {
+    std::cerr << "GOTO GiNaC" << formula <<std::endl;
     ex e(formula, all_syms_lst());
 
     std::cerr << "Integrand eval = " << e << std::endl;
 
     // 旧コードは e.diff(_m1) だったが、今は m_syms()[0] が _m1
-    std::cerr << "e.diff(_m1) = " << e.diff(m_syms().at(0)) << std::endl;
+    std::cerr << "e.diff(ff_m1) = " << e.diff(m_syms().at(0)) << std::endl;
 }
 
 // ------------------------------------------------------------

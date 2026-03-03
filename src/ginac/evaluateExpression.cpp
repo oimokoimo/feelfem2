@@ -31,7 +31,9 @@ double evaluateBufGinac( char *buf    ,ptrList<evalPair *> *evalPairPtrLst,
 {
   // MAX_GINAC_VARIABLES is 12 now
 
-  //  cerr << "dbg: eval buf= " << buf << " = ";
+  
+	std::cerr << "evaluateBufGinac\n" ;
+	std::cerr << "dbg: eval buf= " << buf << " = ";
 
   setExprGinacEvaluate( buf );
 
@@ -60,14 +62,14 @@ double evaluateBufGinac( char *buf    ,ptrList<evalPair *> *evalPairPtrLst,
 
     ret = getDoubleExprGinac();
 
-    //    cerr << ret << endl;  //dbg:
+    std::cerr << ret << std::endl;  //dbg:
 
     errFlag = NO;
 
     return(ret);
   }
 
-  //  cerr << "dbg:  ERROR" << endl;
+  std::cerr << "dbg:  ERROR" << std::endl;
 
   errFlag = YES;
   return(ERROR_EVALVAL);

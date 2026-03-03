@@ -16,7 +16,7 @@ HDRS     =
 	$(CC) $(CFLAGS) $(INCLUDES) -c $<
 
 PROGRAM  = ginac.a
-OBJS     = elementEvalGinac.o evalPair.o evaluateExpression.o funcSymbolConvert_ginac.o ginacEvaluate.o integrandEval.o meshEvalGinac.o quadratureEvalGinac.o 
+OBJS     = elementEvalGinac.o evalPair.o evaluateExpression.o funcSymbolConvert_ginac.o ginacEvaluate.o integrandEval.o meshEvalGinac.o quadratureEvalGinac.o funcdef_symbols.o
 
 all : $(PROGRAM)
 

@@ -34,28 +34,24 @@
 
 const char *PM_feelfem90::GetAssignRoutineName(int n)
 {
-  assert(n>0);
-  int len = stringLength("let");
-  if(n < 10) {
-    len++;
-  }
-  else if(n < 100) {
-    len+= 2;
-  }
-  else if(n < 1000) {
-    len+= 3;
-  }
-  else {
+  assert(n > 0);
+
+  // "let" + digits(n) + '\0'
+  int digits = 1;
+  if (n >= 10)   digits = 2;
+  if (n >= 100)  digits = 3;
+  if (n >= 1000) {
     std::cerr << "too many assigns\n";
-    assert(1==0);
+    assert(false);
   }
-  
-  len++;   // for '\0'
 
+  int len = 3 + digits + 1; // 3="let", +digits, +1 for '\0'
   char *ret = new char[len];
-  sprintf(ret,"let%d%c",n,'\0');
 
-  return(ret);
+  // ✅ 終端は snprintf が付けるので %c は不要
+  std::snprintf(ret, static_cast<size_t>(len), "let%d", n);
+
+  return ret;
 }
   
 void PM_feelfem90::pushAssignRoutineName(Assign *asPtr)

@@ -288,7 +288,7 @@ void TermConvert::makeNthSymbol_boundary(char *buf,int bufferSize, int no)
   assert( 2 + len   + 1 <= bufferSize);
   //    "_m"  number '\0'
 
-  sprintf(buf,"_m%d%c",no,'\0');
+  sprintf(buf,"ff_m%d%c",no,'\0');
   
   return;
 }
@@ -329,17 +329,17 @@ void TermConvert::makeLinearCombi_boundary(char *buf,int bufferSize,
 
     int termLength;
 
-    termLength = 2 + funcNoLength+ 7      +   1  +  2  + symblNoLength ;
-    //         "_n"  number        (x,y,z)   "*"   "_m"    number
+    termLength = 2+2 + funcNoLength+ 7      +   1  +  2+2  + symblNoLength ;
+    //         "ff_n"  number        (x,y,z)   "*"   "ff_m"    number
     if(i!=0) termLength = termLength + 1;  // for '+'
 
     assert(termLength + length  < bufferSize );
 
     if(i == 0) {
-      sprintf(buf,"_n%d(x,y,z)*_m%d",funcNo,symblNo);
+      sprintf(buf,"ff_n%d(x,y,z)*ff_m%d",funcNo,symblNo);
     }
     else {
-      sprintf(buf,"+_n%d(x,y,z)*_m%d",funcNo,symblNo);
+      sprintf(buf,"+ff_n%d(x,y,z)*ff_m%d",funcNo,symblNo);
     }
 
     buf+= termLength;
@@ -354,9 +354,9 @@ void TermConvert::makeLinearCombi_boundary(char *buf,int bufferSize,
 // called from GalerkinMethod::GalerkinTestFunction
 void TermConvert::SetTestFunctionSymbol_boundary( string &testfuncStr, int funcNo)
 {
-  char buf[38];
+  char buf[256];
 
-  sprintf(buf,"_n%d(x,y,z)%c",funcNo,'\0');
+  sprintf(buf,"ff_n%d(x,y,z)%c",funcNo,'\0');
 
   replaceConvertPair( testfuncStr, buf );
 

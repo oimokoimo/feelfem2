@@ -148,7 +148,7 @@ void TermConvert::ReverseAddVariableFEM_boundary( Variable *vPtr)
     bno = bePtr->GetIthOriginalIplus1(i);
 
     // from _mXX
-    sprintf(buf,"_m%d%c",i+stno,'\0');
+    sprintf(buf,"ff_m%d%c",i+stno,'\0');
 
     // to fem_, ew_ etc.
     switch(vPtr->GetType()) {
@@ -182,7 +182,7 @@ void TermConvert::ReverseAddVariableEWISEquad_boundary( Variable *vPtr )
   
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"ew_%s_q%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 
@@ -198,7 +198,7 @@ void TermConvert::ReverseAddVariableEWISEmaterial_boundary( Variable *vPtr )
 
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"ew_%s_m%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 
@@ -212,7 +212,7 @@ void TermConvert::ReverseAddVariableScalar_boundary( Variable *vPtr )
 
   char buf[BUFSIZ];
   char mbuf[BUFSIZ];
-  sprintf(buf,"_m%d%c",stno,'\0');
+  sprintf(buf,"ff_m%d%c",stno,'\0');
   sprintf(mbuf,"sc_%s%c",vPtr->GetName(),'\0');
   reverseTC->storeConvertPair( buf,mbuf);
 
@@ -225,7 +225,7 @@ void TermConvert::ReverseAddNormalComponent_boundary(void)
   if(nxFlag == YES) {
     int stno = sblNoNX;
     char buf[BUFSIZ];
-    sprintf(buf,"_m%d%c",stno,'\0');
+    sprintf(buf,"ff_m%d%c",stno,'\0');
     reverseTC->storeConvertPair( buf, "qnx" );
   }
 
@@ -233,7 +233,7 @@ void TermConvert::ReverseAddNormalComponent_boundary(void)
   if(nyFlag == YES) {
     int stno = sblNoNY;
     char buf[BUFSIZ];
-    sprintf(buf,"_m%d%c",stno,'\0');
+    sprintf(buf,"ff_m%d%c",stno,'\0');
     reverseTC->storeConvertPair( buf, "qny" );
   }
 
@@ -241,7 +241,7 @@ void TermConvert::ReverseAddNormalComponent_boundary(void)
   if(nzFlag == YES) {
     int stno = sblNoNZ;
     char buf[BUFSIZ];
-    sprintf(buf,"_m%d%c",stno,'\0');
+    sprintf(buf,"ff_m%d%c",stno,'\0');
     reverseTC->storeConvertPair( buf, "qnz" );
   }
 

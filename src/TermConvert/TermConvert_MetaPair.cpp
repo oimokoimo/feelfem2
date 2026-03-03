@@ -34,7 +34,7 @@ void TermConvert::StoreMetaPair( const char *from, const char *to )
 
   smblNo++;   // starts 1
 
-  sprintf(buf,"_m%d",smblNo);
+  sprintf(buf,"ff_m%d",smblNo);
   
   storeConvertPair( from , buf );
 

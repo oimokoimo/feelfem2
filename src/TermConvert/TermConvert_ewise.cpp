@@ -97,7 +97,7 @@ void EwiseQuadTC::ReverseAddVariableFEM( Variable *vPtr)
   char nbuf[BUFSIZ],buf[BUFSIZ];
 
   // function itself
-  sprintf(nbuf,"_n%d%c",funcNo,'\0');
+  sprintf(nbuf,"ff_n%d%c",funcNo,'\0');
   // to fem_, ew_ etc.
   switch(vPtr->GetType()) {
   case VAR_FEM:
@@ -119,7 +119,7 @@ void EwiseQuadTC::ReverseAddVariableFEM( Variable *vPtr)
 
 
   //  X derivative
-  sprintf(nbuf,"_n%d_dx%c",funcNo,'\0');
+  sprintf(nbuf,"ff_n%d_dx%c",funcNo,'\0');
   // to fem_, ew_ etc.
   switch(vPtr->GetType()) {
   case VAR_FEM:
@@ -141,7 +141,7 @@ void EwiseQuadTC::ReverseAddVariableFEM( Variable *vPtr)
 
 
   //  Y derivative
-  sprintf(nbuf,"_n%d_dy%c",funcNo,'\0');
+  sprintf(nbuf,"ff_n%d_dy%c",funcNo,'\0');
   // to fem_, ew_ etc.
   switch(vPtr->GetType()) {
   case VAR_FEM:
@@ -162,7 +162,7 @@ void EwiseQuadTC::ReverseAddVariableFEM( Variable *vPtr)
   reverseTC->storeConvertPair( nbuf,buf );
 
   //  z derivative
-  sprintf(nbuf,"_n%d_dz%c",funcNo,'\0');
+  sprintf(nbuf,"ff_n%d_dz%c",funcNo,'\0');
   // to fem_, ew_ etc.
   switch(vPtr->GetType()) {
   case VAR_FEM:

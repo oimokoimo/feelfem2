@@ -51,6 +51,9 @@ static ex e;
 
 void setExprGinacEvaluate(const char *buf)
 {
+
+
+  std::cerr<<"setExprGinacEvaluate999  expr="<<buf <<std::endl;
   GiNaC::lst syms = { x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 };
 //  ex f(buf,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 ));
   ex f(buf,syms);
@@ -64,6 +67,9 @@ void subsExprGinacEvaluate(int no, const char *expr )
 {
 	
 //  ex val(expr,lst(x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12));
+//
+  std::cerr<<"subsExprGinacEvaluate  expr="<<expr <<std::endl;
+
   GiNaC::lst syms = { x,y,z,a01,a02,a03,a04,a05,a06,a07,a08,a09,a10,a11,a12 };
   ex val(expr,syms);
 
@@ -195,7 +201,7 @@ double getDoubleExprGinac(void)
   numeric num;
   double ret;
 
-  //  cerr << "getDoubleExprGinac  e=" << e << endl;
+  std::cerr << "getDoubleExprGinac  e=" << e << std::endl;
 
   //  if(!is_ex_of_type(e,numeric)) { from GiNaC 0.9.1 modified
   if(!is_a<numeric>(e)) {
