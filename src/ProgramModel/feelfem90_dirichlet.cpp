@@ -53,31 +53,40 @@ void PM_feelfem90::F90useDirichletPM()
 // Dirichlet Conditions related functions
 //////////////////////////////////////////
 
+#include <cstdio>
+#include <iostream>
 
 const char *PM_feelfem90::GetDirichletRoutineName(int solveNo, int dcondNo)
 {
-  int length = stringLength("dcond?_?");
-  if(solveNo > 9) {
-    length++;
-    if(solveNo >99) {
-	    std::cerr <<"solve number too large(GetDirichletRoutineName)\n";
-      abortExit(1);
-    }
+  if (solveNo <= 0) {
+    std::cerr << "solve number invalid(GetDirichletRoutineName)\n";
+    abortExit(1);
+  }
+  if (solveNo > 99) {
+    std::cerr << "solve number too large(GetDirichletRoutineName)\n";
+    abortExit(1);
+  }
+  if (dcondNo <= 0) {
+    std::cerr << "dcond number invalid(GetDirichletRoutineName)\n";
+    abortExit(1);
+  }
+  if (dcondNo > 99) {
+    std::cerr << "dcond number too large(GetDirichletRoutineName)\n";
+    abortExit(1);
   }
 
-  if(dcondNo > 9){
-    length++;
-    if(dcondNo >99) {
-	    std::cerr <<"dcond number too large(GetDirichletRoutineName)\n";
-      abortExit(1);
-    }
+  const char *fmt = "dcond%d_%d";
+
+  // required length excluding '\0'
+  int n = std::snprintf(nullptr, 0, fmt, solveNo, dcondNo);
+  if (n < 0) {
+    std::cerr << "snprintf failed(GetDirichletRoutineName)\n";
+    abortExit(1);
   }
 
-  char *ptr = new char[length];
-
-  sprintf(ptr,"dcond%d_%d",solveNo,dcondNo);    // PMDependent
-
-  return(ptr);
+  char *ptr = new char[static_cast<size_t>(n) + 1];
+  std::snprintf(ptr, static_cast<size_t>(n) + 1, fmt, solveNo, dcondNo);
+  return ptr; // 呼び出し側は delete[] で解放
 }
 
 

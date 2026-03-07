@@ -64,6 +64,8 @@ TermConvert::~TermConvert(void)
 
 void TermConvert::storeConvertPair(const char *fromStr,const char *toStr)
 {
+
+  std::cerr<< " StoreConvertPair   "<<"From:["<<fromStr<<"] to ["<<toStr<<"]\n"; 
   StrStrPair *sspPtr = new StrStrPair(fromStr,toStr);
 
   if(ssPairPtrLst.includes(sspPtr)) {

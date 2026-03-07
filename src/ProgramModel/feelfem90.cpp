@@ -78,7 +78,7 @@ void PM_feelfem90::pushSolveRoutineName( int no )
 
   ptr = GetSolveRoutineName( no );
   pushSource(ptr);
-  delete ptr;
+  delete [] ptr;
 }
 
 

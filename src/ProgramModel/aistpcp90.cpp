@@ -77,7 +77,7 @@ void PM_aistpcp90::pushSolveRoutineName( int no )
 
   ptr = GetSolveRoutineName( no );
   pushSource(ptr);
-  delete ptr;
+  delete [] ptr;
 }
 
 

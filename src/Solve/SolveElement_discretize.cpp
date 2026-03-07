@@ -74,24 +74,23 @@ void SolveElement::ApplyGalerkinMethod(void)
   }
 
   // check writes
-
-  //  cerr << "#######################################\n";
-  //  cerr << "## SolveElement::ApplyGalerkinMethod ##\n";
-  //  cerr << "#######################################\n";
-  //  cerr << "number of quads = " << quadratures << endl;
-  //  listIterator <Quadrature *>itrQ(quadraturePtrLst);
-  //  int j = 1;
-  //  for(itrQ.init();!itrQ;++itrQ) {
-  //    cerr << "No." << j << " : " << itrQ()->GetName() << endl;
-  //    j++;
-  //  }
-  //  cerr << endl;
+   std::cerr << "#######################################\n";
+   std::cerr << "## SolveElement::ApplyGalerkinMethod ##\n";
+   std::cerr << "#######################################\n";
+   std::cerr << "number of quads = " << quadratures << std::endl;
+   listIterator <Quadrature *>itrQ(quadraturePtrLst);
+   int j = 1;
+    for(itrQ.init();!itrQ;++itrQ) {
+      std::cerr << "No." << j << " : " << itrQ()->GetName() << std::endl;
+      j++;
+    }
+    std::cerr << std::endl;
 
   // integrand set
-  //  for(itrIS.init(); !itrIS ; ++itrIS ) {
-  //    itrIS()->print(cerr);
-  //  }
-  //  cerr << "#######################################\n";
+    for(itrIS.init(); !itrIS ; ++itrIS ) {
+      itrIS()->print(std::cerr);
+    }
+    std::cerr << "#######################################\n";
 
   return;
 }

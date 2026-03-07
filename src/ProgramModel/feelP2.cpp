@@ -354,7 +354,7 @@ void PM_feelP2::pushSolveRoutineName( int no )
 
   ptr = GetSolveRoutineName( no );
   pushSource(ptr);
-  delete ptr;
+  delete [] ptr;
 }
 
 void PM_feelP2::pushElemRoutineName(int solveNo, int elemNo)

@@ -413,7 +413,7 @@ void PM_feelP2DRAMA::pushSolveRoutineName( int no )
 
   ptr = GetSolveRoutineName( no );
   pushSource(ptr);
-  delete ptr;
+  delete [] ptr;
 }
 
 void PM_feelP2DRAMA::pushElemRoutineName(int solveNo)

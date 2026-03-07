@@ -105,12 +105,36 @@ void integrandEval(char *formula)
 void integrandDerivative(char *formula, int n, char *buf, int bufsiz)
 {
     ex e(formula, all_syms_lst());
+    std::cerr << "Welcome to integrandDerivative\n";
+    std::cerr << "formula = " <<formula << "\n";
+
+    try {
+    ex e(formula, all_syms_lst());
+      std::cerr << "e = " << e << "\n";
+    }
+    catch(std::exception &ex) {
+      std::cerr << "GiNaC parse error : " << ex.what() << "\n";
+    }
+
+    std::cerr << "Welcome to integrandDerivative\n";
+    std::cerr << "formula = " <<formula << "\n";
+//    std::cerr << "all_syms_lst()=" <<all_syms_lst() << "\n";
+    std::cerr << "--------------------------\n";
+    std::cerr << "e = " << e << "\n";
+    std::cerr << "--------------------------\n";
 
     // n は 1..253 のはず
     assert(1 <= n && n <= 253);
-    e = e.diff(m_syms().at(static_cast<size_t>(n - 1)));
 
+    std::cerr << "diff at "<<m_syms().at(static_cast<size_t>(n - 1)) << "\n";
+    e = e.diff(m_syms().at(static_cast<size_t>(n - 1)));
+    std::cerr << "diffed e = "<< e <<"\n";
+
+
+    std::cerr << "goto ex_to_cbuf\n";
     ex_to_cbuf(e, buf, bufsiz);
+    std::cerr << "buf = " << buf << "\n";
+
 
     // _n1(x,y,z) -> _n1 etc.
     void funcSymbolConvert_ginac(char *);

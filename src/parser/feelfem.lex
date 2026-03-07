@@ -38,7 +38,7 @@ typedef int SNsolveNeumannPairs;
 #include "lex.h" 
  
  int numberOfLines;   /* Lines processed by lex */
-// int yylineno;        /* added on 2026/03/03 */
+ int yylineno;        /* added on 2026/03/03 */
 
  char *freshString(char *);   
 

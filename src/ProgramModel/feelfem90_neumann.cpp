@@ -46,28 +46,21 @@
 
 const char *PM_feelfem90::GetNeumannRoutineName(int solveNo, int ncondNo)
 {
-  int length = stringLength("ncond?_?");
-  if(solveNo > 9) {
-    length++;
-    if(solveNo >99) {
-	    std::cerr <<"solve number too large(GetNeumannRoutineName)\n";
-      abortExit(1);
-    }
-  }
-
-  if(ncondNo > 9){
-    length++;
-    if(ncondNo >99) {
+  if(ncondNo >99) {
 	    std::cerr <<"ncond number too large(GetNeumannRoutineName)\n";
       abortExit(1);
-    }
   }
+  const char *fmt = "ncond%d_%d";
 
-  char *ptr = new char[length];
-
-  sprintf(ptr,"ncond%d_%d",solveNo,ncondNo);    // PMDependent
-
-  return(ptr);
+  // required length excluding '\0'
+  int n = std::snprintf(nullptr, 0, fmt, solveNo, ncondNo);
+  if (n < 0) {
+    std::cerr << "snprintf failed(GetDirichletRoutineName)\n";
+    abortExit(1);
+  }
+  char *ptr = new char[static_cast<size_t>(n) + 1];
+  std::snprintf(ptr, static_cast<size_t>(n) + 1, fmt, solveNo, ncondNo);
+  return ptr; // 呼び出し側は delete[] で解放
 }
 
 void PM_feelfem90::pushNeumannRoutineName(int solveNo, int ncondNo)

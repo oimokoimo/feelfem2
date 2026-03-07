@@ -51,10 +51,12 @@ DiscretizedComponent *GalerkinMethod::Discretize(void)
   ApplyGalerkin( dcPtr );
 
 
-  // check write
-  //  for(int i=0;i<elements;i++) {
-  //    cerr << "ELEMENT No." << i << "  " << elementDOF[i] << endl;
-  //  }
+   // check write
+    for(int i=0;i<elements;i++) {
+	    std::cerr << "ELEMENT No." << i << "  " << elementDOF[i] << std::endl;
+    }
+    tcPtr->print(std::cerr);
+    tcPtr->rev_print(std::cerr);
 
   tcPtr->~TermConvert(); // delete 
   
@@ -319,7 +321,7 @@ void GalerkinMethod::GalerkinTestFunction(DiscretizedComponent *dcPtr,
 
    std::cerr<<"GalerkinTestFunction \n";
    std::cerr<<"freedom = "<<i <<"\n";
-   std::cerr<<"testFuncNo = "<< ePtr->GetEstNo() +1<<"\n";
+   std::cerr<<"testFuncNo = "<< ePtr->GetEstNo() +i<<"\n";
     
     int testFuncNo = ePtr->GetEstNo()+i;
     
@@ -336,7 +338,10 @@ void GalerkinMethod::GalerkinTestFunction(DiscretizedComponent *dcPtr,
       void integrandEval(char *);   // ginac/integrandEval.cpp
       char cformula[MAX_FORMULA_BUF];  // = 8192
 
+      std::cerr << "***BEFORE integrandDerivative***\n";
+      std::cerr << "cformula = " <<cformula << "\n";
       integrandDerivative( ret ,coeffSblNoVec[j], cformula,MAX_FORMULA_BUF);
+      std::cerr << "***AFTER  " <<ret<<"\n";
 
       char *rev_ret = tcPtr->ReverseConvertExpressionString( cformula );
 

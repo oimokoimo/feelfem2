@@ -98,22 +98,22 @@ void TermConvert::MakeReverseTC_boundary(void)
       bno = bePtr->GetIthOriginalIplus1(i);
       
       // function itself
-      sprintf(nbuf,"_n%d%c",stno+i,'\0');
+      sprintf(nbuf,"ff_n%d%c",stno+i,'\0');
       sprintf( buf,"q%s_%d%c",itrE()->GetName(), bno,'\0');  // bno was i+1
       reverseTC->storeConvertPair( nbuf,buf );
 
       // function x derivative
-      sprintf(nbuf,"_n%d_dx%c",stno+i,'\0');
+      sprintf(nbuf,"ff_n%d_dx%c",stno+i,'\0');
       sprintf( buf,"q%s_%d_x%c",itrE()->GetName(),bno,'\0'); // bno was i+1
       reverseTC->storeConvertPair( nbuf,buf );
 
       // function y derivative
-      sprintf(nbuf,"_n%d_dy%c",stno+i,'\0');
+      sprintf(nbuf,"ff_n%d_dy%c",stno+i,'\0');
       sprintf( buf,"q%s_%d_y%c",itrE()->GetName(),bno,'\0'); // bno was i+1
       reverseTC->storeConvertPair( nbuf,buf );
 
       // function z derivative
-      sprintf(nbuf,"_n%d_dz%c",stno+i,'\0');
+      sprintf(nbuf,"ff_n%d_dz%c",stno+i,'\0');
       sprintf( buf,"q%s_%d_z%c",itrE()->GetName(),bno,'\0'); // bno was i+1
       reverseTC->storeConvertPair( nbuf,buf );
     }
