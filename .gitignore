@@ -44,3 +44,13 @@ build/
 .DS_Store
 #*#
 
+# feelfem
+DbgReportFeelfem.txt
+Makefile.feelfem
+donothingnow.feelfem
+feelfem
+sample.bas
+sample.cnd
+sample.mat
+sample.prb
+solv_dat
