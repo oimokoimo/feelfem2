@@ -19,6 +19,9 @@ parse
 mesh.bamg.exe
 feel.bamg.exe
 
+makedate.c
+feel.showdat3
+
 a.out
 
 # gcc precompiled headers
