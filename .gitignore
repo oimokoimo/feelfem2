@@ -8,6 +8,9 @@ feelfem.tab.c
 feelfem.tab.h
 feelfem.output
 
+feel_dat
+solv_dat
+
 oimo
 
 GiNaC
@@ -21,6 +24,7 @@ feel.bamg.exe
 
 makedate.c
 feel.showdat3
+feel.showdat4
 
 a.out
 
