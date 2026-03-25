@@ -59,9 +59,9 @@ void funcSymbolConvert_ginac(char *cp)
   char *start = cp;
   char *wrt   = cp;
 
-  std::cerr << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
-  std::cerr << "Welcome to funcSymbolConvert_ginac\n";
-  std::cerr << "buf(before) = " << start << "\n";
+ // std::cerr << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+ // std::cerr << "Welcome to funcSymbolConvert_ginac\n";
+ // std::cerr << "buf(before) = " << start << "\n";
 
   while (*cp) {
 
@@ -104,8 +104,8 @@ void funcSymbolConvert_ginac(char *cp)
   }
 
   *wrt = '\0';              /* 先に終端してから表示 */
-  std::cerr << "buf(after ) = " << start << "\n";
-  std::cerr << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+//  std::cerr << "buf(after ) = " << start << "\n";
+//  std::cerr << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
 
   assert(*wrt == '\0');
 }
