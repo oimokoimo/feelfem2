@@ -119,7 +119,8 @@ double Polygon::getArea(void)
 
   double area = getPolygonalArea( x, y, vertices);
   
-  delete x,y;
+  delete[] x;
+  delete[] y;
 
   return(area);
 }
