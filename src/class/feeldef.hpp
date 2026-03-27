@@ -23,8 +23,8 @@
 
 #define FEELFEM_PREDEFINED_PDE    "/usr/local/feelfem/feelfem_basic.pde"
 
-#define DEFAULT_F90_COMPILER  "ifc"    // intel fortran compiler
-#define DEFAULT_F77_COMPILER  "ifc"    // intel fortran compiler
+#define DEFAULT_F90_COMPILER  "gfortran"    // gnu fortran compiler
+#define DEFAULT_F77_COMPILER  "gfortran"    // gnu fortran compiler
 #define DEFAULT_C_COMPILER    "gcc"    // GNU C compiler
 #define DEFAULT_CPP_COMPILER  "g++"    // GNU C++ compiler
 
