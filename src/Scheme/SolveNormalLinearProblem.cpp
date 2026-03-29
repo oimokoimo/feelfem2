@@ -19,10 +19,14 @@
  *  
  */
 
+#include <iostream>
 #include "SolveScheme.hpp"
 
 void SolveScheme::NormalLinearProblem( Solve *solvePtr )
 {
+
+  std::cerr << "Welcome to NormalLinearProblem(SolveScheme::NormalLinearProblem in Scheme)\n";
+  solvePtr->print(std::cerr);
 
   ////////////////////////////////
 

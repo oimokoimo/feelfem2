@@ -12,6 +12,15 @@
  *             SolveScheme class deals with only pure abstract scheme.
  *             SolveGeneratorTemplate deals with implementation
  *                                    (ex. let XXX = OP(YYY) etc.)
+ *
+ *
+ *  feelfem2 (modernized/ported)
+ *  Copyright (C) 2025-2026 Hidehiro Fujio and contributors
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Repository: https://github.com/oimokoimo/feelfem2
+ *
+ *
+ *  Notes:
  */
 
 #ifndef FEM_CLASS_SOLVEGENERATORTEMPLATE
@@ -26,7 +35,7 @@ class Solve;
 template <class MatMODEL>
 class SolveGeneratorTemplate : public MatMODEL, public SolveScheme {
 public:
-  SolveGeneratorTemplate() = default;
+  SolveGeneratorTemplate() {;}
   ~SolveGeneratorTemplate() = default;
 
   // Several Initializers

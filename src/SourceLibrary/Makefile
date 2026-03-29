@@ -51,3 +51,4 @@ clean :
 	done
 	rm SourceLibrary.a
 	
+CFLAGS = -O2 -g

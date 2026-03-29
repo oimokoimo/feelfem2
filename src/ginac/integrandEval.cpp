@@ -110,7 +110,7 @@ void integrandDerivative(char *formula, int n, char *buf, int bufsiz)
 
     try {
     ex e(formula, all_syms_lst());
-      std::cerr << "e = " << e << "\n";
+     //dbgwrite feelfem2      std::cerr << "e = " << e << "\n";
     }
     catch(std::exception &ex) {
       std::cerr << "GiNaC parse error : " << ex.what() << "\n";
