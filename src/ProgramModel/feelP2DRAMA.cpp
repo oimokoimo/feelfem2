@@ -291,7 +291,7 @@ void PM_feelP2DRAMA::DoSolveReport( int no, const char *s)
 /////////////////////////////////////////////////////////////////
 
 void PM_feelP2DRAMA::DoArgumentSequenceFromMain
-( char                         *subroutineName,
+( const char                 *subroutineName,
   orderedPtrList <Variable *>&varPtrLst       )
 {
   char buf[BUFSIZ];

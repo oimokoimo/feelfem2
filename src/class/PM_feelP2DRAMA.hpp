@@ -95,7 +95,7 @@ public:
   /////////////////////////////////////////////////////
   // General Function Implementation in Called routine
   /////////////////////////////////////////////////////
-  void DoArgumentSequenceFromMain(char *, orderedPtrList <Variable *> &);
+  void DoArgumentSequenceFromMain(const char *, orderedPtrList <Variable *> &);
   void DoDeclareVariablesFromMainPM( orderedPtrList <Variable *> );
 
   void ArgumentVariableDeclarationLst(list <Variable *>&);

@@ -90,13 +90,18 @@ template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryVariableDef
 }
 //
 template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::
-DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
+DoSolveRoutineHeaderInLIB(const char *routineName, Solve *solvePtr) {
+
+	std::cerr <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
+	std::cerr <<"Welcome to DoSolveRoutineHeaderInLIB\n";
+	std::cerr <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
 
   int solveElementNo = 1 ;   // P2 limitation FIX
 
   DoArgumentSequenceFromMain( routineName, solvePtr->VariablePtrLst() ); //PM
   DoSolveStarters();                                                 //PM
 
+  
   F90useSolveLIB();
 
   // library dependent co-solve routine module

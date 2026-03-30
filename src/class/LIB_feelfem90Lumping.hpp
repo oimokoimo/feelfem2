@@ -33,7 +33,7 @@ public:
   void SolveCallSolverRoutine (Solve *);
 
   // Virtual functions in SolveGeneratorTemplate
-  void DoSolveRoutineHeaderInLIB(char *, Solve *);
+  void DoSolveRoutineHeaderInLIB(const char *, Solve *);
 
   void SolverLibraryParameters(void);
   void SolverLibraryVariableDefinition(void);

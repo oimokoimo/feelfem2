@@ -223,7 +223,7 @@ void PM_feelP2::DoSolveReport( int no, const char *s)
 /////////////////////////////////////////////////////////////////
 
 void PM_feelP2::DoArgumentSequenceFromMain
-( char                         *subroutineName,
+( const char                 *subroutineName,
   orderedPtrList <Variable *>&varPtrLst       )
 {
   char buf[BUFSIZ];
