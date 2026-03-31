@@ -137,7 +137,7 @@ template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::SolverLibraryVariableDefin
 }
 //
 template <> void LIB_feelfem90wasblk <MT_ff90AMGCRS>::
-DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
+DoSolveRoutineHeaderInLIB(const char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
 

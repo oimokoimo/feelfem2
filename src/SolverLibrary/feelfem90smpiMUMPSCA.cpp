@@ -99,7 +99,7 @@ template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::SolverLibraryVar
 }
 //
 template <> void LIB_feelfem90smpiMUMPSCA <MT_ff90smpiMUMPSCA>::
-DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
+DoSolveRoutineHeaderInLIB(const char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
 
