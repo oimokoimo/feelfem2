@@ -119,6 +119,10 @@ public:
 
   int GetCode(void) { return code; }
 
+  void WRITE_contents(std::ostream &ost) {
+	  ost << first <<" : " << second << "("<<code <<")\n";
+  }
+
   // for ptrList.includes  (only string components are tested)
   friend int operator == (const StrStrIntPair &, const StrStrIntPair &);  
 

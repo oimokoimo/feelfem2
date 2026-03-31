@@ -98,6 +98,11 @@ public:
   int GetBoundaryEtypeFromEtype( int );   // in Configure_Quadrature.cpp
   Quadrature *GetDefaultBoundaryQuadFromRegionEtype(int);
 
+  // for error explanation information output
+  void WriteINFO_PM_LIB(void);
+
+
+
 private:
 
   // initialize functions

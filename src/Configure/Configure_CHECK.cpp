@@ -79,6 +79,15 @@ int Configure::IsValidPM_LIB( string &pmName, string &libName )
   }
 }
 
+void Configure::WriteINFO_PM_LIB(void) {
+	listIterator <StrStrIntPair *>itr(pglibPairLst);
+	std::cerr << "Supported Program model and library pairs\n";
+        for(itr.init(); !itr ; ++itr) {
+		itr()->WRITE_contents(std::cerr);    
+	}
+}	
+
+
 // for SNsolve::CheckInit  (default solver)
 void Configure::SetDefaultSolverName( string &pgName, string &solverName )
   // pgName is input, and solverName (output)

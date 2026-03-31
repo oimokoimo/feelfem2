@@ -33,6 +33,7 @@
 
 #include "parseExternals.hpp"       // for parser  treesn
 
+#include "Configure.hpp"            // for write PM/LIB pattern (2026/04/01)
 
 #include "../parser/Syntax/SNunit.hpp"
 #include "../parser/Syntax/SNsolve.hpp"
@@ -111,6 +112,7 @@ static int check_solver_name( SNsolve *snSolvePtr )
     
     // following 1 means to write solverName in NameNO series.
     SystemErrorNameNOA((SNunit *)snSolvePtr, 1," is not valid solver name.");
+    feelfemconf.WriteINFO_PM_LIB();
     return ( errors );
   }
 
