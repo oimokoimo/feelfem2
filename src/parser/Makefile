@@ -82,7 +82,7 @@ INCLUDES     =
 
 CFLAGS       = $(OPTION) $(INCLUDES) -g -O2 -fno-omit-frame-pointer 
 
-SYSLIB       = -L/usr/local/lib -Wl,-rpath,/usr/local/lib -lginac -lcln -lm -ll -lstdc++ -lc
+SYSLIB       = -L/usr/local/lib  -Wl,-rpath,/usr/local/lib -lginac -lcln -lm -ll -lstdc++ -lc
 #SYSLIB       = -lm -ll -lstdc++ -lc
 
 LIB          = $(SYSLIB)

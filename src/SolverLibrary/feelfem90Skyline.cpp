@@ -92,9 +92,6 @@ template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::SolverLibraryVariableDef
 template <> void LIB_feelfem90Skyline <MT_ff90SKYLINE>::
 DoSolveRoutineHeaderInLIB(const char *routineName, Solve *solvePtr) {
 
-	std::cerr <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
-	std::cerr <<"Welcome to DoSolveRoutineHeaderInLIB\n";
-	std::cerr <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@\n";
 
   int solveElementNo = 1 ;   // P2 limitation FIX
 
