@@ -73,24 +73,24 @@ void SolveElement::ApplyGalerkinMethod(void)
     gPtr->~GalerkinMethod();
   }
 
-  // check writes
-   std::cerr << "#######################################\n";
-   std::cerr << "## SolveElement::ApplyGalerkinMethod ##\n";
-   std::cerr << "#######################################\n";
-   std::cerr << "number of quads = " << quadratures << std::endl;
+  // check writes feelfem2
+//   std::cerr << "#######################################\n";
+//   std::cerr << "## SolveElement::ApplyGalerkinMethod ##\n";
+//  std::cerr << "#######################################\n";
+//   std::cerr << "number of quads = " << quadratures << std::endl;
    listIterator <Quadrature *>itrQ(quadraturePtrLst);
    int j = 1;
     for(itrQ.init();!itrQ;++itrQ) {
-      std::cerr << "No." << j << " : " << itrQ()->GetName() << std::endl;
+//      std::cerr << "No." << j << " : " << itrQ()->GetName() << std::endl;
       j++;
     }
     std::cerr << std::endl;
 
   // integrand set
     for(itrIS.init(); !itrIS ; ++itrIS ) {
-      itrIS()->print(std::cerr);
+//feelfem2 dbg      itrIS()->print(std::cerr);
     }
-    std::cerr << "#######################################\n";
+//    std::cerr << "#######################################\n";
 
   return;
 }

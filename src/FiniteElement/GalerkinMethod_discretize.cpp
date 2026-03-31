@@ -52,13 +52,14 @@ DiscretizedComponent *GalerkinMethod::Discretize(void)
 
 
    // check write
-    for(int i=0;i<elements;i++) {
-	    std::cerr << "ELEMENT No." << i << "  " << elementDOF[i] << std::endl;
-    }
-    tcPtr->print(std::cerr);
-    tcPtr->rev_print(std::cerr);
+//    for(int i=0;i<elements;i++) {
+//	    std::cerr << "ELEMENT No." << i << "  " << elementDOF[i] << std::endl;
+//   }
+//    tcPtr->print(std::cerr);
+//    tcPtr->rev_print(std::cerr);
 
   tcPtr->~TermConvert(); // delete 
+			 // termconvert delete oimokoimo 20260329
   
   VarPtr_ElementPtr_TC_init();  //
 
@@ -319,29 +320,29 @@ void GalerkinMethod::GalerkinTestFunction(DiscretizedComponent *dcPtr,
 
   for(int i=0;i<freedom;i++) {
 
-   std::cerr<<"GalerkinTestFunction \n";
-   std::cerr<<"freedom = "<<i <<"\n";
-   std::cerr<<"testFuncNo = "<< ePtr->GetEstNo() +i<<"\n";
+//   std::cerr<<"GalerkinTestFunction \n";
+//   std::cerr<<"freedom = "<<i <<"\n";
+//   std::cerr<<"testFuncNo = "<< ePtr->GetEstNo() +i<<"\n";
     
     int testFuncNo = ePtr->GetEstNo()+i;
     
     tcPtr->SetTestFunctionSymbol( testFunctionStr, testFuncNo );
 
-    std::cerr <<"testFunctionStr = "<<testFunctionStr <<"\n";
-    std::cerr <<"weqIntegrandStr = "<<weqIntegrandStr <<"\n";
+//    std::cerr <<"testFunctionStr = "<<testFunctionStr <<"\n";
+//    std::cerr <<"weqIntegrandStr = "<<weqIntegrandStr <<"\n";
 
     char *ret = tcPtr->convertExpressionString( weqIntegrandStr );
 
-    std::cerr <<"return of convertExpression str = "<<ret<< "\n";
+//    std::cerr <<"return of convertExpression str = "<<ret<< "\n";
 
     for(int j=0;j<totalDOF;j++) {
       void integrandEval(char *);   // ginac/integrandEval.cpp
       char cformula[MAX_FORMULA_BUF];  // = 8192
 
-      std::cerr << "***BEFORE integrandDerivative***\n";
-      std::cerr << "cformula = " <<cformula << "\n";
+//      std::cerr << "***BEFORE integrandDerivative***\n";
+//      std::cerr << "cformula = " <<cformula << "\n";
       integrandDerivative( ret ,coeffSblNoVec[j], cformula,MAX_FORMULA_BUF);
-      std::cerr << "***AFTER  " <<ret<<"\n";
+//      std::cerr << "***AFTER  " <<ret<<"\n";
 
       char *rev_ret = tcPtr->ReverseConvertExpressionString( cformula );
 

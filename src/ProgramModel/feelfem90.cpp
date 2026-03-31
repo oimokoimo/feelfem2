@@ -663,7 +663,7 @@ void PM_feelfem90::CoordinateVariableDeclaration(void)
 
 
 void PM_feelfem90::DoArgumentSequenceFromMain
-( char                         *subroutineName,
+( const char                  *subroutineName,
   orderedPtrList <Variable *>&varPtrLst       )
 {
   //module declaration

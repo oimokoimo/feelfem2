@@ -113,7 +113,7 @@ template <> void LIB_feelfem90AchimCG <MT_ff90AMGCRS>::SolverLibraryVariableDefi
 
 //
 template <> void LIB_feelfem90AchimCG<MT_ff90AMGCRS>::
-DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
+DoSolveRoutineHeaderInLIB(const char *routineName, Solve *solvePtr) {
 
   DoArgumentSequenceFromMain( routineName, solvePtr->VariablePtrLst() ); //PM
   DoSolveStarters();                                                 //PM

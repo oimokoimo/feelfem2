@@ -84,7 +84,7 @@ template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::SolverLibraryVariableDef
 }
 //
 template <> void LIB_feelfem90Lumping <MT_ff90LUMPING>::
-DoSolveRoutineHeaderInLIB(char *routineName, Solve *solvePtr) {
+DoSolveRoutineHeaderInLIB(const char *routineName, Solve *solvePtr) {
 
   int solveElementNo = 1 ;   // P2 limitation FIX
 

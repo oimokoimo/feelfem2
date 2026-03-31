@@ -272,9 +272,9 @@ void Variable::operator = (const Variable &val)
   varType = val.varType;   
   varName = val.varName;   // it takes new memory!!!!!
 
-  std::cerr << "======================================================\n";
-  std::cerr << "Variable operator= called.(FOR ONLY ReadCtrl77dat.cpp)\n";
-  std::cerr << "======================================================\n";
+//  std::cerr << "======================================================\n";
+//  std::cerr << "Variable operator= called.(FOR ONLY ReadCtrl77dat.cpp)\n";
+//  std::cerr << "======================================================\n";
 
   functionName   = val.functionName;
   elementFreedom = val.elementFreedom;
