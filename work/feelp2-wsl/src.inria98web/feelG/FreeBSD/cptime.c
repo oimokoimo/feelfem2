@@ -3,6 +3,12 @@
 #include <sys/times.h>
 #include <time.h>
 
+#include <unistd.h>
+
+#ifndef CLK_TCK
+#define CLK_TCK sysconf(_SC_CLK_TCK)    /* for Linux */
+#endif
+
 static long  user_time,total_user_time;
 static long   sys_time,total_sys_time;
 static long  c_user_time,total_c_user_time;
