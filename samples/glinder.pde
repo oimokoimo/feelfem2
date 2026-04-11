@@ -3,7 +3,7 @@ mesh {
   region reg1[tri](a,b,c,d);
   edge dedge(a,b,c,d,a);
   domain dom1(reg1);
-  nodes dom1(6000);
+  nodes dom1(2000);
 }
 
 var {
@@ -13,6 +13,8 @@ var {
   double diffu,diffw;
   double alpha,beta,gam;
   double a1,b1;
+  double m80,m140;
+  double x0,y0,x1,y1,x2,y2;
 }
 
 scheme {
@@ -39,15 +41,15 @@ scheme {
 */
 
 
-un = 1.2*exp(x);
+m80 = -80.0; m140 = -140.0;
+x0 = 0.95; y0 = 1.05;
+x1 = 1.08; y1 = 0.92;
+x2 = 0.88; y2 = 0.86;
 
-/*
-+(y-1.05)*(y-1.05))) + 0.9*exp(m140*((x-1.08)*(x-1.08)+(y-0.92)*(y-0.92))) + 0.7*exp(m140*((x-0.88)*(x-0.88)+(y-0.86)*(y-0.86)));
-un = 1.2*exp(m80*((x+0.95)*(x+0.95)+(y-1.05)*(y-1.05))) + 0.9*exp(m140*((x-1.08)*(x-1.08)+(y-0.92)*(y-0.92))) + 0.7*exp(m140*((x-0.88)*(x-0.88)+(y-0.86)*(y-0.86)));
-*/
+ un = 1.2*exp(m80*((x-x0)*(x-x0)+(y-y0)*(y-y0)))   + 0.9*exp(m140*((x-x1)*(x-x1)+(y-y1)*(y-y1))) + 0.7*exp(m140*((x-x2)*(x-x2)+(y-y2)*(y-y2))); 
 
 
- contour[un];
+ contour[un](mesh=off);
 
 iter:
 
