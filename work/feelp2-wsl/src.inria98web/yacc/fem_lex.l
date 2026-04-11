@@ -159,9 +159,6 @@ white_space      [ \t\n]
 "/"             return token(di);
 
 
-{letter}{letter_or_digit}*          {  push(yytext);
-                                       return token(IDENTIFIER);
-                                    }
 
 "'"[^']*"'"                         {  push(yytext);
                                        return token(STRING);
@@ -178,12 +175,9 @@ white_space      [ \t\n]
 				       return token(num);
                                     }
 
-"-"{digit}{digit}*          {          push(yytext);
-				       return token(num);
-                                    }
 
-"-"{N}"."({N}([deDE]("-")?{N})?)? {          push(yytext);
-				       return token(num);
+{letter}{letter_or_digit}*          {  push(yytext);
+                                       return token(IDENTIFIER);
                                     }
 
 {white_space}+                       ;
