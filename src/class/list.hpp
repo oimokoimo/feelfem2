@@ -186,6 +186,7 @@ void list<T>::deletelastlink()
 template <class T>
 void list<T>::deleteAllValues()
 {
+	/*
   link<T>* p = this->ptrToFirstLink;
   while (p != nullptr) {
     link<T>* next = p->ptrToNextLink;
@@ -194,6 +195,7 @@ void list<T>::deleteAllValues()
     p = next;
   }
   this->ptrToFirstLink = nullptr;
+  */
 }
 
 template <class T>

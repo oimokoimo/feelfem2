@@ -48,9 +48,11 @@ TermConvert::TermConvert(void)
   return;
 }
 
-TermConvert::~TermConvert(void)
+TermConvert::~TermConvert(void) { ; } // 2026/04/11  having problem = default;
+/*
 {
   // feelfemTEMP   delete StrStr memory.....
+  // `hkkk`k
   if(reverseTC != 0) {
     reverseTC->~TermConvert();   // delete reverse pointer
   }
@@ -61,6 +63,7 @@ TermConvert::~TermConvert(void)
   // string strlst...
   return;
 }
+*/
 
 void TermConvert::storeConvertPair(const char *fromStr,const char *toStr)
 {

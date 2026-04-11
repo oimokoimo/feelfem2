@@ -137,6 +137,8 @@ protected:
   TermConvert *reverseTC;    // accessed also from derived EwiseQuadTC 020729
 
 private:
+  TermConvert(const TermConvert&);            // 定義せずに宣言のみ
+  TermConvert& operator=(const TermConvert&); // 定義せずに宣言のみ
 
   // private functions
   void makeNthSymbol(char *,int , int );  // makeLinearCombi has also make smbl
