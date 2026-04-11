@@ -46,7 +46,7 @@ const char *PM_feelfem90::GetAssignRoutineName(int n)
   }
 
   int len = 3 + digits + 1; // 3="let", +digits, +1 for '\0'
-  char *ret = new char[len];
+  char *ret = new char[256];    
 
   // ✅ 終端は snprintf が付けるので %c は不要
   std::snprintf(ret, static_cast<size_t>(len), "let%d", n);
@@ -81,9 +81,9 @@ const char *PM_feelfem90::GetAssignCoRoutineName(int n)
     assert(1==0);
   }
   
-  len++;   // for '\0'
+  len+=11;   // for '\0'  2026/4/11  to ensure enough length
 
-  char *ret = new char[len];
+  char *ret = new char[256];        // 2026/4/11 enough length
   sprintf(ret,"colet%d%c",n,'\0');
 
   return(ret);

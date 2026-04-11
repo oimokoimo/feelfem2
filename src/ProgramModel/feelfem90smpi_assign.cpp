@@ -52,7 +52,7 @@ const char *PM_feelfem90smpi::GetAssignRoutineName(int n)
   
   len++;   // for '\0'
 
-  char *ret = new char[len];
+  char *ret = new char[256];
   sprintf(ret,"let%d%c",n,'\0');
 
   return(ret);
@@ -87,7 +87,7 @@ const char *PM_feelfem90smpi::GetAssignCoRoutineName(int n)
   
   len++;   // for '\0'
 
-  char *ret = new char[len];
+  char *ret = new char[256];
   sprintf(ret,"colet%d%c",n,'\0');
 
   return(ret);
