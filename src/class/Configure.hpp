@@ -100,6 +100,7 @@ public:
 
   // for error explanation information output
   void WriteINFO_PM_LIB(void);
+  void WriteINFO_PM(void);
 
 
 

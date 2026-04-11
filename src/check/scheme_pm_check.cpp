@@ -25,6 +25,7 @@
 
 #include "parseExternals.hpp"       // for parser  trees
 
+#include "Configure.hpp"            // to use feelfemconf.WriteINFO_PM
 
 #include "../parser/Syntax/SNunit.hpp"
 #include "../parser/Syntax/SNprogramModel.hpp"
@@ -43,6 +44,7 @@ static int check_pm(SNprogramModel *snProgramModelPtr)
 
     SystemErrorNameA((SNunit *)snProgramModelPtr,
 		     " is not valid ProgramModel name.");
+    feelfemconf.WriteINFO_PM();
 
     return( 1 );  // name is undefined, error
   }

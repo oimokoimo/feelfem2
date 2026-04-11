@@ -79,6 +79,7 @@ int Configure::IsValidPM_LIB( string &pmName, string &libName )
   }
 }
 
+// 2026 information in error
 void Configure::WriteINFO_PM_LIB(void) {
 	listIterator <StrStrIntPair *>itr(pglibPairLst);
 	std::cerr << "Supported Program model and library pairs\n";
@@ -86,7 +87,14 @@ void Configure::WriteINFO_PM_LIB(void) {
 		itr()->WRITE_contents(std::cerr);    
 	}
 }	
-
+// 2026 information in error
+void Configure::WriteINFO_PM(void) {
+	listIterator <StrIntPair *>itr(programModelLst);
+	std::cerr << "Supported ProgramModel\n";
+	for(itr.init(); !itr ; ++itr) {
+		itr()->WRITE_contents(std::cerr);
+	}
+}
 
 // for SNsolve::CheckInit  (default solver)
 void Configure::SetDefaultSolverName( string &pgName, string &solverName )

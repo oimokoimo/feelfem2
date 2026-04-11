@@ -54,6 +54,11 @@ public:
 
   // THIS COMPARISON IS FOR ptrList (comparison is only for the string compo.)
   friend int operator == (const StrIntPair &, const StrIntPair &);  
+
+  void WRITE_contents(std::ostream &ost) {
+          ost << name <<" : " <<  "("<<code <<")\n";
+  }
+
   
   
 private:

@@ -124,6 +124,7 @@ static int check_solver_name( SNsolve *snSolvePtr )
     
     // following 1 means to write solverName in NameNO series.
     SystemErrorNameNOA((SNunit *)snSolvePtr, 1, " cannot be used in the current ProgramModel.");
+    feelfemconf.WriteINFO_PM_LIB();
     return(errors);
 
   }
