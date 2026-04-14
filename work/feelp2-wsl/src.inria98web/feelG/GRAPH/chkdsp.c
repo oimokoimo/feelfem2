@@ -7,7 +7,7 @@ int	*iflag;
 {
 	char	str[100];
 
-	sprintf(str,"%s",getenv("DISPLAY"));
+	sprintf(str,"%s%c",getenv("DISPLAY"),'\0');
 
 	if (strcmp(str,"\0") == 0) {
 		*iflag = -1;
