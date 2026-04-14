@@ -229,6 +229,7 @@ int	*x1,*x2,*y1,*y2,xmin,xmax,ymin,ymax;
 
 void	ViewExtPlotLine(x,y,np,xmin,xmax,ymin,ymax,cid,id)
 float	*x,*y;
+int     np;
 float	xmin,xmax,ymin,ymax;
 int	cid;
 int	id;
@@ -290,6 +291,7 @@ int	id;
 
 void	ViewExtPlotMarker(x,y,np,xmin,xmax,ymin,ymax,mid,cid,id)
 float	*x,*y;
+int     np;
 float	xmin,xmax,ymin,ymax;
 int	mid;
 int	cid;

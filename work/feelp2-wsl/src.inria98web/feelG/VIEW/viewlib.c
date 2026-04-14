@@ -124,6 +124,7 @@ int		id;
 int		ViewConnectWindow(disp,win,id)
 Display	*disp;
 Window	win;
+int      id;
 {
 	if (id > VIEW_MAX_DISP - 1 || id < 0) return( - 1 );
 

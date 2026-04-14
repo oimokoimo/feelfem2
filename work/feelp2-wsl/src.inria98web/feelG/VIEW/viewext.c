@@ -8,6 +8,7 @@
 #include "view.h"
 
 int     ViewExtColorBar(n,value,fg,mid,colorid,id)
+int      n;
 float   *value;
 int     *colorid,id;
 int     fg,mid;
@@ -671,6 +672,7 @@ int	id;
 
 int     ViewExtColorBar2(x,y,n,value,fg,mid,colorid,id)
 int     x,y;
+int     n;
 float   *value;
 int     *colorid,id;
 int     fg,mid;

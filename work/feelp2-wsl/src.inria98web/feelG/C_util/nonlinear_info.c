@@ -1,5 +1,6 @@
 #include <stdio.h>
-nonlinear_info_(iter,dnorm)
+
+void nonlinear_info_(iter,dnorm)
 int *iter;
 double *dnorm;
 {
