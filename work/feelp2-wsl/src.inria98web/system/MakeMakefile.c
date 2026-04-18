@@ -189,7 +189,7 @@ void MakeMakefile()
 	fprintf(fp,"%ccjf77 ",9);
     }
     else {
-	fprintf(fp,"%c%s ",9,FC_NAME);
+	fprintf(fp,"%c%s ",9,"$(FC)");
     }
 
 
