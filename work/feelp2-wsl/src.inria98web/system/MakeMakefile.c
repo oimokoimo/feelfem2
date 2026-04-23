@@ -151,7 +151,7 @@ void MakeMakefile()
         break;
    
       case Linux:
-        fprintf(fp," -fallow-argument-mismatch");
+        fprintf(fp," -O3  -fallow-argument-mismatch");
         break;
 
       default:
