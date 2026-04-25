@@ -17,7 +17,7 @@ var {
 
 scheme {
 
-  dt  = 0.001;
+  dt  = 0.0000001;
   dtr = 1.0/dt;
 
   iptr = 0;
