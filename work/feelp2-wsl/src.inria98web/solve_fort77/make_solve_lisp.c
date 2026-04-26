@@ -43,8 +43,7 @@ void make_solve_lisp()
 #ifdef MSDOS
     lisp_program = fopen(DOS_LISP_TMP,"w");
 #else
-/*    lisp_program = popen(LISP_COMMAND,"w");    */
-    lisp_program = fopen("OIMO.L","w");
+    lisp_program = popen(LISP_COMMAND,"w");    
 #endif
 
     /*======================*/
