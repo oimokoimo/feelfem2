@@ -1,0 +1,3482 @@
+module pcp90
+contains
+      SUBROUTINE PCP_DR1ACH     (N,BW,NB,NC,NPE,KIWORK,KAWORK,IERR0, &
+     IOPT,MYRANK)
+      IMPLICIT NONE
+      INTEGER N,BW,NB,NC,NPE,KIWORK,KAWORK,IERR0,IOPT(10),     MYRANK
+      INTEGER TSIZE
+      IERR0=0
+      IF (3*N.GT.KIWORK) THEN
+         WRITE(6,6100) 3*N-KIWORK
+ 6100    FORMAT(/,'[$PCP0018];<ERROR> IN IWORK at PCP_DR1ACH'         , &
+     /,'                     CALLED BY PCP_DR1SLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      TSIZE=MAX((BW+NPE+2)*NB*NC, NB*NC*NPE)
+      IF (TSIZE.GT.KAWORK) THEN
+         WRITE(6,6110) TSIZE-KAWORK
+ 6110    FORMAT(/,'[$PCP0019];<ERROR> IN DWORK at PCP_DR1ACH'         , &
+     /,'                     CALLED BY PCP_DR1SLV'      ,/, &
+     '* ERROR : INSUFFICIENT REAL WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE REAL ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IF( IOPT(8).EQ.MYRANK )      WRITE(6,6120) N,BW,NB,3*N,TSIZE, &
+     KIWORK,KAWORK
+ 6120 FORMAT(/,' * DIRECT SOLVER INFORMATION *'     ,/, &
+     '  - D.O.F.               :',I10     ,/, &
+     '  - BAND WIDTH           :',I10     ,/, &
+     '  - BLOCK SIZE           :',I10     ,/, &
+     '  - INTEGER AND REAL ARRAY SIZE '     ,/, &
+     '      MY PE :            [INTEGER]       [REAL]'     ,/, &
+     '      REQUESTED MEMORY   :',2I10     ,/, &
+     '      CURRENT ARRAY SIZE :',2I10)
+      RETURN
+      END subroutine PCP_DR1ACH
+      SUBROUTINE PCP_DR1CHK(N,BW,NB,NC,NPE,KIWORK,KDWORK,IERR0)
+      IMPLICIT NONE
+      INTEGER N,BW,NB,NC,NPE,KIWORK,KDWORK,IERR0
+      INTEGER TSIZE
+      IERR0=0
+      IF (3*N.GT.KIWORK) THEN
+         WRITE(6,6100) 3*N-KIWORK
+ 6100    FORMAT(/,'[$PCP0016];<ERROR> IN IWORK at PCP_DR1CHK'         , &
+     /,'                     CALLED BY PCP_DR1SLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         IERR0=1
+      END IF
+      TSIZE=NPE*NB*NC
+      IF (TSIZE.GT.KDWORK) THEN
+         WRITE(6,6110) TSIZE-KDWORK
+ 6110    FORMAT(/,'[$PCP0017];<ERROR> IN DWORK at PCP_DR1CHK'         , &
+     /,'                     CALLED BY PCP_DR1SLV'      ,/, &
+     '* ERROR : INSUFFICIENT REAL WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE REAL ARRAY SIZE(+',I8,' WORDS)')
+         IERR0=1
+      END IF
+      RETURN
+      END subroutine PCP_DR1CHK
+      SUBROUTINE PCP_DR1DEC(A, N, BW, BWU, BWL, NB, NC, NPE,            &
+          MYRANK, JC, JB, JPE, TMP, IERR)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER       N, BW, BWU, BWL
+      INTEGER       NB, NC, NPE
+      INTEGER       JC(N),JB(N),JPE(N)
+      REAL*8        A(BW, NB, NC)
+      REAL*8        TMP(BWL+1), VTMP
+      REAL*8        STARTIME, TOTALTIME
+      INTEGER       I, J, K, MAXJ, KJ, BWU1, ENDBW, JE, JB1, JC1
+      INTEGER       MYRANK, IERR
+      STARTIME=-1
+      IF (MYRANK.EQ.0) THEN
+         STARTIME = MPI_WTIME()
+      END IF
+      BWU1=BWU+1
+      ENDBW=BW-BWU
+      DO K=1,N
+         IF (MYRANK.EQ.JPE(K)) THEN
+            JB1=JB(K)
+            JC1=JC(K)
+            DO I=BWU1,BW
+               TMP(I-BWU)=A(I, JB1, JC1)
+            END DO
+         END IF
+         CALL MPI_BCAST(TMP, BW, MPI_DOUBLE_PRECISION,                  &
+      JPE(K), MPI_COMM_WORLD, IERR)
+         VTMP=1.0D0/TMP(1)
+         MAXJ=MIN(BWU,N-K)
+         DO J=1,MAXJ
+            KJ=K+J
+            IF (MYRANK.EQ.JPE(KJ)) THEN
+               JE=J-BWU
+               JB1=JB(KJ)
+               JC1=JC(KJ)
+               A(BWU1-J,JB1,JC1)=A(BWU1-J,JB1,JC1)*VTMP
+               DO I=2, ENDBW
+                  A(I-JE, JB1, JC1)=A(I-JE, JB1, JC1)              &
+     -TMP(I)*A(BWU1-J, JB1, JC1)
+               END DO
+            END IF
+         END DO
+      END DO
+      IF (MYRANK.EQ.0) THEN
+         IF ( STARTIME.NE.-1.0D0 ) THEN
+            TOTALTIME = MPI_WTIME() - STARTIME
+         END IF
+      END IF
+ 999  FORMAT(3I4,E12.3)
+      RETURN
+      END subroutine PCP_DR1DEC
+      SUBROUTINE PCP_DR1ELI(A, B, N, BW, BWU, BWL, NB, NC, NPE, X,      &
+                 MYRANK, JC,JB,JPE, Y, IERR)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER       N, BW, BWU, BWL
+      INTEGER       NB, NC, NPE
+      INTEGER       JC(N),JB(N),JPE(N)
+      REAL*8        A(BW, NB, NC)
+      REAL*8        B(NC*NB), Y(NC*NB), X(NC*NB)
+      REAL*8        STARTIME, TOTALTIME
+      INTEGER       I, K, BWLNC, CURRJ, BNC
+      REAL*8        IEDOM, SIEDOM
+      INTEGER       IDEST, ITAG
+      INTEGER       MYRANK, IERR
+      STARTIME=-1
+      IF (MYRANK.EQ.0) THEN
+         STARTIME = MPI_WTIME()
+      END IF
+      DO I=1,NC*NB
+         Y(I)=0.0D0
+         X(I)=0.0D0
+      END DO
+      BWLNC=JC(BWL)
+      IF (MYRANK.EQ.0) THEN
+         Y(1)=B(1)/A(BWU+1,1,1)
+      END IF
+      DO K=2,N
+         CURRJ=(JC(K)-1)*NB+JB(K)
+         IF( MYRANK.EQ.JPE(K) ) THEN
+            Y(CURRJ)=B(CURRJ)
+         END IF
+         BNC=MIN((K-1)/(NB*NPE)+1,BWLNC)
+         CALL PCP_DR1ELL(N,K,BW,BWU,BWL,NB,NC,NPE,MYRANK,               &
+        JC,JB,JPE,BNC,A,Y,IEDOM)
+         IDEST=JPE(K)
+         ITAG=K
+         CALL MPI_REDUCE(IEDOM, SIEDOM, 1, MPI_DOUBLE_PRECISION,        &
+      MPI_SUM, IDEST, MPI_COMM_WORLD, IERR)
+         IF( MYRANK.EQ.JPE(K) ) THEN
+            Y(CURRJ)=(Y(CURRJ)-SIEDOM)/A(BWU+1, JB(K), JC(K))
+         END IF
+      END DO
+      BWLNC=JC(BWU)
+      IF (MYRANK.EQ.JPE(N)) THEN   
+         X((JC(N)-1)*NB+JB(N))=Y((JC(N)-1)*NB+JB(N))
+      END IF
+      DO K=N-1,1,-1
+         CURRJ=(JC(K)-1)*NB+JB(K)
+         IF (MYRANK.EQ.JPE(K)) THEN
+            X(CURRJ)=Y(CURRJ)
+         END IF
+         BNC=MIN(JC(N-K),BWLNC)
+         CALL PCP_DR1ELU(N,K,BW,BWU,NB,NC,NPE,MYRANK,                  &
+     JC,JB,JPE,BNC,A,X,IEDOM)
+         IDEST=JPE(K)
+         ITAG=K
+         CALL MPI_REDUCE(IEDOM, SIEDOM, 1, MPI_DOUBLE_PRECISION,        &
+      MPI_SUM, IDEST, MPI_COMM_WORLD, IERR)
+         IF( MYRANK.EQ.JPE(K) ) THEN 
+            X(CURRJ)=X(CURRJ)-SIEDOM
+         END IF
+      END DO
+      IF (MYRANK.EQ.0) THEN
+         IF ( STARTIME.NE.-1.0D0 ) THEN
+            TOTALTIME = MPI_WTIME() - STARTIME
+         END IF
+      END IF
+ 999  FORMAT(5I4,E12.3)
+      RETURN
+      END subroutine PCP_DR1ELI
+      SUBROUTINE PCP_DR1ELL(N,K,BW,BWU,BWL,NB,NC,NPE,MYRANK,            &
+              JC,JB,JPE,BNC,A,Y,IEDOM)
+      IMPLICIT NONE
+      INTEGER N,K,BW,BWU,BWL,NB,NC,NPE,MYRANK,BNC
+      INTEGER JC(N),JB(N),JPE(N)
+      INTEGER STARTJ, ENDJ, KROW, ITMP1, ITMP2, JC1, K1
+      INTEGER I, J, L
+      REAL*8  A(BW, NB, NC), Y(NC*NB)
+      REAL*8  IEDOM
+      KROW=K+BWU+1
+      IEDOM=0.0D0
+      STARTJ=MAX(1,K-BWL)
+      K1=K-1
+      JC1=JC(K1)
+      IF (MYRANK.EQ.JPE(K1)) THEN
+         ENDJ=NB*NPE*(JC1-1)+NB*MYRANK+1
+         ITMP2=JB(K1)-K+1
+         ITMP1=(JC1-1)*NB+ITMP2
+         DO J=K1, ENDJ, -1
+            IEDOM=IEDOM+Y(ITMP1+J)*A(KROW-J,ITMP2+J,JC1)
+            IF (J.LE.STARTJ) GO TO 100
+         END DO
+         JC1=JC1-1
+         ENDJ=NB*NPE*(JC1-1)+NB*(MYRANK+1)
+      ELSE IF (MYRANK.LT.JPE(K1)) THEN
+         ENDJ=NB*NPE*(JC1-1)+NB*(MYRANK+1)
+      ELSE
+         JC1=JC1-1
+         ENDJ=NB*NPE*(JC1-1)+NB*(MYRANK+1)
+      END IF
+      J=ENDJ
+      IF (STARTJ.GT.ENDJ ) GO TO 100
+      DO I=1, BNC+2
+         ITMP2=NB+1
+         ITMP1=(JC1-1)*NB+ITMP2
+         DO L=1,NB
+            IEDOM=IEDOM+Y(ITMP1-L)*A(KROW-J,ITMP2-L,JC1)
+            J=J-1
+            IF (J.LT.STARTJ ) GO TO 100
+         END DO
+         J=J-NB*(NPE-1)
+         IF (J.LT.STARTJ ) GO TO 100
+         JC1=JC1-1
+         IF (JC1.LE.0) GO TO 100
+      END DO
+ 100  CONTINUE
+      RETURN
+      END subroutine PCP_DR1ELL
+      SUBROUTINE PCP_DR1ELU(N,K,BW,BWU,NB,NC,NPE,MYRANK,                &
+          JC,JB,JPE,BNC,A,X,IEDOM)
+      IMPLICIT NONE
+      INTEGER N,K,BW,BWU,NB,NC,NPE,MYRANK,BNC
+      INTEGER JC(N),JB(N),JPE(N)
+      INTEGER STARTJ, ENDJ, KROW, ITMP1, ITMP2,JC1,K1
+      INTEGER I, J, L
+      REAL*8  A(BW, NB, NC), X(NC*NB)
+      REAL*8  IEDOM
+      KROW=K+BWU+1
+      IEDOM=0.0D0
+      ENDJ=MIN(N,BWU+K)
+      K1=K+1
+      JC1=JC(K1)
+      IF (MYRANK.EQ.JPE(K1)) THEN
+         STARTJ=MIN(NB*NPE*(JC1-1)+NB*(MYRANK+1),ENDJ)
+         ITMP2=JB(K1)-K-1
+         ITMP1=(JC1-1)*NB+ITMP2
+         DO J=K+1, STARTJ
+            IEDOM=IEDOM+X(ITMP1+J)*A(KROW-J,ITMP2+J,JC1)
+         END DO
+         JC1=JC1+1
+         STARTJ=NB*NPE*(JC1-1)+NB*MYRANK+1
+      ELSE IF (MYRANK.GT.JPE(K1)) THEN
+         STARTJ=NB*NPE*(JC1-1)+NB*MYRANK+1
+      ELSE
+         JC1=JC1+1
+         STARTJ=NB*NPE*(JC1-1)+NB*MYRANK+1
+      END IF
+      J=STARTJ
+      IF (STARTJ.GT.ENDJ ) GO TO 100
+      DO I=1, BNC+2
+         ITMP1=(JC1-1)*NB
+         DO L=1,NB
+            IEDOM=IEDOM+X(ITMP1+L)*A(KROW-J,L,JC1)
+            J=J+1
+            IF (J.GT.ENDJ ) GO TO 100
+         END DO
+         J=J+NB*(NPE-1)
+         IF (J.GT.ENDJ ) GO TO 100
+         JC1=JC1+1
+         IF (JC1.GT.NC) GO TO 100
+      END DO
+ 100  CONTINUE
+      RETURN
+      END subroutine PCP_DR1ELU
+      SUBROUTINE PCP_DR1ICH(N,IELE,KIWORK,IERR0)
+      IMPLICIT NONE
+      INTEGER N,IELE,KIWORK,IERR0
+      INTEGER TSIZE
+      IERR0=0
+      TSIZE=2*IELE+3*N+1
+      IF (TSIZE.GT.KIWORK) THEN
+         WRITE(6,6100) TSIZE-KIWORK
+ 6100    FORMAT(/,'[$PCP0020];<ERROR> IN IWORK at PCP_DR1ICH'         , &
+     /,'                     CALLED BY PCP_DR1SLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         IERR0=1
+      END IF
+      RETURN
+      END subroutine PCP_DR1ICH
+      SUBROUTINE PCP_DR1IND(N,NB,NC,NPE,JC,JB,JPE)
+      INTEGER N,NB,NC,NPE
+      INTEGER JC(N),JB(N),JPE(N)
+      INTEGER J
+      DO J=1,N
+         JC(J)=(J-1)/(NB*NPE)+1
+         JPE(J)=((J-1)-(NB*NPE)*(JC(J)-1))/NB
+         JB(J)=((J-1)-(NB*NPE)*(JC(J)-1)-NB*JPE(J))+1
+      END DO
+      RETURN
+      END subroutine PCP_DR1IND
+      SUBROUTINE PCP_DR1LOC(J, JB, JC, JPE, NB, NC, NPE)
+      IMPLICIT NONE
+      INTEGER       J
+      INTEGER       JB, JC, JPE
+      INTEGER       NB, NC, NPE
+      JC=(J-1)/(NB*NPE)+1
+      JPE=((J-1)-(NB*NPE)*(JC-1))/NB+1
+      JB=((J-1)-(NB*NPE)*(JC-1)-NB*(JPE-1))+1
+      RETURN
+      END subroutine PCP_DR1LOC
+      SUBROUTINE PCP_DR1LUB(A, B, X, N, BW, BWU, BWL, NB, NC, NPE,  &
+     XSOL,                  MYRANK, IWORK, KIWORK, DWORK, KDWORK, IERR0)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER       N, BW, BWU, BWL
+      INTEGER       NB, NC, NPE, KIWORK, KDWORK
+      INTEGER       IWORK(KIWORK)
+      REAL*8        A(BW, NB, NC)
+      REAL*8        B(NC*NB), X(NC*NB), XSOL(N), DWORK(KDWORK)
+      REAL*8        STARTIME, TOTALTIME
+      INTEGER       MYRANK, IERR, IERR0, IERR1, I
+      CALL PCP_DR1CHK(N,BW,NB,NC,NPE,KIWORK,KDWORK,IERR1)
+      DO I=1, NPE
+         IERR0=IERR1
+         CALL MPI_BCAST(IERR0,1,MPI_INTEGER,I-1,MPI_COMM_WORLD,IERR)
+         IF( IERR0.EQ.1 ) RETURN
+      END DO
+      STARTIME=-1
+      IF (MYRANK.EQ.0) THEN
+         STARTIME = MPI_WTIME()
+      END IF
+      CALL PCP_DR1IND(N,NB,NC,NPE,IWORK,IWORK(N+1),IWORK(2*N+1))
+      CALL PCP_DR1DEC(A, N, BW, BWU, BWL, NB, NC, NPE,          MYRANK, &
+      IWORK,IWORK(N+1),IWORK(2*N+1), DWORK, IERR)
+      CALL PCP_DR1ELI(A, B, N, BW, BWU, BWL, NB, NC, NPE, X,            &
+     MYRANK, IWORK,IWORK(N+1),IWORK(2*N+1), DWORK, IERR)
+      CALL PCP_DR1PST(X, N, NB, NC, NPE, XSOL,            MYRANK,  &
+     IWORK,IWORK(N+1),IWORK(2*N+1), DWORK, IERR)
+      IF (MYRANK.EQ.0) THEN
+         IF ( STARTIME.NE.-1.0D0 ) THEN
+            TOTALTIME = MPI_WTIME() - STARTIME
+         END IF
+      END IF
+      RETURN
+      END subroutine PCP_DR1LUB
+      SUBROUTINE PCP_DR1PAR(RSET,N,BW,BWU,BWL,NC)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      REAL*8 RSET(5)
+      INTEGER N,BW,BWU,BWL,NC
+      N=INT(RSET(1))
+      BW=INT(RSET(2))
+      BWU=INT(RSET(3))
+      BWL=INT(RSET(4))
+      NC=INT(RSET(5))
+      RETURN
+      END subroutine PCP_DR1PAR
+      SUBROUTINE PCP_DR1PRE(NELM0,NDOF0,AMAT,IROW0,ICOL0,ICPNT,     IS, &
+     BW1,BWU1,BWL1,BVEC,IW1,IW2,RW1)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NELM0,IROW0(NELM0),ICOL0(NELM0),ICPNT(NDOF0+1),     &
+      IS(NDOF0),BW1,BWU1,BWL1,IW1(NELM0),IW2(NELM0),IC,IR
+      REAL*8 AMAT(NELM0),BVEC(NDOF0),RW1(NDOF0)
+      INTEGER I,J
+      DO 110 I=1,NDOF0
+         DO 120 J=ICPNT(I),ICPNT(I+1)-1
+            IROW0(J)=I
+ 120             CONTINUE
+ 110               CONTINUE
+      BWU1=0
+      BWL1=0
+      DO 210 I=1,NELM0
+         IC=ICOL0(I)
+         IR=IROW0(I)
+         IF( IC.GE.IR ) THEN
+            BWU1=MAX(BWU1,IC-IR)
+         ELSE
+            BWL1=MAX(BWL1,IR-IC)
+         END IF
+ 220     CONTINUE
+ 210  CONTINUE
+      BW1=BWU1+BWL1+1
+      RETURN
+      END subroutine PCP_DR1PRE
+      SUBROUTINE PCP_DR1PST(X, N, NB, NC, NPE, XSOL,                   &
+     MYRANK, JC,JB,JPE, RES, IERR)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER       N
+      INTEGER       NB, NC, NPE
+      INTEGER       JC(N),JB(N),JPE(N)
+      REAL*8        X(NC*NB), XSOL(N)
+      REAL*8        RES(NB, NC, NPE)
+      INTEGER       I
+      INTEGER       MYRANK, IERR
+      CALL MPI_GATHER(X(1), NC*NB, MPI_DOUBLE_PRECISION,                &
+       RES, NC*NB, MPI_DOUBLE_PRECISION,                 0,  &
+     MPI_COMM_WORLD, IERR)
+      IF (MYRANK.EQ.0) THEN
+         DO I=1,N
+            XSOL(I) = RES(JB(I),JC(I),JPE(I)+1)
+         END DO
+      END IF
+ 999  FORMAT(5I4,E12.3)
+      RETURN
+      END subroutine PCP_DR1PST
+      SUBROUTINE PCP_DR1RMT(AWORK,KAWORK,N,BW,BWU,BWL,NB,NC,MYRANK)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'mpif.h'
+      INTEGER N,BW,BWU,BWL,NB,NC,MYRANK,KAWORK
+      INTEGER ISOU,IASIZE,IERR
+      INTEGER ITAG1,ITAG2
+      INTEGER IREQ1,IREQ2
+      INTEGER ISTATUS(MPI_STATUS_SIZE)
+      DOUBLE PRECISION RSET(5),AWORK(KAWORK)
+      ISOU=0
+      ITAG1=MYRANK+1000
+      IASIZE=5
+      CALL MPI_IRECV(RSET,IASIZE,MPI_DOUBLE_PRECISION,               &
+     ISOU, ITAG1,              MPI_COMM_WORLD, IREQ1, IERR)
+      CALL MPI_WAIT(IREQ1, ISTATUS, IERR)
+      CALL PCP_DR1PAR(RSET,N,BW,BWU,BWL,NC)
+      ISOU=0
+      ITAG2=MYRANK+2000
+      IASIZE=(BW+1)*NB*NC
+      CALL MPI_IRECV(AWORK,IASIZE,MPI_DOUBLE_PRECISION,               &
+     ISOU, ITAG2,              MPI_COMM_WORLD, IREQ2, IERR)
+      CALL MPI_WAIT(IREQ2, ISTATUS, IERR)
+      RETURN
+      END subroutine PCP_DR1RMT
+      SUBROUTINE PCP_DR1SLV(NDOF0,NELM0,     AMAT,ICOL0,ICPNT,BVEC, &
+     XSOL,     ROPT,IOPT,KIWORK,IWORK,KDWORK,DWORK,     ICOM,ISTAT)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER ICOM,NDOF0,NELM0,ICOL0(NELM0),ICPNT(NDOF0+1),     NB, &
+     KIWORK,IWORK(KIWORK),KDWORK,ISTAT,IOPT(10)
+      REAL*8 AMAT(NELM0),BVEC(NDOF0),XSOL(NDOF0),EPS,DWORK(KDWORK),     &
+      ROPT(10)
+      INTEGER NPROC,MYRANK,IERR,IP1,IP2,IP3,IP4,IP5
+      INTEGER BW1,BWU1,BWL1
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR)
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR)
+      IF( IOPT(1).NE.3 .AND. MYRANK.EQ.0 ) THEN
+         WRITE(6,6100) IOPT(1)
+ 6100    FORMAT(/,'[$PCP0101];<WARNING> IN IOPT at PCP_DR1SLV'        , &
+     /,'* WARNING : ILLEGAL IOPT(1) ',I3,' WAS SPECIFIED *')
+      END IF
+      NB=IOPT(2)
+      IP1=1
+      IP2=IP1+NELM0
+      IP3=IP2+NDOF0
+      IP4=IP3+NDOF0
+      IP5=IP4+NDOF0
+      CALL PCP_DR1PRE(NELM0,NDOF0,AMAT,IWORK(IP1),ICOL0,ICPNT,      &
+     IWORK(IP2),BW1,BWU1,BWL1,BVEC,     IWORK(IP3),IWORK(IP4),DWORK)
+      CALL PCP_DR1SOL(NELM0,NDOF0,AMAT,IWORK(IP1),ICOL0,      &
+     IWORK(IP3),BW1,BWU1,BWL1,BVEC,     NB,NPROC,IWORK(IP4),KIWORK-IP4, &
+     DWORK,KDWORK,     MYRANK,XSOL,IERR,IOPT)
+      ISTAT=IERR
+      RETURN
+      END subroutine PCP_DR1SLV
+      SUBROUTINE PCP_DR1SMT(IELE,N,RVAL,INDX,JNDX,IS,BW,BWU,BWL,BVEC,   &
+                         NB,NC,NPROC,AWORK,KAWORK)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INCLUDE 'mpif.h'
+      INTEGER IELE,N,BW,BWU,BWL,NB,NC,NPROC,KAWORK
+      INTEGER INDX(IELE),JNDX(IELE),IS(IELE)
+      REAL*8  RVAL(IELE),BVEC(N),RSET(5)
+      REAL*8  AWORK(KAWORK)
+      INTEGER I,K,M,IN,INB,INC,IB,JTMP,ITMP,IASIZE
+      INTEGER BWNB,BWNC,BWN2
+      INTEGER IDEST,IERR
+      INTEGER ITAG1,ITAG2
+      INTEGER ISTATUS(MPI_STATUS_SIZE)
+      INTEGER IREQ1,IREQ2
+      RSET(1)=DBLE(N)
+      RSET(2)=DBLE(BW)
+      RSET(3)=DBLE(BWU)
+      RSET(4)=DBLE(BWL)
+      RSET(5)=DBLE(NC)
+      DO I=1,IELE
+         IS(I)=I
+      END DO
+      CALL PCP_USORT3(JNDX,INDX,IS,IELE)
+      BWNB=BW*NB
+      BWNC=BWNB*NC
+      BWN2=BWNC+NB*NC
+      DO IN=1,NPROC
+         DO I=1,BWN2
+            AWORK(I)=0.0D0
+         END DO
+         INB=1
+         INC=1
+         IB=1
+         I=1
+         IF (IN.EQ.NPROC ) THEN
+            JTMP=1
+         ELSE
+            JTMP=IN*NB+1
+            DO K=1, BWNB*NPROC
+               IF (JTMP.EQ.JNDX(I)) GO TO 10
+               I=I+1
+               IF (I.GT.IELE) THEN
+                  WRITE(*,*) 'WARNING !!!'
+                  WRITE(*,*) 'CANNOT FIND COLUMN INDEX',JTMP,I
+                  WRITE(*,*) 'NUMBER OF PROCESSER IS OK?'
+                  GO TO 200
+               END IF
+            END DO
+         END IF
+ 10      CONTINUE
+         IB=1
+         AWORK(BWNC+IB)=BVEC(JTMP)
+         DO M=1, IELE+NB*NC+1
+            IF (I.GT.IELE) GO TO 200
+            IF (JTMP.EQ.JNDX(I)) THEN
+               ITMP=INDX(I)-JNDX(I)+BWU+1
+               AWORK(ITMP+(INB-1)*BW+(INC-1)*BWNB)=               &
+     AWORK(ITMP+(INB-1)*BW+(INC-1)*BWNB)+RVAL(IS(I))
+               I=I+1
+            ELSE
+               IF (INB.EQ.NB) THEN
+                  INB=1
+                  INC=INC+1
+                  IF (INC.GT.NC) GO TO 200
+                  JTMP=JTMP+NB*(NPROC-1)+1
+                  IF (JTMP.GT.N) GO TO 200
+                  IB=IB+1
+                  AWORK(BWNC+IB)=BVEC(JTMP)
+                  DO K=1, BWNB*NPROC+1
+                     IF (JTMP.EQ.JNDX(I)) GO TO 100
+                     I=I+1
+                  END DO
+                  WRITE(*,*) 'CANNOT FIND',INC,' CYCLE ELEMENT.'
+                  WRITE(*,*) 'IN ',JTMP,' COLUMN, PROC =',IN,' I =',I
+               ELSE
+                  INB=INB+1
+                  JTMP=JNDX(I)
+                  IB=IB+1
+                  AWORK(BWNC+IB)=BVEC(JTMP)
+               END IF
+            END IF
+ 100        CONTINUE
+         END DO
+ 200     CONTINUE
+         IF (IN.NE.NPROC) THEN
+            IDEST=IN
+            ITAG1=IN+1000
+            IASIZE=5
+            CALL MPI_ISEND(RSET, IASIZE, MPI_DOUBLE_PRECISION,          &
+       IDEST, ITAG1,           MPI_COMM_WORLD, IREQ1, IERR)
+            CALL MPI_WAIT(IREQ1, ISTATUS, IERR)
+            IDEST=IN
+            ITAG2=IN+2000
+            IASIZE=BWN2
+            CALL MPI_ISEND(AWORK,IASIZE,MPI_DOUBLE_PRECISION,           &
+      IDEST, ITAG2,           MPI_COMM_WORLD, IREQ2, IERR)
+            CALL MPI_WAIT(IREQ2, ISTATUS, IERR)
+         END IF
+      END DO
+      RETURN
+      END subroutine PCP_DR1SMT
+      SUBROUTINE PCP_DR1SOL(IELE,N,RVAL,INDX,JNDX,IS,BW,BWU,BWL,BVEC,   &
+                         NB,NPROC,IWORK,KIWORK,AWORK,KAWORK,            &
+                MYRANK,XSOL,IERR0,IOPT)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER IELE,N,BW,BWU,BWL,NB,NPROC,KIWORK,KAWORK,MYRANK,IERR0,IERR
+      INTEGER INDX(IELE),JNDX(IELE),IS(IELE),IWORK(KIWORK),IOPT(10)
+      INTEGER NC,BWNC,BWN2,BWN3,KDWORK,I
+      REAL*8 RVAL(IELE),AWORK(KAWORK),BVEC(N),XSOL(N)
+      DO 110 I=1,KAWORK
+         AWORK(I)=0.0D0
+ 110  CONTINUE
+      IERR0=0
+         NC=N/(NB*NPROC)
+         IF( (NC*NB*NPROC).NE.N ) NC=NC+1
+         CALL PCP_DR1ACH        (N,BW,NB,NC,NPROC,KIWORK,KAWORK,IERR0, &
+     IOPT,MYRANK)
+      CALL MPI_BCAST(IERR0,1,MPI_INTEGER,0,MPI_COMM_WORLD,IERR)
+      IF( IERR0.EQ.1 ) RETURN
+      IF (MYRANK.EQ.0) THEN
+         CALL PCP_DR1SMT(IELE,N,RVAL,INDX,JNDX,IS,BW,BWU,BWL,BVEC,      &
+                   NB,NC,NPROC,AWORK,KAWORK)
+      ELSE
+         CALL PCP_DR1RMT(AWORK,KAWORK,N,BW,BWU,BWL,NB,NC,MYRANK)
+      END IF
+      IF ( NB*(NPROC-1).GT.N) THEN
+         WRITE(*,*)
+         WRITE(*,*) 'MATRIX SIZE',N,' IS NOT LARGE THEN'
+         WRITE(*,*) 'BAND WIDTH IS', NB,' TIMES',NPROC
+      END IF
+      BWNC=BW*NB*NC+1
+      BWN2=BWNC+NB*NC
+      BWN3=BWN2+NB*NC
+      KDWORK=MAX(BWNC-1, NB*NC*NPROC)
+      CALL PCP_DR1LUB(AWORK,AWORK(BWNC),AWORK(BWN2),N,BW,BWU,BWL,       &
+           NB,NC,NPROC,XSOL,MYRANK,            IWORK,KIWORK, &
+     AWORK(BWN3),KDWORK,IERR0)
+      RETURN
+      END subroutine PCP_DR1SOL
+      SUBROUTINE PCP_IT0SLV(NDOF0,NDOF,NELM,NDOFS,     AMAT,ICOL0, &
+     ICPNT,BVEC,XSOL,     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,     &
+      ICOM,ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NDOF,NELM,NDOFS,ICOL0(NELM),ICPNT(NDOF+1),      &
+     NITER,NREST,IPRE,KIWORK,IWORK(KIWORK),KDWORK,ISTAT,ICOM,      &
+     IOPT(10),IMETH
+      REAL*8  AMAT(NELM),BVEC(NDOF0),XSOL(NDOF0),EPS,DWORK(KDWORK),     &
+      ROPT(10)
+      INTEGER  NPROC,MYRANK,IERR,NELML,NELMU,NPNTR,IPRE1,I
+      PARAMETER(NPNTR=20)
+      INTEGER  IIPT(NPNTR),IRPT(NPNTR)
+      IMETH=IOPT(1)
+      NREST=IOPT(3)
+      IPRE =IOPT(4)
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      CALL PCP_ITPRE0(NDOF0,NDOF,NELM,NDOFS,NREST,IPRE,IMETH,      &
+     ICOL0,ICPNT,KIWORK,KDWORK,NPNTR,     IWORK(1),IWORK(1+NPROC*4),    &
+       NELML,NELMU,IIPT,IRPT,     MYRANK,NPROC,ICOM,ISTAT)
+      IF( MYRANK.EQ.IOPT(8) )      WRITE(6,6100) NDOF0,NDOF,NELM     , &
+     MYRANK,IIPT(NPNTR),IRPT(NPNTR),KIWORK,KDWORK
+ 6100 FORMAT(/,' * ITERATIVE SOLVER INFORMATION *'     ,/, &
+     '  - GLOBAL D.O.F.        :',I10     ,/, &
+     '  - LOCAL  D.O.F.        :',I10     ,/, &
+     '  - LOCAL NON-ZERO AIJ   :',I10     ,/, &
+     '  - INTEGER AND REAL ARRAY SIZE '     ,/,'      MY PE :',I4, &
+     '        [INTEGER]       [REAL]'     ,/, &
+     '      REQUESTED MEMORY   :',2I10     ,/, &
+     '      CURRENT ARRAY SIZE :',2I10)
+      IF( IMETH.EQ.1 ) THEN
+      CALL PCP_XGMRES(NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,     ROPT,IOPT, &
+          AMAT,ICOL0,ICPNT,BVEC,XSOL,     DWORK(IRPT( 1)),DWORK(IRPT(  &
+     2)),DWORK(IRPT( 3)),     DWORK(IRPT( 4)),DWORK(IRPT( 5)), &
+     DWORK(IRPT( 6)),     DWORK(IRPT( 7)),DWORK(IRPT( 8)),DWORK(IRPT(  &
+     9)),     DWORK(IRPT(10)),DWORK(IRPT(11)),     IWORK(IIPT( 1)), &
+     IWORK(IIPT( 2)),IWORK(IIPT( 3)),     IWORK(IIPT( 4)),IWORK(IIPT(  &
+     5)),IWORK(IIPT( 6)),     IWORK(IIPT( 7)),     MYRANK,NPROC,ICOM, &
+     ISTAT,IOPT(3))
+      ELSE IF( IMETH.EQ.2 ) THEN
+      CALL PCP_XBCGST(NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,     ROPT,IOPT, &
+          AMAT,ICOL0,ICPNT,BVEC,XSOL,     DWORK(IRPT( 1)),DWORK(IRPT(  &
+     2)),     DWORK(IRPT( 7)),DWORK(IRPT( 8)),DWORK(IRPT( 9)),      &
+     IWORK(IIPT( 1)),IWORK(IIPT( 2)),IWORK(IIPT( 3)),     IWORK(IIPT(  &
+     4)),IWORK(IIPT( 5)),IWORK(IIPT( 6)),     IWORK(IIPT( 7)),      &
+     MYRANK,NPROC,ICOM,ISTAT,IOPT(3))
+      ELSE IF( IMETH.LT.0 ) THEN
+      CALL PCP_XEXMAT(NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,     ROPT,IOPT, &
+          AMAT,ICOL0,ICPNT,BVEC,XSOL,     DWORK(IRPT( 1)),DWORK(IRPT(  &
+     2)),     DWORK(IRPT( 7)),DWORK(IRPT( 8)),DWORK(IRPT( 9)),      &
+     IWORK(IIPT( 1)),IWORK(IIPT( 2)),IWORK(IIPT( 3)),     IWORK(IIPT(  &
+     4)),IWORK(IIPT( 5)),IWORK(IIPT( 6)),     IWORK(IIPT( 7)),      &
+     MYRANK,NPROC,ICOM,ISTAT,IOPT(3))
+      ELSE
+         WRITE(6,6110) IOPT(1)
+ 6110    FORMAT(/,'[$PCP0102];<WARNING> IN IOPT at PCP_IT0SLV'        , &
+     /,'* WARNING : ILLEGAL IOPT(1) ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      CALL MPI_BARRIER(ICOM,IERR)
+      RETURN
+      END subroutine PCP_IT0SLV
+      SUBROUTINE PCP_IT2SLV(NDOF0,NELM0,     AMAT,ICOL0,ICPNT,BVEC, &
+     XSOL,     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,     ICOM, &
+     ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER ICOM,NDOF0,NELM0,ICOL0(NELM0),ICPNT(NDOF0+1),     NITER, &
+     NREST,IPRE,ISTAT,IOPT(10),     KIWORK,IWORK(KIWORK),KDWORK
+      REAL*8 AMAT(NELM0),BVEC(NDOF0),XSOL(NDOF0),EPS,DWORK(KDWORK),     &
+      ROPT(10)
+      INTEGER NDOF,NDOFS,NDOFE,NELM,NPROC,MYRANK,IERR,K0,K1,I,J
+      COMMON /AAA/NDOF,NDOFS
+      INTEGER IBUF(10),IREQ(100),IRANK,ISTATUS(MPI_STATUS_SIZE)
+      REAL*8 RBUF(10)
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      CALL MPI_BCAST(IOPT,10,MPI_INTEGER,0,ICOM,IERR)
+      CALL MPI_BCAST(ROPT,10,MPI_DOUBLE_PRECISION,0,ICOM,IERR)
+      EPS  =ROPT(1)
+      NITER=IOPT(2)
+      NREST=IOPT(3)
+      IPRE =IOPT(4)
+      IF( MYRANK.EQ.0 ) THEN
+         NDOF=NDOF0/NPROC
+         DO 110 I=1,NDOF+1
+            IWORK(I)=ICPNT(I)
+ 110     CONTINUE
+         IF(NDOF+ICPNT(NDOF+1).GT.KIWORK) THEN
+            WRITE(6,6100) NDOF+ICPNT(NDOF+1)-KIWORK
+ 6100       FORMAT(/,'[$PCP0010];<ERROR> IN IWORK at PCP_IT2SLV'     ,/ &
+     ,'* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'     ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+            STOP
+         END IF
+         IF(ICPNT(NDOF+1).GT.KDWORK) THEN
+            WRITE(6,6110) ICPNT(NDOF+1)-KDWORK
+ 6110       FORMAT(/,'[$PCP0011];<ERROR> IN DWORK at PCP_IT2SLV'     ,/ &
+     ,'* ERROR : INSUFFICIENT REAL WORK AREA SIZE *'     ,/, &
+     '* PLEASE INCREASE REAL ARRAY SIZE(+',I8,' WORDS)')
+            STOP
+         END IF
+         DO 120 I=1,NDOF
+            DO 130 J=ICPNT(I),ICPNT(I+1)-1
+               IF(NDOF+1+J.GT.KIWORK) STOP 99998
+               IWORK(NDOF+1+J)=ICOL0(J)
+               IF(J.GT.KDWORK) STOP 99999
+               DWORK(J)=AMAT(J)
+ 130        CONTINUE
+ 120     CONTINUE
+         DO 210 IRANK=1,NPROC-1
+            NDOF=NDOF0/NPROC
+            NDOFS=NDOF*IRANK+1
+            NDOFE=NDOF*(IRANK+1)
+            IF( IRANK.EQ.NPROC-1 ) NDOFE=NDOF0
+            NDOF=NDOFE-NDOFS+1
+            K0=0
+            K1=0
+            DO 220 I=NDOFS,NDOFE
+               K1=K1+1
+               ICPNT(K1)=K0+1
+               DO 230 J=ICPNT(I),ICPNT(I+1)-1
+                  K0=K0+1
+                  ICOL0(K0)=ICOL0(J)
+                  AMAT(K0)=AMAT(J)
+ 230           CONTINUE
+ 220        CONTINUE
+            K1=K1+1
+            ICPNT(K1)=K0+1
+            NELM=K0
+            IBUF(1)=NDOF0
+            IBUF(2)=NDOF
+            IBUF(3)=NELM
+            IBUF(4)=NDOFS
+            IBUF(5)=NITER
+            IBUF(6)=NREST
+            IBUF(7)=IPRE
+            RBUF(1)=EPS
+            CALL MPI_ISEND(IBUF,7,MPI_INTEGER           ,IRANK,101, &
+     ICOM,IREQ(11),IERR)
+            CALL MPI_ISEND(RBUF,1,MPI_DOUBLE_PRECISION           , &
+     IRANK,102,ICOM,IREQ(12),IERR)
+            CALL MPI_WAIT(IREQ(11),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(12),ISTATUS,IERR)
+            CALL MPI_ISEND(AMAT,NELM,MPI_DOUBLE_PRECISION           , &
+     IRANK,103,ICOM,IREQ(13),IERR)
+            CALL MPI_ISEND(ICOL0,NELM,MPI_INTEGER           ,IRANK,104, &
+     ICOM,IREQ(14),IERR)
+            CALL MPI_ISEND(ICPNT,NDOF+1,MPI_INTEGER           ,IRANK, &
+     105,ICOM,IREQ(15),IERR)
+            CALL MPI_ISEND(BVEC,NDOF0,MPI_DOUBLE_PRECISION           , &
+     IRANK,106,ICOM,IREQ(16),IERR)
+            CALL MPI_ISEND(XSOL,NDOF0,MPI_DOUBLE_PRECISION           , &
+     IRANK,107,ICOM,IREQ(17),IERR)
+            CALL MPI_WAIT(IREQ(13),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(14),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(15),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(16),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(17),ISTATUS,IERR)
+ 210     CONTINUE
+         NDOF=NDOF0/NPROC
+         NDOFS=1
+         NDOFE=NDOF
+         DO 240 I=1,NDOF+1
+            ICPNT(I)=IWORK(I)
+ 240     CONTINUE
+         DO 250 I=1,NDOF
+            DO 260 J=ICPNT(I),ICPNT(I+1)-1
+               ICOL0(J)=IWORK(NDOF+1+J)
+               AMAT(J)=DWORK(J)
+ 260        CONTINUE
+ 250     CONTINUE
+         NELM=ICPNT(NDOF+1)-1
+      ELSE
+            IRANK=0
+            CALL MPI_IRECV(IBUF,7,MPI_INTEGER           ,IRANK,101, &
+     ICOM,IREQ(21),IERR)
+            CALL MPI_IRECV(RBUF,1,MPI_DOUBLE_PRECISION           , &
+     IRANK,102,ICOM,IREQ(22),IERR)
+            CALL MPI_WAIT(IREQ(21),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(22),ISTATUS,IERR)
+            NDOF0=IBUF(1)
+            NDOF =IBUF(2)
+            NELM =IBUF(3)
+            NDOFS=IBUF(4)
+            NITER=IBUF(5)
+            NREST=IBUF(6)
+            IPRE =IBUF(7)
+            EPS  =RBUF(1)
+            CALL MPI_IRECV(AMAT,NELM,MPI_DOUBLE_PRECISION           , &
+     IRANK,103,ICOM,IREQ(23),IERR)
+            CALL MPI_IRECV(ICOL0,NELM,MPI_INTEGER           ,IRANK,104, &
+     ICOM,IREQ(24),IERR)
+            CALL MPI_IRECV(ICPNT,NDOF+1,MPI_INTEGER           ,IRANK, &
+     105,ICOM,IREQ(25),IERR)
+            CALL MPI_IRECV(BVEC,NDOF0,MPI_DOUBLE_PRECISION           , &
+     IRANK,106,ICOM,IREQ(26),IERR)
+            CALL MPI_IRECV(XSOL,NDOF0,MPI_DOUBLE_PRECISION           , &
+     IRANK,107,ICOM,IREQ(27),IERR)
+            CALL MPI_WAIT(IREQ(23),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(24),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(25),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(26),ISTATUS,IERR)
+            CALL MPI_WAIT(IREQ(27),ISTATUS,IERR)
+      END IF
+      CALL PCP_IT0SLV(NDOF0,NDOF,NELM,NDOFS,     AMAT,ICOL0,ICPNT,BVEC, &
+     XSOL,     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,     ICOM, &
+     ISTAT) 
+      RETURN
+      END subroutine PCP_IT2SLV
+      SUBROUTINE PCP_IT3SOL(NDOF0,NELM0,NSTBL,INDOM,ISTBL,ISORT,      &
+     AMAT,ICOL0,ICPNT,BVEC,XSOL,     ROPT,IOPT,     KIWORK,IWORK, &
+     KDWORK,DWORK,     ICOM,ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER ICOM,NDOF0,NELM0,NSTBL,INDOM(NDOF0),ISTBL(3,NSTBL),      &
+     ISORT(NDOF0),ICOL0(NELM0),ICPNT(NDOF0+1),     NITER,NREST,IPRE, &
+     ISTAT,     KIWORK,IWORK(KIWORK),KDWORK,IOPT(10),IDEG
+      REAL*8 AMAT(NELM0),BVEC(NDOF0),XSOL(NDOF0),EPS,DWORK(KDWORK)
+      REAL*8 DDVAL,DXVAL,DEPS,ROPT(10)
+      INTEGER  NDOF,NDOFS,NELM,NPROC,MYRANK,IERR,K0,K1,I,J,K
+      INTEGER IREQ(100),IDEST,ISRC,ITAG,LENG,ICNT,LAST,  &
+     ISTATUS(MPI_STATUS_SIZE),JJ,NDOF0B,NDOFB,NELMB,NDOFSB,NRESTB
+      IDEG=IOPT(7)
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      LENG=0
+      ICNT=0
+      LAST=1
+      DO 510 I=1,NSTBL
+         IF( ISTBL(2,I).NE.ISTBL(2,LAST) .OR.       ISTBL(1, &
+     I).NE.ISTBL(1,LAST) ) THEN
+            ISRC=ISTBL(1,I-1)
+            IDEST=ISTBL(2,I-1)
+            IF(MYRANK.EQ.ISRC) THEN
+            CALL MPI_ISEND(DWORK,LENG,           MPI_DOUBLE_PRECISION, &
+     IDEST,ITAG,ICOM,IREQ(1),IERR)
+            CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+            END IF
+            IF(MYRANK.EQ.IDEST) THEN
+               CALL MPI_IRECV(DWORK,LENG,               &
+     MPI_DOUBLE_PRECISION,ISRC,ITAG,ICOM,IREQ(1),IERR)
+               CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+               K1=0
+               DO 540 JJ=LAST,I-1
+                  J=ISTBL(3,JJ)
+                  DO 530 K0=ICPNT(J),ICPNT(J+1)-1
+                     K1=K1+1
+                     AMAT(K0)=AMAT(K0)+DWORK(K1)
+ 530              CONTINUE
+ 540           CONTINUE
+            END IF
+            LENG=0
+            ICNT=0
+            LAST=I
+         END IF
+         ISRC=ISTBL(1,I)
+         IDEST=ISTBL(2,I)
+         J=ISTBL(3,I)
+         LENG=LENG+(ICPNT(J+1)-ICPNT(J))
+         ITAG=200
+         IF(MYRANK.EQ.ISRC) THEN
+            DO 520 K0=ICPNT(J),ICPNT(J+1)-1
+               ICNT=ICNT+1
+               DWORK(ICNT)=AMAT(K0)
+ 520        CONTINUE
+            IF( ICNT.NE.LENG ) THEN
+               WRITE(6,*) 'WRONG INDEX IN PCP_IT3SOL'
+            END IF
+         END IF
+ 510  CONTINUE
+            I=NSTBL+1
+            IF( NSTBL.EQ.0 ) GO TO 650
+            ISRC=ISTBL(1,I-1)
+            IDEST=ISTBL(2,I-1)
+            IF(MYRANK.EQ.ISRC) THEN
+            CALL MPI_ISEND(DWORK,LENG,           MPI_DOUBLE_PRECISION, &
+     IDEST,ITAG,ICOM,IREQ(1),IERR)
+            CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+            END IF
+            IF(MYRANK.EQ.IDEST) THEN
+               CALL MPI_IRECV(DWORK,LENG,               &
+     MPI_DOUBLE_PRECISION,ISRC,ITAG,ICOM,IREQ(1),IERR)
+               CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+               K1=0
+               DO 640 JJ=LAST,I-1
+                  J=ISTBL(3,JJ)
+                  DO 630 K0=ICPNT(J),ICPNT(J+1)-1
+                     K1=K1+1
+                     AMAT(K0)=AMAT(K0)+DWORK(K1)
+ 630              CONTINUE
+ 640           CONTINUE
+            END IF
+ 650        CONTINUE
+      DO 130 I=1,NPROC+1
+         IWORK(I)=0
+ 130  CONTINUE
+      DO 140 I=1,NDOF0
+         IWORK(INDOM(I)+2)=IWORK(INDOM(I)+2)+1
+ 140  CONTINUE
+      NDOF=IWORK(MYRANK+2)
+      IWORK(1)=1
+      DO 150 J=2,NPROC+1
+         IWORK(J)=IWORK(J-1)+IWORK(J)
+ 150  CONTINUE
+      NDOFS=IWORK(MYRANK+1)
+      DO 160 I=1,NDOF0
+         ISORT(I)=IWORK(INDOM(I)+1)
+         IWORK(INDOM(I)+1)=IWORK(INDOM(I)+1)+1
+ 160  CONTINUE
+      K0=0
+      K1=0
+      DO 210 I=1,NDOF0
+         IF(INDOM(I).EQ.MYRANK) THEN
+            K1=K1+1
+            ICPNT(K1)=K0+1
+            DO 220 J=ICPNT(I),ICPNT(I+1)-1
+               K0=K0+1
+               ICOL0(K0)=ISORT(ICOL0(J))
+               AMAT(K0)=AMAT(J)
+ 220        CONTINUE
+         END IF
+ 210  CONTINUE
+      K1=K1+1
+      ICPNT(K1)=K0+1
+      NELM=K0
+      CALL MPI_ALLREDUCE(BVEC,DWORK,NDOF0,MPI_DOUBLE_PRECISION,      &
+     MPI_SUM,ICOM,IERR)
+      DO 230 I=1,NDOF0
+         BVEC(ISORT(I))=DWORK(I)
+ 230  CONTINUE
+      DO 240 I=1,NDOF0
+         DWORK(I)=XSOL(I)
+ 240  CONTINUE
+      DO 250 I=1,NDOF0
+         XSOL(ISORT(I))=DWORK(I)
+ 250  CONTINUE
+      IF( IDEG.EQ.0 ) THEN
+         CALL PCP_IT0SLV(NDOF0,NDOF,NELM,NDOFS,        AMAT,ICOL0, &
+     ICPNT,BVEC,XSOL,        ROPT,IOPT,        KIWORK,IWORK,KDWORK, &
+     DWORK,        ICOM,ISTAT) 
+      ELSE IF( IDEG.EQ.1 ) THEN
+         DEPS=1.0D-10
+         DO 780 I=1,NDOF0
+            DWORK(I)=0.0D0
+            IWORK(I)=0
+ 780     CONTINUE
+         DO 760 I=1,NDOF
+            DDVAL=0.0D0
+            DXVAL=0.0D0
+            DO 770 K=ICPNT(I),ICPNT(I+1)-1
+               IF( ICOL0(K).EQ.I+NDOFS-1 ) THEN
+                  DDVAL=DDVAL+AMAT(K)
+               ELSE
+                  DXVAL=MAX(DXVAL,ABS(AMAT(K)))
+               END IF
+ 770        CONTINUE
+            IF( ABS(DDVAL)*DEPS.GT.DXVAL ) THEN
+               DWORK(I+NDOFS-1)=BVEC(I+NDOFS-1)/DDVAL
+               IWORK(I+NDOFS-1)=-1
+            END IF
+ 760     CONTINUE
+      IF( 3*NDOF0.GE.KDWORK ) THEN
+         WRITE(6,6100) 3*NDOF0-KDWORK
+ 6100    FORMAT(/,'[$PCP0013];<ERROR> IN DWORK at PCP_IT3SOL'         , &
+     /,'                     CALLED BY PCP_IT4SLV'      ,/, &
+     '* ERROR : INSUFFICIENT REAL WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE REAL ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+         CALL MPI_ALLREDUCE(        DWORK,DWORK(NDOF0+1),NDOF0, &
+     MPI_DOUBLE_PRECISION,        MPI_SUM,ICOM,IERR)
+         DO 790 I=1,NDOF0
+            DWORK(I)=DWORK(NDOF0+I)
+ 790     CONTINUE
+         DO 791 I=1,NDOF0
+            DWORK(NDOF0+I)=DFLOAT(IWORK(I))
+ 791     CONTINUE
+         CALL MPI_ALLREDUCE(DWORK(NDOF0+1),DWORK(2*NDOF0+1),         &
+     NDOF0,MPI_DOUBLE_PRECISION,MPI_SUM,ICOM,IERR)
+         DO 792 I=1,NDOF0
+            IWORK(I)=NINT(DWORK(2*NDOF0+I))
+ 792     CONTINUE
+         DO 860 I=1,NDOF
+            IF( IWORK(I+NDOFS-1).GE.0 ) THEN
+               DO 870 K=ICPNT(I),ICPNT(I+1)-1
+                  IF( IWORK(ICOL0(K)).LT.0 ) THEN
+                     BVEC(I+NDOFS-1)=BVEC(I+NDOFS-1)                    &
+      -AMAT(K)*DWORK(ICOL0(K))
+                  END IF
+ 870           CONTINUE
+            END IF
+ 860     CONTINUE
+         NDOF0B=0
+         DO 710 I=1,NDOF0
+            IF( IWORK(I).GE.0 ) THEN
+               NDOF0B=NDOF0B+1
+               IWORK(I)=NDOF0B
+               XSOL(NDOF0B)=XSOL(I)
+               BVEC(NDOF0B)=BVEC(I)
+            END IF
+ 710     CONTINUE
+         NDOFSB=1
+         DO 720 I=1,NDOFS-1
+            IF( IWORK(I).GE.0 ) NDOFSB=NDOFSB+1
+ 720     CONTINUE
+         NDOFB=0
+         DO 730 I=NDOFS,NDOFS+NDOF-1
+            IF( IWORK(I).GE.0 ) NDOFB=NDOFB+1
+ 730     CONTINUE
+         NELMB=0
+         DO 740 I=1,NDOF
+            IF( IWORK(NDOFS+I-1).GE.0 ) THEN
+               ICNT=NELMB+1
+               DO 750 K=ICPNT(I),ICPNT(I+1)-1
+                  IF( IWORK(ICOL0(K)).GE.0 ) THEN
+                     NELMB=NELMB+1
+                     AMAT(NELMB)=AMAT(K)
+                     ICOL0(NELMB)=IWORK(ICOL0(K))
+                  END IF
+ 750           CONTINUE
+               ICPNT(IWORK(NDOFS+I-1)-NDOFSB+1)=ICNT
+            END IF
+ 740     CONTINUE
+         ICPNT(NDOFB+1)=NELMB+1
+         CALL PCP_IT0SLV(NDOF0B,NDOFB,NELMB,NDOFSB,        AMAT,ICOL0, &
+     ICPNT,BVEC,XSOL,        ROPT,IOPT,        KIWORK-NDOF0, &
+     IWORK(NDOF0+1),        KDWORK-NDOF0,DWORK(NDOF0+1),        ICOM, &
+     ISTAT) 
+         DO 810 I=NDOF0,1,-1
+            IF( IWORK(I).GE.0 ) THEN
+               XSOL(I)=XSOL(IWORK(I))
+            ELSE
+               XSOL(I)=DWORK(I)
+            END IF
+ 810     CONTINUE
+      ELSE
+         WRITE(6,6110) IOPT(7)
+ 6110    FORMAT(/,'[$PCP0103];<WARNING> IN IOPT at PCP_IT3SLV'        , &
+     /,'* WARNING : ILLEGAL IOPT(7) ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      DO 310 I=1,NDOF0
+         DWORK(I)=XSOL(I)
+ 310  CONTINUE
+      DO 320 I=1,NDOF0
+         XSOL(I)=DWORK(ISORT(I))
+ 320  CONTINUE
+      RETURN
+      END subroutine PCP_IT3SOL
+      SUBROUTINE PCP_IT4EXP(NDF,NDOF0,NELM,     NENUM,NENOD,IEDOM, &
+     IENOD,IEPNT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,     ROPT,IOPT,      &
+     KIWORK,IWORK,KDWORK,DWORK,     ICOM,ISTAT,IEXPL) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NELM,NENUM,NENOD,     IEDOM(NENUM), &
+     IENOD(NENOD),IEPNT(NENUM+1),     ICOL0(NELM),ICPNT(NDOF0+1), &
+     IOPT(10),     ISTAT,ICOM,KIWORK,IWORK(KIWORK),KDWORK,IEXPL,ITMP
+      REAL*8 AMAT(NELM),BVEC(NDOF0),XSOL(NDOF0),DWORK(KDWORK),      &
+     ROPT(10)
+      IF( .NOT.( IEXPL.EQ.1 .OR. IEXPL.EQ.2 ) ) THEN
+         WRITE(6,6110) IEXPL
+ 6110    FORMAT(/,'[$PCP0104];<WARNING> IN IEXPL at PCP_IT4EXP'         &
+     ,/,'* WARNING : ILLEGAL IEXPL ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      ITMP=IOPT(1)
+      IOPT(1)=-IEXPL
+      CALL PCP_IT4SLV(NDF,NDOF0,NELM,     NENUM,NENOD,IEDOM,IENOD, &
+     IEPNT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,     ROPT,IOPT,     KIWORK, &
+     IWORK,KDWORK,DWORK,     ICOM,ISTAT) 
+      IOPT(1)=ITMP
+      RETURN
+      END subroutine PCP_IT4EXP
+      SUBROUTINE PCP_IT4PRE(NDF,NDOF0,NENUM,NENOD,NSTBL,     IEDOM, &
+     IENOD,IEPNT,     INDOM,ISTBL,INDPR,ISTBL0,     NPROC,MYRANK,MXIND, &
+     IERR) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NENUM,NENOD,NSTBL,MXIND,NPROC,MYRANK,      &
+     IEDOM(NENUM),IENOD(NENOD),IEPNT(NENUM+1),     INDOM(NDOF0), &
+     ISTBL(3,MXIND),INDPR(NPROC,NDOF0),ISTBL0(3,*)
+      INTEGER I,J,J1,J2,K,K0,ILARGE,IERR
+      IF( MYRANK.NE.0 ) GO TO 9300
+      ILARGE=999999
+      DO 110 J=1,NDOF0
+         INDOM(J)=ILARGE
+         DO 120 K=1,NPROC
+            INDPR(K,J)=0
+ 120     CONTINUE
+ 110  CONTINUE
+      DO 130 I=1,NENUM
+         DO 140 K=IEPNT(I),IEPNT(I+1)-1
+            J=IENOD(K)
+            DO 145 J1=1,NDF
+               J2=NDF*(J-1)+J1
+               INDPR(IEDOM(I)+1,J2)=1
+               IF(INDOM(J2).EQ.ILARGE) INDOM(J2)=IEDOM(I)
+ 145        CONTINUE
+ 140     CONTINUE
+ 130  CONTINUE
+      K0=0
+      DO 150 J=1,NDOF0
+         DO 160 K=1,NPROC
+            IF((INDPR(K,J).NE.0).AND.(K-1.NE.INDOM(J))) THEN
+               K0=K0+1
+               IF( K0.GT.MXIND ) THEN
+                  IERR=(K0-MXIND)*NDOF0
+                  WRITE(6,6100) 
+ 6100             FORMAT(/,'[$PCP0006];<ERROR> IN IIA at PCP_IT4PRE'    &
+           ,/,'* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *')
+                  GO TO 9400
+               END IF
+               ISTBL(1,K0)=K-1
+               ISTBL(2,K0)=INDOM(J)
+               ISTBL(3,K0)=J
+            END IF
+ 160     CONTINUE
+ 150  CONTINUE
+      NSTBL=K0
+      DO 170 J=1,NSTBL
+         DO 180 I=1,3
+            ISTBL0(I,J)=ISTBL(I,J)
+ 180     CONTINUE
+ 170  CONTINUE
+      CALL PCP_USORT1(ISTBL0,NSTBL)
+ 9300 CONTINUE
+      CALL MPI_BCAST(NSTBL,1,MPI_INTEGER,0,MPI_COMM_WORLD,IERR)
+      CALL MPI_BCAST(INDOM,NDOF0,MPI_INTEGER,0,MPI_COMM_WORLD,IERR)
+      CALL MPI_BCAST(ISTBL0,3*NSTBL,MPI_INTEGER,0,MPI_COMM_WORLD,IERR)
+ 9400 CONTINUE
+      RETURN
+      END subroutine PCP_IT4PRE
+
+      SUBROUTINE PCP_IT4SLV(NDF,NDOF0,NELM,     NENUM,NENOD,IEDOM, &
+     IENOD,IEPNT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,     ROPT,IOPT,      &
+     KIWORK,IWORK,KDWORK,DWORK,     ICOM,ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NELM,NENUM,NENOD,     IEDOM(NENUM), &
+     IENOD(NENOD),IEPNT(NENUM+1),     ICOL0(NELM),ICPNT(NDOF0+1), &
+     IOPT(10),     ISTAT,ICOM,KIWORK,IWORK(KIWORK),KDWORK
+      REAL*8 AMAT(NELM),BVEC(NDOF0),XSOL(NDOF0),DWORK(KDWORK),      &
+     ROPT(10)
+      INTEGER NPROC,MYRANK,IERR,NSTBL,IP1,IP2,IP3,IP0,MXIND
+
+
+
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      IP1=1
+      IP2=IP1+NDOF0
+      IP3=IP2+NPROC*NDOF0
+      MXIND=(KIWORK-IP3)/3
+      IF( IP3.GE.KIWORK ) THEN
+         WRITE(6,6100) KIWORK-IP3
+ 6100    FORMAT(/,'[$PCP0005];<ERROR> IN IWORK at PCP_IT4SLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IERR=0
+      CALL PCP_IT4PRE(NDF,NDOF0,NENUM,NENOD,NSTBL,IEDOM,IENOD,IEPNT,    &
+       IWORK(IP1),IWORK(IP3),IWORK(IP2),IWORK(IP2),     NPROC,MYRANK, &
+     MXIND,IERR) 
+      IF( IERR.GT.0 ) THEN
+         WRITE(6,6110) IERR
+ 6110    FORMAT(/,'[$PCP0007];<ERROR> IN IWORK at PCP_IT4SLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IP3=IP2+3*NSTBL
+      IP0=IP3+NDOF0
+      CALL PCP_IT3SOL(NDOF0,NELM,NSTBL,IWORK(IP1),IWORK(IP2), &
+     IWORK(IP3),     AMAT,ICOL0,ICPNT,BVEC,XSOL,     ROPT,IOPT,      &
+     KIWORK-IP0+1,IWORK(IP0),KDWORK,DWORK,     ICOM,ISTAT) 
+      RETURN
+      END subroutine PCP_IT4SLV
+      SUBROUTINE PCP_ITKLAG(NDF,NDOF0,NELM,NSTBL,           INDOM, &
+     ISTBL,           AMAT,ICOL0,ICPNT,BVEC,XSOL,NCON,KCON,MCON,ACON,   &
+              KIWORK,IWORK,KDWORK,DWORK,           ICOM,IERR0)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NELM,NSTBL,NCON,KCON
+      INTEGER KIWORK,KDWORK,ICOM,IERR0
+      INTEGER INDOM(NDOF0+NCON),ISTBL(3,NSTBL)
+      INTEGER ICOL0(NELM+NCON*(2*KCON+NCON))
+      INTEGER ICPNT(NDOF0+NCON+1)
+      INTEGER MCON(KCON+1,NCON),IWORK(KIWORK)
+      REAL*8  AMAT(NELM+NCON*(2*KCON+NCON)),BVEC(NDOF0+NCON)
+      REAL*8  XSOL(NDOF0+NCON),ACON(KCON,NCON),DWORK(KDWORK)
+      REAL*8 VALMAX
+      INTEGER I,J,K,M,N,NJ,NJ2,NDCON,IPTMP,ITMP,DCI,IL,ILM
+      INTEGER MSTART,NADD,MI,MJ,MNJ,TAG_UB
+      INTEGER MYRANK,IERR,NPROC,IDEST,IREQ,ISRC,ITAG
+      INTEGER ISTATUS(MPI_STATUS_SIZE)
+      TAG_UB=32767
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR)
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR)
+      CALL PCP_MATMAX(NELM,AMAT,VALMAX,ICOM)
+      VALMAX=ABS(VALMAX)
+      IERR0=0
+      NJ=NDF*NCON*KCON
+      NDCON=NDOF0+NCON
+      IF (KIWORK.LT.(3*NJ)) THEN
+         WRITE(6,6100) 3*NJ-KIWORK
+ 6100    FORMAT(/,'[$PCP0012];<ERROR> IN IWORK at PCP_ITKLAG'         , &
+     /,'                     CALLED BY PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IF (KDWORK.LT.(NDCON+2)) THEN
+         WRITE(6,6110) NDCON+2-KDWORK
+ 6110    FORMAT(/,'[$PCP0012];<ERROR> IN DWORK at PCP_ITKLAG'         , &
+     /,'                     CALLED BY PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT REAL WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE REAL ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      DO I=1,3*NJ
+         IWORK(I)=0
+      END DO
+      M=1
+      NJ2=2*NJ
+      DO I=1,NCON
+         DO J=1,MCON(KCON+1,I)
+            DO K=1,NDF
+               IWORK(M)=(MCON(J,I)-1)*NDF+K
+               IF (IWORK(M).GT.NDCON) THEN
+                  WRITE(*,6300) 'ERROR! CONSTRAINT MAYBE WRONG. ',      &
+                 MCON(J,I),IWORK(M),NDCON
+                  IERR=1
+                  RETURN
+               END IF
+               IWORK(M+NJ)=I
+               IWORK(M+NJ2)=J
+               M=M+1
+            END DO
+         END DO
+      END DO
+ 6300 FORMAT(' IRRIGAL NODE NUMBER      :',I10     ,/, &
+     ' THIS NUMBER CORRESPOND TO ',I10,' COLUMN.'     ,/, &
+     ' MAXIMUM COLUMN NUMBER    :',I10)
+      CALL PCP_USORT2(IWORK,IWORK(NJ+1),IWORK(NJ2+1),NJ)
+      DO M=1,NJ
+         IF (IWORK(M).GT.0) GO TO 100
+      END DO
+      WRITE(*,*) 'WARING!!! BOUNDARY CONDITIONS ARE NO EFFECT.'
+ 100  CONTINUE
+      MSTART=M
+      NADD=NCON*(2*KCON+NCON)-1
+      IPTMP=ICPNT(NDOF0+1)-1
+      DO I=IPTMP,1,-1
+         AMAT(I+NADD)=AMAT(I)
+         ICOL0(I+NADD)=ICOL0(I)
+      END DO
+      K=1
+      DO I=1, NDOF0
+         IPTMP=ICPNT(I)
+         ICPNT(I)=K
+         DO J=IPTMP, ICPNT(I+1)-1
+            AMAT(K)=AMAT(J+NADD)
+            ICOL0(K)=ICOL0(J+NADD)
+            K=K+1
+         END DO
+         IF (I.EQ.IWORK(M)) THEN
+            IF (IPTMP.NE.ICPNT(I+1)) THEN
+               DO J=1,NCON+1
+                  IF (I.NE.IWORK(M)) GO TO 200
+                  MI=IWORK(M+NJ)
+                  MJ=IWORK(M+NJ2)
+                  AMAT(K)=ACON(MJ,MI)*VALMAX
+                  ICOL0(K)=MI+NDOF0
+                  K=K+1
+                  M=M+1
+               END DO
+               WRITE(6,6200) I
+ 6200          FORMAT(/,'[$PCP0901];<FATAL> IN IWORK at PCP_ITKLAG'     &
+               ,/,'* FATAL ERROR : PARAMETER =',I8,' *')
+         STOP
+               WRITE(*,*) 'ERROR. TRANSPOSE OF C IS WRONG IN LINE',I
+            ELSE
+               DO J=1,NCON
+                  IF (I.NE.IWORK(M)) GO TO 200
+                  M=M+1
+               END DO
+            END IF
+         END IF
+ 200     CONTINUE
+      END DO
+      DO I=NDOF0+1,NDCON
+         ITMP=I-NDOF0
+         DO J=MSTART,NJ
+            IF (IWORK(J+NJ).EQ.ITMP) GO TO 300
+         END DO
+         WRITE(*,*) 'ERROR. CANNOT FIND',ITMP,' ELEMENT.'
+ 300     CONTINUE
+         DCI=IWORK(J)
+         INDOM(I)=MOD(I,NPROC)
+         ICPNT(I)=K
+         BVEC(I)=0.0D0
+         XSOL(I)=0.0D0
+         IF ((MYRANK.EQ.INDOM(DCI)).AND.(MYRANK.EQ.INDOM(I))) THEN
+            DO J=1,NDCON
+               DWORK(J)=0.0D0
+            END DO
+            DO J=ICPNT(DCI),ICPNT(DCI+1)-1
+               DWORK(ICOL0(J))=AMAT(J)
+            END DO
+            IL=I-NDOF0
+            DO J=1,MCON(KCON+1,IL)
+               DO N=1,NDF
+                  ILM=(MCON(J,IL)-1)*NDF+N
+                  IF (ILM.GT.0) THEN
+                     DWORK(ILM)=DWORK(ILM)+ACON(J,IL)*VALMAX
+                  END IF
+               END DO
+            END DO
+            IF( DWORK(I).EQ.0.0D0 ) WRITE(6,*)            &
+     'IN ITKLAG(1);',I,I-NDCON,MYRANK
+            DO J=1,NDCON
+               IF (DWORK(J).NE.0.0D0) THEN 
+                  AMAT(K)=DWORK(J)
+                  ICOL0(K)=J
+                  K=K+1
+               END IF
+            END DO
+            BVEC(I)=BVEC(DCI)
+            XSOL(I)=XSOL(DCI)
+            GO TO 199
+         END IF
+         IF (MYRANK.EQ.INDOM(DCI)) THEN 
+            DO J=1,NDCON
+               DWORK(J)=0.0D0
+            END DO
+            DO J=ICPNT(DCI),ICPNT(DCI+1)-1
+               DWORK(ICOL0(J))=AMAT(J)
+            END DO
+            DWORK(NDCON+1)=BVEC(DCI)
+            DWORK(NDCON+2)=XSOL(DCI)
+            ITAG=MOD(200+I,TAG_UB)
+            IDEST=INDOM(I)
+            CALL MPI_ISEND(DWORK,NDCON+2,MPI_DOUBLE_PRECISION,          &
+       IDEST,ITAG,ICOM,IREQ,IERR)
+            CALL MPI_WAIT(IREQ,ISTATUS,IERR)
+         END IF
+         IF (MYRANK.EQ.INDOM(I)) THEN
+            ITAG=MOD(200+I,TAG_UB)
+            ISRC=INDOM(DCI)
+            CALL MPI_IRECV(DWORK,NDCON+2,MPI_DOUBLE_PRECISION,          &
+       ISRC,ITAG,ICOM,IREQ,IERR)
+            CALL MPI_WAIT(IREQ,ISTATUS,IERR)
+            IL=I-NDOF0
+            DO J=1,MCON(KCON+1,IL)
+               DO N=1,NDF
+                  ILM=(MCON(J,IL)-1)*NDF+N
+                  IF (ILM.GT.0) THEN
+                     DWORK(ILM)=DWORK(ILM)+ACON(J,IL)*VALMAX
+                  END IF
+               END DO
+            END DO
+            IF( DWORK(I).EQ.0.0D0 ) WRITE(6,*)            &
+     'IN ITKLAG(2);',I,I-NDCON,MYRANK
+            DO J=1,NDCON
+               IF (DWORK(J).NE.0.0D0) THEN 
+                  AMAT(K)=DWORK(J)
+                  ICOL0(K)=J
+                  K=K+1
+               END IF
+            END DO
+            BVEC(I)=DWORK(NDCON+1)
+            XSOL(I)=DWORK(NDCON+2)
+         END IF
+ 199     CONTINUE
+      END DO
+      ICPNT(NDCON+1)=K
+      RETURN
+      END subroutine PCP_ITKLAG
+      SUBROUTINE PCP_ITKMKA(NDOF0,NELM,NSTBL,INDOM,ISTBL,     AMAT, &
+     ICOL0,ICPNT,NCON,KCON,     KDWORK,DWORK,ICOM)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER ICOM,NDOF0,NELM,NSTBL,INDOM(NDOF0),ISTBL(3,NSTBL),      &
+     NCON,KCON,KDWORK
+      INTEGER ICOL0(NELM+NCON*(2*KCON+NCON))
+      INTEGER ICPNT(NDOF0+NCON+1)
+      REAL*8 AMAT(NELM+NCON*(2*KCON+NCON)),DWORK(KDWORK)
+      INTEGER  NPROC,MYRANK,IERR,K0,K1,I,J
+      INTEGER IREQ(100),IDEST,ISRC,ITAG,LENG,ICNT,LAST,  &
+     ISTATUS(MPI_STATUS_SIZE),JJ
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      IF (NPROC.EQ.1) RETURN
+      LENG=0
+      ICNT=0
+      LAST=1
+      DO 510 I=1,NSTBL
+         IF( ISTBL(2,I).NE.ISTBL(2,LAST) .OR.       ISTBL(1, &
+     I).NE.ISTBL(1,LAST) ) THEN
+            ISRC=ISTBL(1,I-1)
+            IDEST=ISTBL(2,I-1)
+            IF(MYRANK.EQ.ISRC) THEN
+            CALL MPI_ISEND(DWORK,LENG,           MPI_DOUBLE_PRECISION, &
+     IDEST,ITAG,ICOM,IREQ(1),IERR)
+            CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+            END IF
+            IF(MYRANK.EQ.IDEST) THEN
+               CALL MPI_IRECV(DWORK,LENG,               &
+     MPI_DOUBLE_PRECISION,ISRC,ITAG,ICOM,IREQ(1),IERR)
+               CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+               K1=0
+               DO 540 JJ=LAST,I-1
+                  J=ISTBL(3,JJ)
+                  DO 530 K0=ICPNT(J),ICPNT(J+1)-1
+                     K1=K1+1
+                     AMAT(K0)=AMAT(K0)+DWORK(K1)
+ 530              CONTINUE
+ 540           CONTINUE
+            END IF
+            LENG=0
+            ICNT=0
+            LAST=I
+         END IF
+         ISRC=ISTBL(1,I)
+         IDEST=ISTBL(2,I)
+         J=ISTBL(3,I)
+         LENG=LENG+(ICPNT(J+1)-ICPNT(J))
+         ITAG=200
+         IF(MYRANK.EQ.ISRC) THEN
+            DO 520 K0=ICPNT(J),ICPNT(J+1)-1
+               ICNT=ICNT+1
+               DWORK(ICNT)=AMAT(K0)
+ 520        CONTINUE
+            IF( ICNT.NE.LENG ) THEN
+               WRITE(6,*) 'WRONG INDEX IN PCP_IT3SOL'
+            END IF
+         END IF
+ 510  CONTINUE
+      I=NSTBL+1
+      ISRC=ISTBL(1,I-1)
+      IDEST=ISTBL(2,I-1)
+      IF(MYRANK.EQ.ISRC) THEN
+         CALL MPI_ISEND(DWORK,LENG,        MPI_DOUBLE_PRECISION,IDEST, &
+     ITAG,ICOM,IREQ(1),IERR)
+         CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+      END IF
+      IF(MYRANK.EQ.IDEST) THEN
+         CALL MPI_IRECV(DWORK,LENG,        MPI_DOUBLE_PRECISION,ISRC, &
+     ITAG,ICOM,IREQ(1),IERR)
+         CALL MPI_WAIT(IREQ(1),ISTATUS,IERR)
+         K1=0
+         DO 640 JJ=LAST,I-1
+            J=ISTBL(3,JJ)
+            DO 630 K0=ICPNT(J),ICPNT(J+1)-1
+               K1=K1+1
+               AMAT(K0)=AMAT(K0)+DWORK(K1)
+ 630        CONTINUE
+ 640     CONTINUE
+      END IF
+      RETURN
+      END subroutine PCP_ITKMKA
+      SUBROUTINE PCP_ITKSOL(NDF,NDOF0,NELM,NSTBL,     INDOM,ISTBL, &
+     ISORT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,NCON,KCON,MCON,ACON,      &
+     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,     ICOM,ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NELM,NSTBL,     NITER,NREST,IPRE,ICOM,ISTAT,    &
+       KIWORK,KDWORK,NCON,KCON
+      INTEGER INDOM(NDOF0+NCON),ISTBL(3,NSTBL),ISORT(NDOF0+NCON)
+      INTEGER ICOL0(NELM+NCON*(2*KCON+NCON)),IOPT(10)
+      INTEGER ICPNT(NDOF0+NCON+1),MCON(KCON+1,NCON),IWORK(KIWORK)
+      REAL*8 AMAT(NELM+NCON*(2*KCON+NCON)),BVEC(NDOF0+NCON)
+      REAL*8 XSOL(NDOF0+NCON),EPS,DWORK(KDWORK)
+      REAL*8 ACON(KCON,NCON),ROPT(10)
+      INTEGER  NDOF,NDOFS,NELM2,NPROC,MYRANK,IERR,K0,K1,I,J,IERR0
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      CALL PCP_ITKMKA(NDOF0,NELM,NSTBL,INDOM,ISTBL,     AMAT,ICOL0, &
+     ICPNT,NCON,KCON,     KDWORK,DWORK,ICOM)
+      CALL PCP_ITKLAG(NDF,NDOF0,NELM,NSTBL,     INDOM,ISTBL,     AMAT, &
+     ICOL0,ICPNT,BVEC,XSOL,NCON,KCON,MCON,ACON,     KIWORK,IWORK, &
+     KDWORK,DWORK,     ICOM,IERR0)
+      IF (IERR0.EQ.1) STOP
+      DO 130 I=1,NPROC+1
+         IWORK(I)=0
+ 130  CONTINUE
+      DO 140 I=1,NDOF0+NCON
+         IWORK(INDOM(I)+2)=IWORK(INDOM(I)+2)+1
+ 140  CONTINUE
+      NDOF=IWORK(MYRANK+2)
+      IWORK(1)=1
+      DO 150 J=2,NPROC+1
+         IWORK(J)=IWORK(J-1)+IWORK(J)
+ 150  CONTINUE
+      NDOFS=IWORK(MYRANK+1)
+      DO 160 I=1,NDOF0+NCON
+         ISORT(I)=IWORK(INDOM(I)+1)
+         IWORK(INDOM(I)+1)=IWORK(INDOM(I)+1)+1
+ 160  CONTINUE
+      K0=0
+      K1=0
+      DO 210 I=1,NDOF0+NCON
+         IF(INDOM(I).EQ.MYRANK) THEN
+            K1=K1+1
+            ICPNT(K1)=K0+1
+            DO 220 J=ICPNT(I),ICPNT(I+1)-1
+               K0=K0+1
+               ICOL0(K0)=ISORT(ICOL0(J))
+               AMAT(K0)=AMAT(J)
+ 220        CONTINUE
+         END IF
+ 210  CONTINUE
+      K1=K1+1
+      ICPNT(K1)=K0+1
+      NELM2=K0
+      CALL MPI_ALLREDUCE(BVEC,DWORK,NDOF0+NCON,MPI_DOUBLE_PRECISION,    &
+       MPI_SUM,ICOM,IERR)
+      DO 230 I=1,NDOF0+NCON
+         BVEC(ISORT(I))=DWORK(I)
+ 230  CONTINUE
+      DO 240 I=1,NDOF0+NCON
+         DWORK(I)=XSOL(I)
+ 240  CONTINUE
+      DO 250 I=1,NDOF0+NCON
+         XSOL(ISORT(I))=DWORK(I)
+ 250  CONTINUE
+      CALL PCP_IT0SLV(NDOF0+NCON,NDOF,NELM2,NDOFS,     AMAT,ICOL0, &
+     ICPNT,BVEC,XSOL,     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,     &
+      ICOM,ISTAT) 
+      DO 310 I=1,NDOF0+NCON
+         DWORK(I)=XSOL(I)
+ 310  CONTINUE
+      DO 320 I=1,NDOF0+NCON
+         XSOL(I)=DWORK(ISORT(I))
+ 320  CONTINUE
+      RETURN
+      END subroutine PCP_ITKSOL
+      SUBROUTINE PCP_ITLSLV(NDF,NDOF0,NELM,     NENUM,NENOD,IEDOM, &
+     IENOD,IEPNT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,     NCON,KCON,MCON, &
+     ACON,LCON,     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,     ICOM, &
+     ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NELM,NENUM,NENOD,NCON,KCON,     IEDOM(NENUM), &
+     IENOD(NENOD),IEPNT(NENUM+1),     ISTAT,ICOM,KIWORK,IWORK(KIWORK), &
+     KDWORK
+      INTEGER ICOL0(NELM+NCON*(2*KCON+NCON))
+      INTEGER ICPNT(NDOF0+NCON+1),MCON(KCON+1,NCON),LCON(NDF,NCON)
+      INTEGER I,J,K,IOPT(10)
+      REAL*8 AMAT(NELM+NCON*(2*KCON+NCON)),BVEC(NDOF0+NCON)
+      REAL*8 XSOL(NDOF0+NCON),DWORK(KDWORK)
+      REAL*8 ACON(KCON,NCON),ROPT(10)
+      INTEGER NPROC,MYRANK,IERR,IP1,IP2,ICNT,NCON0
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      NCON0=0
+      DO 110 I=1,NCON
+         DO 120 J=1,NDF
+            IF( LCON(J,I).EQ.1 ) NCON0=NCON0+1
+ 120     CONTINUE
+ 110  CONTINUE
+      IF( NCON*NDF.GE.KIWORK ) THEN
+         WRITE(6,6110) NCON*NDF-KIWORK
+ 6110    FORMAT(/,'[$PCP0008];<ERROR> IN IWORK at PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      ICNT=0
+      DO 210 I=1,NCON
+         DO 220 J=1,NDF
+            IF( LCON(J,I).EQ.1 ) THEN
+               ICNT=ICNT+1
+               IWORK(NCON0+(KCON+1)+(ICNT-1)*(KCON+1))=               &
+     MCON(KCON+1,I)
+               DO 230 K=1,MCON(KCON+1,I)
+                  IWORK(NCON0+K+(ICNT-1)*(KCON+1))=MCON(K,I)
+                  DWORK(K+(ICNT-1)*KCON)=ACON(K,I)
+                  IWORK(ICNT)=J
+ 230           CONTINUE
+            END IF
+ 220     CONTINUE
+ 210  CONTINUE
+      IF( ICNT.NE.NCON0 ) THEN
+         WRITE(6,*) 'PROGRAM INNER ERROR IN PCP_ITLSLV'
+         STOP
+      END IF
+      IP1=NCON0+(KCON+1)*NCON0
+      IP2=NCON0*KCON
+      IERR=0
+      CALL PCP_ITLSLX(NDF,NDOF0,NELM,     NENUM,NENOD,IEDOM,IENOD, &
+     IEPNT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,                         &
+     NCON0,KCON,IWORK(NCON0+1),DWORK(1),IWORK(1),     ROPT,IOPT,      &
+     KIWORK-IP1,IWORK(IP1+1),KDWORK-IP2,DWORK(IP2+1),     ICOM,ISTAT) 
+      RETURN
+      END subroutine PCP_ITLSLV
+      SUBROUTINE PCP_ITLSLX(NDF,NDOF0,NELM,     NENUM,NENOD,IEDOM, &
+     IENOD,IEPNT,     AMAT,ICOL0,ICPNT,BVEC,XSOL,     NCON,KCON,MCON, &
+     ACON,MMCON,     ROPT,IOPT,     KIWORK,IWORK,KDWORK,DWORK,      &
+     ICOM,ISTAT) 
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NDOF0,NELM,NENUM,NENOD,NCON,KCON,     IEDOM(NENUM), &
+     IENOD(NENOD),IEPNT(NENUM+1),     ISTAT,ICOM,KIWORK,IWORK(KIWORK), &
+     KDWORK
+      INTEGER ICOL0(NELM+NCON*(2*KCON+NCON))
+      INTEGER ICPNT(NDOF0+NCON+1),MCON(KCON+1,NCON),MMCON(NCON)
+      INTEGER I,J,K,NDF1,IOPT(10)
+      REAL*8 AMAT(NELM+NCON*(2*KCON+NCON)),BVEC(NDOF0+NCON)
+      REAL*8 XSOL(NDOF0+NCON),DWORK(KDWORK)
+      REAL*8 ACON(KCON,NCON),ROPT(10)
+      INTEGER NPROC,MYRANK,IERR,NSTBL,IP1,IP2,IP3,IP0,MXIND
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      IP1=1
+      IP2=IP1+NDOF0+NCON
+      IP3=IP2+NPROC*(NDOF0+NCON)
+      MXIND=(KIWORK-IP3)/3
+      IF( IP3.GE.KIWORK ) THEN
+         WRITE(6,6100) KIWORK-IP3
+ 6100    FORMAT(/,'[$PCP0008];<ERROR> IN IWORK at PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IERR=0
+      CALL PCP_IT4PRE(NDF,NDOF0,NENUM,NENOD,NSTBL,IEDOM,IENOD,IEPNT,    &
+       IWORK(IP1),IWORK(IP3),IWORK(IP2),IWORK(IP2),     NPROC,MYRANK, &
+     MXIND,IERR) 
+      IF( IERR.GT.0 ) THEN
+         WRITE(6,6110) IERR
+ 6110    FORMAT(/,'[$PCP0009];<ERROR> IN IWORK at PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IP3=IP2+3*NSTBL
+      IP0=IP3+NDOF0+NCON
+      DO 110 I=1,NCON
+         DO 120 J=1,MCON(KCON+1,I)
+            MCON(J,I)=(MCON(J,I)-1)*NDF+MMCON(I)
+ 120     CONTINUE
+ 110  CONTINUE
+      NDF1=1
+      CALL PCP_ITKSOL(NDF1,NDOF0,NELM,NSTBL,     IWORK(IP1),IWORK(IP2), &
+     IWORK(IP3),     AMAT,ICOL0,ICPNT,BVEC,XSOL,NCON,KCON,MCON,ACON,    &
+       ROPT,IOPT,     KIWORK-IP0+1,IWORK(IP0),KDWORK,DWORK,     ICOM, &
+     ISTAT) 
+      RETURN
+      END subroutine PCP_ITLSLX
+      SUBROUTINE PCP_ITPC02(NDOF,NELM,NDOFS,NELML,NELMU,     AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,     ICOLL,ICOLU,ICPNTL,ICPNTU)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF,NELM,NDOFS,NELML,NELMU,     ICOL0(NELM),ICPNT(NDOF+ &
+     1),     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1)
+      REAL*8 AMAT(NELM),AMATL(NELML),AMATU(NELMU),AMATD(NDOF)
+      INTEGER I,JPL,JPU,JCOL,JROW,K,M1,M2
+      REAL*8 EPMIN
+      DATA EPMIN  /1.0D-16/
+      M1=NDOFS
+      M2=NDOFS+NDOF-1
+      JPU=1
+      JPL=1
+      ICPNTL(1)=1
+      ICPNTU(1)=1
+      DO 105 I=1,NDOF
+         AMATD(I)=0.0D0
+ 105  CONTINUE
+      DO 110 I=1,NDOF
+         JROW=M1+I-1
+         DO 120 K=ICPNT(I),ICPNT(I+1)-1
+            JCOL=ICOL0(K)
+            IF (JCOL.GE.M1.AND.JCOL.LE.M2) THEN
+               IF (JCOL.LT.JROW) THEN
+                  ICOLL(JPL)=JCOL-M1+1
+                  AMATL(JPL)=0.0D0
+                  JPL=JPL+1
+               ELSE IF (JCOL.GT.JROW) THEN
+                  ICOLU(JPU)=JCOL-M1+1
+                  AMATU(JPU)=0.0D0
+                  JPU=JPU+1
+               ELSE
+                  AMATD(I)=AMATD(I)+AMAT(K)
+               END IF
+            END IF
+ 120     CONTINUE
+         ICPNTL(I+1)=JPL
+         ICPNTU(I+1)=JPU
+ 110  CONTINUE
+      DO 130 I=1,NDOF
+         IF(ABS(AMATD(I)).LT.EPMIN) THEN
+            AMATD(I)=SIGN(1.0D0/EPMIN,AMATD(I))
+         ELSE
+            AMATD(I)=1.0D0/AMATD(I)
+         END IF
+ 130  CONTINUE
+      RETURN 
+      END  subroutine PCP_ITPC02
+      SUBROUTINE PCP_ITPC03(NDOF,NELM,NDOFS,NELML,NELMU,     AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,     ICOLL,ICOLU,ICPNTL,ICPNTU)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF,NELM,NDOFS,NELML,NELMU,     ICOL0(NELM),ICPNT(NDOF+ &
+     1),     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1)
+      REAL*8 AMAT(NELM),AMATL(NELML),AMATU(NELMU),AMATD(NDOF)
+      INTEGER I,J,JPL,JPU,JCOL,JROW,K,K1,K2,M1,M2
+      REAL*8 EPMIN
+      DATA EPMIN  /1.0D-16/
+      M1=NDOFS
+      M2=NDOFS+NDOF-1
+      JPU=1
+      JPL=1
+      ICPNTL(1)=1
+      ICPNTU(1)=1
+      DO 105 I=1,NDOF
+         AMATD(I)=0.0D0
+ 105  CONTINUE
+      DO 110 I=1,NDOF
+         JROW=M1+I-1
+         DO 120 K=ICPNT(I),ICPNT(I+1)-1
+            JCOL=ICOL0(K)
+            IF (JCOL.GE.M1.AND.JCOL.LE.M2) THEN
+               IF (JCOL.LT.JROW) THEN
+                  ICOLL(JPL)=JCOL-M1+1
+                  AMATL(JPL)=AMAT(K)
+                  JPL=JPL+1
+               ELSE IF (JCOL.GT.JROW) THEN
+                  ICOLU(JPU)=JCOL-M1+1
+                  AMATU(JPU)=AMAT(K)
+                  JPU=JPU+1
+               ELSE
+                  AMATD(I)=AMATD(I)+AMAT(K)
+               END IF
+            END IF
+ 120     CONTINUE
+         ICPNTL(I+1)=JPL
+         ICPNTU(I+1)=JPU
+ 110  CONTINUE
+      DO 130 I=1,NDOF
+         IF(ABS(AMATD(I)).LT.EPMIN) THEN
+            AMATD(I)=SIGN(1.0D0/EPMIN,AMATD(I))
+         ELSE
+            AMATD(I)=1.0D0/AMATD(I)
+         END IF
+         DO 140 K1=ICPNTU(I),ICPNTU(I+1)-1
+            J=ICOLU(K1)
+            DO 155 K2=ICPNTL(J),ICPNTL(J+1)-1
+               IF(ICOLL(K2).EQ.I) THEN
+                  AMATD(J)=AMATD(J)-AMATU(K1)*AMATL(K2)*AMATD(I)
+                  GO TO 150
+               END IF
+ 155        CONTINUE
+ 150        CONTINUE
+ 140     CONTINUE
+ 130  CONTINUE
+      RETURN 
+      END  subroutine PCP_ITPC03
+      SUBROUTINE PCP_ITPC04(NDOF,NELM,NDOFS,NELML,NELMU,     AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,     ICOLL,ICOLU,ICPNTL,ICPNTU, &
+     IRPNTL,IROWL)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF,NELM,NDOFS,NELML,NELMU,     ICOL0(NELM),ICPNT(NDOF+ &
+     1),     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1),   &
+        IRPNTL(NDOF+1),IROWL(NELML)
+      REAL*8 AMAT(NELM),AMATL(NELML),AMATU(NELMU),AMATD(NDOF)
+      INTEGER I,J,JPL,JPU,JCOL,JROW,K,K1,K2,M1,M2,L0,L1,L2,L3
+      REAL*8 EPMIN
+      DATA EPMIN  /1.0D-16/
+      M1=NDOFS
+      M2=NDOFS+NDOF-1
+      JPU=1
+      JPL=1
+      ICPNTL(1)=1
+      ICPNTU(1)=1
+      DO 105 I=1,NDOF
+         AMATD(I)=0.0D0
+ 105  CONTINUE
+      DO 110 I=1,NDOF
+         JROW=M1+I-1
+         DO 120 K=ICPNT(I),ICPNT(I+1)-1
+            JCOL=ICOL0(K)
+            IF (JCOL.GE.M1.AND.JCOL.LE.M2) THEN
+               IF (JCOL.LT.JROW) THEN
+                  ICOLL(JPL)=JCOL-M1+1
+                  AMATL(JPL)=AMAT(K)
+                  JPL=JPL+1
+               ELSE IF (JCOL.GT.JROW) THEN
+                  ICOLU(JPU)=JCOL-M1+1
+                  AMATU(JPU)=AMAT(K)
+                  JPU=JPU+1
+               ELSE
+                  AMATD(I)=AMATD(I)+AMAT(K)
+               END IF
+            END IF
+ 120     CONTINUE
+         ICPNTL(I+1)=JPL
+         ICPNTU(I+1)=JPU
+ 110  CONTINUE
+      DO 810 I=1,NDOF+1
+         IRPNTL(I)=0
+ 810  CONTINUE
+      DO 820 I=1,NDOF
+         DO 830 K=ICPNTL(I),ICPNTL(I+1)-1
+            J=ICOLL(K)
+            IRPNTL(J+1)=IRPNTL(J+1)+1
+ 830     CONTINUE
+ 820  CONTINUE
+      DO 835 I=2,NDOF+1
+         IRPNTL(I)=IRPNTL(I)+IRPNTL(I-1)
+ 835  CONTINUE
+      DO 840 I=1,NDOF
+         DO 850 K=ICPNTL(I),ICPNTL(I+1)-1
+            J=ICOLL(K)
+            IRPNTL(J)=IRPNTL(J)+1
+            IROWL(IRPNTL(J))=I
+ 850     CONTINUE
+ 840  CONTINUE
+      IF( IRPNTL(NDOF+1).NE.IRPNTL(NDOF) ) THEN
+         WRITE(6,*) 'PROGRAM ERROR IN PCP_ITPC04'
+         WRITE(6,*) IRPNTL(NDOF),IRPNTL(NDOF+1)
+         STOP
+      END IF
+      DO 860 I=NDOF,1,-1
+         IRPNTL(I+1)=IRPNTL(I)+1
+ 860  CONTINUE
+      IRPNTL(1)=1
+      DO 130 I=1,NDOF
+         IF(ABS(AMATD(I)).LT.EPMIN) THEN
+            WRITE(6,6100) I,AMATD(I)
+ 6100       FORMAT(' * WARNING : SMALL DIAGONAL WAS FOUND. ('           &
+      ,I6,')',1P,D12.3)
+            AMATD(I)=SIGN(1.0D0/EPMIN,AMATD(I))
+         ELSE
+            AMATD(I)=1.0D0/AMATD(I)
+         END IF
+         DO 140 K1=ICPNTU(I),ICPNTU(I+1)-1
+            J=ICOLU(K1)
+            DO 155 K2=ICPNTL(J),ICPNTL(J+1)-1
+               IF(ICOLL(K2).EQ.I) THEN
+                  AMATD(J)=AMATD(J)-AMATU(K1)*AMATL(K2)*AMATD(I)
+                  GO TO 150
+               END IF
+ 155        CONTINUE
+ 150        CONTINUE
+            DO 710 L0=IRPNTL(I),IRPNTL(I+1)-1
+               L1=IROWL(L0)
+               DO 715 L2=ICPNTL(L1),ICPNTL(L1+1)-1
+                  IF(ICOLL(L2).EQ.I) THEN
+                     DO 720 L3=ICPNTU(L1),ICPNTU(L1+1)-1
+                        IF(ICOLU(L3).EQ.J) THEN
+                           AMATU(L3)=AMATU(L3)-                         &
+       AMATU(K1)*AMATL(L2)*AMATD(I)
+                           GO TO 730
+                        END IF
+ 720                 CONTINUE
+                     GO TO 730
+                  END IF
+ 715           CONTINUE
+ 730           CONTINUE
+ 710        CONTINUE
+            DO 760 L0=IRPNTL(I),IRPNTL(I+1)-1
+               L1=IROWL(L0)
+               DO 765 L2=ICPNTL(L1),ICPNTL(L1+1)-1
+                  IF(ICOLL(L2).EQ.I) THEN
+                     DO 770 L3=L2+1,ICPNTL(L1+1)-1
+                        IF(ICOLL(L3).EQ.J) THEN
+                           AMATL(L3)=AMATL(L3)-                         &
+       AMATU(K1)*AMATL(L2)*AMATD(I)
+                           GO TO 780
+                        END IF
+ 770                 CONTINUE
+                     GO TO 780
+                  END IF
+ 765           CONTINUE
+ 780           CONTINUE
+ 760        CONTINUE
+ 790        CONTINUE
+ 140     CONTINUE
+ 130  CONTINUE
+      RETURN 
+      END  subroutine PCP_ITPC04
+      SUBROUTINE PCP_ITPC05     (NDOF0,NDOF,NELM,NDOFS,AMAT,BVEC,ICOL0, &
+     ICPNT)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NDOF,NELM,NDOFS,ICOL0(NELM),ICPNT(NDOF+1)
+      REAL*8 AMAT(NELM),BVEC(NDOF0),EPSW
+      DATA EPSW/1.0D-30/
+      INTEGER I,JCOL,JROW,K
+      REAL*8 SWK
+      DO 110 I=1,NDOF
+         JROW=NDOFS+I-1
+         SWK=0.0D0
+         DO 120 K=ICPNT(I),ICPNT(I+1)-1
+            JCOL=ICOL0(K)
+            IF (JCOL.EQ.JROW) THEN
+               SWK=SWK+AMAT(K)
+            END IF
+ 120     CONTINUE
+         IF( ABS(SWK).GE.EPSW ) THEN
+            DO 130 K=ICPNT(I),ICPNT(I+1)-1
+               AMAT(K)=AMAT(K)/SWK
+ 130        CONTINUE
+            BVEC(JROW)=BVEC(JROW)/SWK
+         ELSE
+            WRITE(6,6110) JROW,SWK
+ 6110       FORMAT('I FIND ZERO DIAGONAL IN COL.',I6,1P,D12.3)
+         END IF
+ 110  CONTINUE
+      RETURN 
+      END  subroutine PCP_ITPC05
+      SUBROUTINE PCP_ITPC06(NDOF,NELM,NDOFS,NELML,NELMU,     AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,     ICOLL,ICOLU,ICPNTL,ICPNTU, &
+     IRPNTL,IROWL)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF,NELM,NDOFS,NELML,NELMU,     ICOL0(NELM),ICPNT(NDOF+ &
+     1),     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1),   &
+        IRPNTL(NDOF+1),IROWL(NELML),IROWK(3000000)
+      REAL*8 AMAT(NELM),AMATL(NELML),AMATU(NELMU),AMATD(NDOF)
+      INTEGER I,J,JPL,JPU,JCOL,JROW,K,K1,K2,M1,M2,L0,L1,L2,L3
+      REAL*8 EPMIN
+      DATA EPMIN  /1.0D-16/
+      M1=NDOFS
+      M2=NDOFS+NDOF-1
+      JPU=1
+      JPL=1
+      ICPNTL(1)=1
+      ICPNTU(1)=1
+      DO 105 I=1,NDOF
+         AMATD(I)=0.0D0
+ 105  CONTINUE
+      DO 110 I=1,NDOF
+         JROW=M1+I-1
+         DO 120 K=ICPNT(I),ICPNT(I+1)-1
+            JCOL=ICOL0(K)
+            IF (JCOL.GE.M1.AND.JCOL.LE.M2) THEN
+               IF (JCOL.LT.JROW) THEN
+                  ICOLL(JPL)=JCOL-M1+1
+                  AMATL(JPL)=AMAT(K)
+                  JPL=JPL+1
+               ELSE IF (JCOL.GT.JROW) THEN
+                  ICOLU(JPU)=JCOL-M1+1
+                  AMATU(JPU)=AMAT(K)
+                  JPU=JPU+1
+               ELSE
+                  AMATD(I)=AMATD(I)+AMAT(K)
+               END IF
+            END IF
+ 120     CONTINUE
+         ICPNTL(I+1)=JPL
+         ICPNTU(I+1)=JPU
+ 110  CONTINUE
+      DO 810 I=1,NDOF+1
+         IRPNTL(I)=0
+ 810  CONTINUE
+      DO 820 I=1,NDOF
+         DO 830 K=ICPNTL(I),ICPNTL(I+1)-1
+            J=ICOLL(K)
+            IRPNTL(J+1)=IRPNTL(J+1)+1
+ 830     CONTINUE
+ 820  CONTINUE
+      DO 835 I=2,NDOF+1
+         IRPNTL(I)=IRPNTL(I)+IRPNTL(I-1)
+ 835  CONTINUE
+      DO 840 I=1,NDOF
+         DO 850 K=ICPNTL(I),ICPNTL(I+1)-1
+            J=ICOLL(K)
+            IRPNTL(J)=IRPNTL(J)+1
+            IROWL(IRPNTL(J))=I
+            IROWK(IRPNTL(J))=K
+ 850     CONTINUE
+ 840  CONTINUE
+      IF( IRPNTL(NDOF+1).NE.IRPNTL(NDOF) ) THEN
+         WRITE(6,*) 'PROGRAM ERROR IN PCP_ITPC06'
+         WRITE(6,*) IRPNTL(NDOF),IRPNTL(NDOF+1)
+         STOP
+      END IF
+      DO 860 I=NDOF,1,-1
+         IRPNTL(I+1)=IRPNTL(I)+1
+ 860  CONTINUE
+      IRPNTL(1)=1
+      DO 130 I=1,NDOF
+         IF(ABS(AMATD(I)).LT.EPMIN) THEN
+            AMATD(I)=SIGN(1.0D0/EPMIN,AMATD(I))
+         ELSE
+            AMATD(I)=1.0D0/AMATD(I)
+         END IF
+         DO 140 K1=ICPNTU(I),ICPNTU(I+1)-1
+            J=ICOLU(K1)
+            DO 155 K2=ICPNTL(J),ICPNTL(J+1)-1
+               IF(ICOLL(K2).EQ.I) THEN
+                  AMATD(J)=AMATD(J)-AMATU(K1)*AMATL(K2)*AMATD(I)
+                  GO TO 150
+               END IF
+ 155        CONTINUE
+ 150        CONTINUE
+            DO 710 L0=IRPNTL(I),IRPNTL(I+1)-1
+               L1=IROWL(L0)
+               L2=IROWK(L0)
+                     DO 720 L3=ICPNTU(L1),ICPNTU(L1+1)-1
+                        IF(ICOLU(L3).EQ.J) THEN
+                           AMATU(L3)=AMATU(L3)-                         &
+       AMATU(K1)*AMATL(L2)*AMATD(I)
+                           GO TO 730
+                        END IF
+ 720                 CONTINUE
+ 730           CONTINUE
+ 710        CONTINUE
+            DO 760 L0=IRPNTL(I),IRPNTL(I+1)-1
+               L1=IROWL(L0)
+               L2=IROWK(L0)
+                     DO 770 L3=L2+1,ICPNTL(L1+1)-1
+                        IF(ICOLL(L3).EQ.J) THEN
+                           AMATL(L3)=AMATL(L3)-                         &
+       AMATU(K1)*AMATL(L2)*AMATD(I)
+                           GO TO 780
+                        END IF
+ 770                 CONTINUE
+ 780           CONTINUE
+ 760        CONTINUE
+ 790        CONTINUE
+ 140     CONTINUE
+ 130  CONTINUE
+      RETURN 
+      END  subroutine PCP_ITPC06
+      SUBROUTINE PCP_ITPRE0(NDOF0,NDOF,NELM,NDOFS,NREST,IPRE,IMETH,     &
+      ICOL0,ICPNT,KIWORK,KDWORK,NPNTR,     ISBUF,IWORK,NELML,NELMU, &
+     IIPT,IRPT,     MYRANK,NPROC,ICOM,ISTAT)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NDOF,NELM,NDOFS,NREST,IPRE,IMETH,NPROC,      &
+     ICOL0(NELM),ICPNT(NDOF+1),KIWORK,KDWORK,NPNTR,      &
+     ISBUF(0:NPROC-1,2),IWORK(2,0:NPROC-1),     NELML,NELMU, &
+     IIPT(NPNTR),IRPT(NPNTR),     MYRANK,ICOM,ISTAT
+      INTEGER I,JROW,JCOL,K,M1,M2,IBUFF(2),IERR
+      IBUFF(1)=NDOFS
+      IBUFF(2)=NDOFS+NDOF-1
+      CALL MPI_ALLGATHER(IBUFF,2,MPI_INTEGER,IWORK,2,MPI_INTEGER,       &
+      ICOM,IERR)
+      DO 110 I = 0,NPROC-1
+         M1=IWORK(1,I)
+         M2=IWORK(2,I)
+         ISBUF(I,1)=M2-M1+1
+         ISBUF(I,2)=M1-1
+ 110  CONTINUE
+      NELML = 0
+      NELMU = 0
+      M1=NDOFS
+      M2=NDOFS+NDOF-1
+      DO 210 I = 1,NDOF
+         JROW = M1 + I - 1
+         DO 220 K = ICPNT(I),ICPNT(I+1)-1
+            JCOL = ICOL0(K)
+            IF (JCOL .GE. M1  .AND.  JCOL .LE. M2) THEN
+               IF (JCOL .LT. JROW) THEN
+                  NELML = NELML + 1
+               ELSE IF (JCOL .GT. JROW) THEN
+                  NELMU = NELMU + 1
+               END IF
+            END IF
+ 220     CONTINUE
+ 210  CONTINUE
+      IIPT(1) =1
+      IIPT(2) =IIPT(1)+NPROC*2
+      IIPT(3) =IIPT(2)+NELML
+      IIPT(4) =IIPT(3)+NELMU
+      IIPT(5) =IIPT(4)+NDOF+1
+      IIPT(6) =IIPT(5)+NDOF+1
+      IF( IPRE.EQ.4 .OR. IPRE.EQ.8 ) THEN
+         IIPT(7) =IIPT(6)+NDOF+1
+         IIPT(NPNTR)=IIPT(7)+NELML
+      ELSE
+         IIPT(7) =IIPT(6)
+         IIPT(NPNTR)=IIPT(7)
+      END IF
+      IRPT(1) =1
+      IF( IMETH.EQ.1 ) THEN
+         IRPT(2) =IRPT(1)+NDOF*(NREST+1)
+      ELSE
+         IRPT(2) =IRPT(1)+NDOF*7
+      END IF
+      IRPT(3) =IRPT(2)+NDOF0
+      IF( IMETH.EQ.1 ) THEN
+         IRPT(4) =IRPT(3)+NREST+1
+         IRPT(5) =IRPT(4)+NREST*(NREST+1)
+         IRPT(6) =IRPT(5)+NREST
+         IRPT(7) =IRPT(6)+NREST
+      ELSE
+         IRPT(4) =IRPT(3)
+         IRPT(5) =IRPT(4)
+         IRPT(6) =IRPT(5)
+         IRPT(7) =IRPT(6)
+      END IF
+      IRPT(8) =IRPT(7)+NELML
+      IRPT(9) =IRPT(8)+NELMU
+      IRPT(10)=IRPT(9)+NDOF
+      IF( IMETH.EQ.1 ) THEN
+         IRPT(11)=IRPT(10)+NREST
+         IRPT(NPNTR)=IRPT(11)+NREST
+      ELSE
+         IRPT(11)=IRPT(10)
+         IRPT(NPNTR)=IRPT(11)
+      END IF
+      IF( IIPT(NPNTR).GE.KIWORK ) THEN
+         WRITE(6,6100) IIPT(NPNTR)-KIWORK
+ 6100    FORMAT(/,'[$PCP0014];<ERROR> IN IWORK at PCP_ITPRE0'         , &
+     /,'  CALLED BY PCP_IT2SLV,PCP_IT4SLV OR PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      IF( IRPT(NPNTR).GE.KDWORK ) THEN
+         WRITE(6,6110) IRPT(NPNTR)-KDWORK
+ 6110    FORMAT(/,'[$PCP0015];<ERROR> IN DWORK at PCP_ITPRE0'         , &
+     /,'  CALLED BY PCP_IT2SLV,PCP_IT4SLV OR PCP_ITLSLV'      ,/, &
+     '* ERROR : INSUFFICIENT REAL WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE REAL ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      RETURN
+      END subroutine PCP_ITPRE0
+      SUBROUTINE PCP_MATMAX(NELM,AMAT,VALMAX,ICOM)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NELM,ICOM,IERR,I
+      REAL*8 AMAT(NELM),WMAX,VALMAX
+      WMAX=0.0D0
+      DO 110 I=1,NELM
+         IF( ABS(AMAT(I)).GT.WMAX ) WMAX=ABS(AMAT(I))
+ 110  CONTINUE
+      CALL MPI_ALLREDUCE(WMAX,VALMAX,1,MPI_DOUBLE_PRECISION,        &
+     MPI_MAX,ICOM,IERR)
+      RETURN
+      END subroutine PCP_MATMAX
+      SUBROUTINE PCP_MATMXL(NELM,AMAT,VALMAX)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NELM,I
+      REAL*8 AMAT(NELM),WMAX,VALMAX
+      WMAX=0.0D0
+      DO 110 I=1,NELM
+         IF( ABS(AMAT(I)).GT.WMAX ) WMAX=ABS(AMAT(I))
+ 110  CONTINUE
+      VALMAX=WMAX
+      RETURN
+      END subroutine PCP_MATMXL
+      SUBROUTINE PCP_MATPEN(NELT,NDOF,NDF,A,IA,JA,NE,IEDOM,     NCON, &
+     KCON,MCON,ACON,LCON,PENALT,ICOM)
+      IMPLICIT NONE
+      INTEGER NELT,NDOF,NDF,IA(NELT),JA(NDOF+1),NCON,KCON,      &
+     MCON(KCON+1,NCON),LCON(NDF,NCON),ICOM,     NE,IEDOM(NE+NCON)
+      REAL*8 A(NELT),ACON(KCON,NCON),PENALT
+      INTEGER N,K0,K1,K2,K3,I1,I2,ID,NPROC,MYRANK,IERR
+      REAL*8  A1,A2
+      CALL MPI_COMM_RANK(ICOM,MYRANK,IERR) 
+      CALL MPI_COMM_SIZE(ICOM,NPROC,IERR) 
+      DO 110 N=1,NCON
+         IF( MYRANK.NE.IEDOM(NE+N) ) GO TO 160
+         DO 120 K0=1,NDF
+            IF(LCON(K0,N).EQ.1) THEN
+               DO 130 K1=1,MCON(KCON+1,N)
+                  I1=(MCON(K1,N)-1)*NDF+K0
+                  A1=ACON(K1,N)
+                  DO 140 K2=1,MCON(KCON+1,N)
+                     I2=(MCON(K2,N)-1)*NDF+K0
+                     A2=ACON(K2,N)
+                     ID=0
+                     DO 150 K3=JA(I2),JA(I2+1)-1
+                        IF(IA(K3).EQ.I1) THEN
+                           A(K3)=A(K3)+A1*A2*PENALT
+                           ID=ID+1
+                        END IF
+ 150                 CONTINUE
+ 140              CONTINUE
+ 130           CONTINUE
+            END IF
+ 120     CONTINUE
+ 160     CONTINUE
+ 110  CONTINUE
+      RETURN
+      END subroutine PCP_MATPEN
+      SUBROUTINE PCP_MEMSI1(NDF,NP,NNZERO,NOVLAP,NLAG,NCON,KCON,      &
+     IOPT,NPROC,MYRANK,NELM,NISIZ,NRSIZ,     NE,IEDOM,IENOD,IEPNT, &
+     NENOD,IWORK,KIWORK)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NP,NE,NPROC,MYRANK,NISIZ,NRSIZ,NNZERO,NOVLAP,      &
+     NLAG,NCON,KCON,NELM,NENOD,KIWORK,ICOM
+      INTEGER IEDOM(NE),IENOD(NENOD),IEPNT(NE+1),IWORK(KIWORK)
+      INTEGER IMETH,NREST,IPRE,IOUT,NDOF0,NSTBL,NDOF,NELML,NELMU
+      INTEGER I1,I2,IOPT(10),K1,K,J,J1,J0,I,L,NUMMX,KNUM
+      IF( KIWORK.LT.2*NP ) THEN
+         WRITE(6,6100) 2*NP-KIWORK
+ 6100    FORMAT(/,'[$PCP0004];<ERROR> IN IWORK at PCP_MEMSI1'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+      DO 110 I=1,NP
+         IWORK(I)=1
+ 110  CONTINUE
+      DO 120 K=1,NE
+         KNUM=IEPNT(K+1)-IEPNT(K)-1
+         DO 130 I=IEPNT(K),IEPNT(K+1)-1
+            I1=IENOD(I)
+            IWORK(I1)=IWORK(I1)+KNUM
+ 130     CONTINUE
+ 120  CONTINUE
+      NUMMX=0
+      DO 150 I=1,NP
+         NUMMX=MAX(IWORK(I),NUMMX)
+ 150  CONTINUE
+      KNUM=(KIWORK-NP)/NUMMX
+      DO 260 I=1,KIWORK
+         IWORK(I)=0
+ 260  CONTINUE
+      DO 210 K1=1,NP,KNUM
+         DO 220 K=1,NE
+            DO 230 J=IEPNT(K),IEPNT(K+1)-1
+               J1=IENOD(J)
+               IF( .NOT.(J1.GE.K1.AND.J1.LE.K1+KNUM-1) ) GO TO 230
+               J0=J1-K1+1
+               DO 240 I=IEPNT(K),IEPNT(K+1)-1
+                  I1=IENOD(I)
+                  DO 250 L=1,IWORK(J1)
+                     IF( IWORK(NP+(J0-1)*NUMMX+L).EQ.I1 ) GO TO 240
+ 250              CONTINUE
+                  IWORK(J1)=IWORK(J1)+1
+                  IWORK(NP+(J0-1)*NUMMX+IWORK(J1))=I1
+ 240           CONTINUE
+ 230        CONTINUE
+ 220     CONTINUE
+ 210  CONTINUE
+      DO 310 I=1,NP
+         IWORK(NP+I)=0
+ 310  CONTINUE
+      DO 320 J=1,NE
+         IF( IEDOM(J).EQ.MYRANK ) THEN
+            DO 330 K=IEPNT(J),IEPNT(J+1)-1
+               I=IENOD(K)
+               IWORK(NP+I)=1
+ 330        CONTINUE
+         END IF
+ 320  CONTINUE
+      NELM=0
+      NDOF=0
+      DO 340 I=1,NP
+         IF( IWORK(NP+I).EQ.1 ) THEN
+            NELM=NELM+IWORK(I)
+            NDOF=NDOF+1
+         END IF
+ 340  CONTINUE
+      NELM=NELM*NDF*NDF
+      NDOF=NDOF*NDF
+      IMETH=IOPT(1)
+      NREST=IOPT(3)
+      IPRE =IOPT(4)
+      IOUT =IOPT(8)
+      NDOF0=NP*NDF
+      IF( NLAG.EQ.1 ) NDOF0=NDOF0+NCON*NDF
+      NSTBL=NOVLAP*NDF
+      IF( NOVLAP.LE.0 ) NSTBL=NDOF0
+      IF( NPROC.EQ.1  ) NSTBL=0
+      IF( NELM.LE.0 ) THEN
+         NELM=NDOF*NNZERO
+         IF( NNZERO.LE.0 ) NELM=NDOF*27*NDF
+      END IF
+      IF( NLAG.EQ.1 ) NELM=NELM+NCON*NDF*(2*KCON*NDF+NCON*NDF)
+      IF( NLAG.EQ.2 ) NELM=NELM+NCON*NDF*(KCON*NDF)**2
+      NELML=NELM/2
+      NELMU=NELM/2
+      IF( IMETH.EQ.1 .OR. IMETH.EQ.2 ) THEN
+         I1=2*NDOF0+3*NSTBL+2*(NDOF+1)+NELML+NELMU        +2*NPROC
+         IF( IPRE.EQ.4.OR.IPRE.EQ.8 ) I1=I1+NDOF+1+NELML
+         I2=NDOF0+NPROC*NDOF0+3*NSTBL
+         NISIZ=MAX(I1,I2)
+      ELSE IF( IMETH.EQ.3 ) THEN
+         I1=2*NDOF0+3*NSTBL+2*(NDOF+1)+NELML+NELMU        +2*NPROC
+         IF( IPRE.EQ.4.OR.IPRE.EQ.8 ) I1=I1+NDOF+1+NELML
+         I2=NDOF0+NPROC*NDOF0+3*NSTBL
+         NISIZ=MAX(I1,I2)
+      ELSE
+         WRITE(6,6110) IOPT(1)
+ 6110    FORMAT(/,'[$PCP0106];<WARNING> IN IOPT at PCP_MEMSI1'        , &
+     /,'* WARNING : ILLEGAL IOPT(1) ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      IF( IMETH.EQ.1 ) THEN
+         NRSIZ=2*NDOF0+(NREST+2)*NDOF+NELML+NELMU        +NREST**2+5* &
+     NREST+1
+      ELSE IF( IMETH.EQ.2 ) THEN
+         NRSIZ=2*NDOF0+8*NDOF+NELML+NELMU
+      ELSE IF( IMETH.EQ.3 ) THEN
+         NRSIZ=NDOF0+NDOF*(NREST+1)+NDOF0+(NREST+1)**2+1        +4* &
+     NREST+NDOF+NELML+NELMU
+      END IF
+      IF( MYRANK.EQ.0 .AND. IOUT.EQ.1 ) THEN
+         WRITE(6,6200) NDOF0,NDOF,NELML+NELMU        ,NPROC,NISIZ,NRSIZ
+ 6200 FORMAT(/,' * WORK AREA SIZE INFORMATION (GUESS) *'     ,/, &
+     '  - GLOBAL D.O.F.        :',I10     ,/, &
+     '  - LOCAL  D.O.F.        :',I10     ,/, &
+     '  - LOCAL NON-ZERO AIJ   :',I10     ,/, &
+     '  - NUMBER OF PROCESS    :',I4     ,/, &
+     '  - INTEGER ARRAY SIZE   :',I10,'(WORDS)'     ,/, &
+     '  - REAL*8  ARRAY SIZE   :',I10,'(WORDS)')
+      END IF
+      RETURN
+      END subroutine PCP_MEMSI1
+      SUBROUTINE PCP_MEMSIZ(NDF,NP,NNZERO,NOVLAP,NLAG,NCON,KCON,      &
+     IOPT,NPROC,MYRANK,NELM,NISIZ,NRSIZ)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDF,NP,NE,NPROC,MYRANK,NISIZ,NRSIZ,NNZERO,NOVLAP,      &
+     NLAG,NCON,KCON,NELM
+      INTEGER IMETH,NREST,IPRE,IOUT,NDOF0,NSTBL,NDOF,NELML,NELMU
+      INTEGER I1,I2,IOPT(10)
+      IMETH=IOPT(1)
+      NREST=IOPT(3)
+      IPRE =IOPT(4)
+      IOUT =IOPT(8)
+      NDOF0=NP*NDF
+      IF( NLAG.EQ.1 ) NDOF0=NDOF0+NCON*NDF
+      NSTBL=NOVLAP*NDF
+      IF( NOVLAP.LE.0 ) NSTBL=NDOF0
+      IF( NPROC.EQ.1  ) NSTBL=0
+      NDOF=NDOF0/MAX(NPROC-1,1)
+      IF( NELM.LE.0 ) THEN
+         NELM=NDOF*NNZERO
+         IF( NNZERO.LE.0 ) NELM=NDOF*27*NDF
+      END IF
+      IF( NLAG.EQ.1 ) NELM=NELM+NCON*NDF*(2*KCON*NDF+NCON*NDF)
+      NELML=NELM/2
+      NELMU=NELM/2
+      IF( IMETH.EQ.1 .OR. IMETH.EQ.2 ) THEN
+         I1=2*NDOF0+3*NSTBL+2*(NDOF+1)+NELML+NELMU        +2*NPROC
+         IF( IPRE.EQ.4.OR.IPRE.EQ.8 ) I1=I1+NDOF+1+NELML
+         I2=NDOF0+NPROC*NDOF0+3*NSTBL
+         NISIZ=MAX(I1,I2)
+      ELSE IF( IMETH.EQ.3 ) THEN
+         I1=2*NDOF0+3*NSTBL+2*(NDOF+1)+NELML+NELMU        +2*NPROC
+         IF( IPRE.EQ.4.OR.IPRE.EQ.8 ) I1=I1+NDOF+1+NELML
+         I2=NDOF0+NPROC*NDOF0+3*NSTBL
+         NISIZ=MAX(I1,I2)
+      ELSE
+         WRITE(6,6110) IOPT(1)
+ 6110    FORMAT(/,'[$PCP0105];<WARNING> IN IOPT at PCP_IT3SLV'        , &
+     /,'* WARNING : ILLEGAL IOPT(1) ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      IF( IMETH.EQ.1 ) THEN
+         NRSIZ=2*NDOF0+(NREST+2)*NDOF+NELML+NELMU        +NREST**2+5* &
+     NREST+1
+      ELSE IF( IMETH.EQ.2 ) THEN
+         NRSIZ=2*NDOF0+8*NDOF+NELML+NELMU
+      ELSE IF( IMETH.EQ.3 ) THEN
+         NRSIZ=NDOF0+NDOF*(NREST+1)+NDOF0+(NREST+1)**2+1        +4* &
+     NREST+NDOF+NELML+NELMU
+      END IF
+      NISIZ=2*NISIZ
+      NRSIZ=2*NRSIZ
+      IF( MYRANK.EQ.0 .AND. IOUT.EQ.1 ) THEN
+         WRITE(6,6200) NDOF0,NDOF,NELML+NELMU        ,NPROC,NISIZ,NRSIZ
+ 6200 FORMAT(/,' * WORK AREA SIZE INFORMATION (GUESS) *'     ,/, &
+     '  - GLOBAL D.O.F.        :',I10     ,/, &
+     '  - LOCAL  D.O.F.        :',I10     ,/, &
+     '  - LOCAL NON-ZERO AIJ   :',I10     ,/, &
+     '  - NUMBER OF PROCESS    :',I4     ,/, &
+     '  - INTEGER ARRAY SIZE   :',I10,'(WORDS)'     ,/, &
+     '  - REAL*8  ARRAY SIZE   :',I10,'(WORDS)')
+      END IF
+      RETURN
+      END subroutine PCP_MEMSIZ
+
+
+      SUBROUTINE PCP_MKBND0     (NELT,NDOF,A,B,IA,JA,NBND,NDF,INDB1, &
+     INDB2,BNDVAL)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NELT,NDOF,IA(NELT),JA(NDOF+1),NBND,     NDF,INDB1(NBND), &
+     INDB2(NBND)
+      REAL*8 A(NELT),B(NDOF),BNDVAL(NBND)
+      INTEGER I,J,K
+
+
+      write(*,*) 'NELT=',nelt,'  NDOF=',NDOF
+      write(*,*) 'NBND=',NBND,'  NDF=',NDF
+
+      do i=1,2
+         write(*,*) i,indb1(i),indb2(i),bndval(i)
+      end do
+
+
+!      call mpi_finalize(i)
+!      stop
+ 
+
+
+      DO 110 J=1,NBND
+         I=NDF*(INDB1(J)-1)+INDB2(J)
+         DO 120 K=JA(I),JA(I+1)-1
+            A(K)=0.0D0
+            IF(I.EQ.IA(K)) THEN
+               A(K)=1.0D0
+               B(I)=BNDVAL(J)
+            END IF
+ 120     CONTINUE
+ 110  CONTINUE
+      RETURN
+      END subroutine PCP_MKBND0
+      SUBROUTINE PCP_MKBNDP     (NELT,NDOF,A,B,IA,JA,NBND,NDF,INDB1, &
+     INDB2,BNDVAL,PENALT)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NELT,NDOF,IA(NELT),JA(NDOF+1),NBND,     NDF,INDB1(NBND), &
+     INDB2(NBND)
+      REAL*8 A(NELT),B(NDOF),BNDVAL(NBND),PENALT
+      INTEGER I,J,K
+      DO 110 J=1,NBND
+         I=NDF*(INDB1(J)-1)+INDB2(J)
+         DO 120 K=JA(I),JA(I+1)-1
+            IF(I.EQ.IA(K)) THEN
+               A(K)=A(K)+PENALT
+               B(I)=BNDVAL(J)*PENALT
+            END IF
+ 120     CONTINUE
+ 110  CONTINUE
+      RETURN
+      END subroutine PCP_MKBNDP
+      SUBROUTINE PCP_MKIND1(NP,NE,NDF,NENUM,IEPNT,ME,IEDOM,NELT,      &
+     IASIZ,IA,JA,NB0,IIA,JJA,INDOM,IERR,MYRANK,NPDEV)
+      IMPLICIT NONE
+      INTEGER NP,NE,NDF,NELT,IASIZ,NB0,IERR,MYRANK,NPDEV
+      INTEGER NENUM,IEPNT(NE+1),ME(NENUM),IEDOM(NE),  IA(IASIZ),JA(NP* &
+     NDF+1),IIA(NB0,NPDEV),JJA(NP),INDOM(NP)
+      INTEGER I,I1,I2,I3,J,J1,J2,K,K1,K2
+      IERR=0
+      DO I=1,NP
+         INDOM(I)=0
+      END DO
+      DO I=1,NE
+         IF( IEDOM(I).EQ.MYRANK ) THEN
+            DO J=IEPNT(I),IEPNT(I+1)-1
+               INDOM(ME(J))=1
+            END DO
+         END IF
+      END DO
+      I1=0
+      DO I=1,NP
+         IF( INDOM(I).NE.0 ) THEN
+            I1=I1+1
+            INDOM(I)=I1
+         END IF
+      END DO
+      IF( I1.NE.NPDEV ) THEN
+         WRITE(6,*) 'PROGRAM ERROR IN PCP_MKIND1'
+         STOP
+      END IF
+      DO 310 I=1,NP
+         JJA(I)=0
+ 310  CONTINUE
+      DO 110 J=1,NE
+         DO 120 K1=IEPNT(J),IEPNT(J+1)-1
+            I1=ME(K1)
+            IF( INDOM(I1).EQ.0 ) GO TO 120
+            DO 130 K2=IEPNT(J),IEPNT(J+1)-1
+               I2=ME(K2)
+               DO 140 I=1,JJA(I1)
+                  IF(IIA(I,INDOM(I1)).EQ.I2) GO TO 150
+ 140           CONTINUE
+               JJA(I1)=JJA(I1)+1
+               IF(JJA(I1).GT.NB0) THEN
+                  IERR=(JJA(I1)-NB0)*NP
+                  WRITE(6,6110) 
+ 6110    FORMAT(/,'[$PCP0001];<ERROR> IN IIA at PCP_MKIND1'   ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *')
+                  GO TO 990
+               END IF
+               IIA(JJA(I1),INDOM(I1))=I2
+ 150           CONTINUE
+ 130        CONTINUE
+ 120     CONTINUE
+ 110  CONTINUE
+      DO I=1,NP
+         INDOM(I)=0
+      END DO
+      DO I=1,NE
+         IF( IEDOM(I).EQ.MYRANK ) THEN
+            DO J=IEPNT(I),IEPNT(I+1)-1
+               INDOM(ME(J))=1
+            END DO
+         END IF
+      END DO
+      DO I=1,NP
+         IF(INDOM(I).EQ.0) JJA(I)=0
+      END DO
+      NELT=0
+      JA(1)=1
+      I3=0
+      DO 210 I=1,NP
+         IF(JJA(I).GT.0 ) I3=I3+1
+         DO 220 J1=1,NDF
+            I1=NDF*(I-1)+J1
+            DO 230 K=1,JJA(I)
+               DO 240 J2=1,NDF
+                  I2=NDF*(IIA(K,I3)-1)+J2
+                  NELT=NELT+1
+                  IF( NELT.LE.IASIZ) IA(NELT)=I2
+ 240           CONTINUE
+ 230        CONTINUE
+            JA(I1+1)=JA(I1)+NDF*JJA(I)
+ 220     CONTINUE
+ 210  CONTINUE
+      IF( I3.NE.NPDEV ) THEN
+         WRITE(6,*) 'PROGRAM ERROR IN PCP_MKIND1'
+         STOP
+      END IF
+      IF( NELT.GT.IASIZ) THEN
+         IERR=NELT-IASIZ
+         WRITE(6,6120) 
+ 6120    FORMAT(/,'[$PCP0002];<ERROR> IN JJA at PCP_MKIND1'     ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *')
+         GO TO 990
+      END IF
+      NELT=JA(NP*NDF+1)-1
+ 990  CONTINUE
+      RETURN
+      END subroutine PCP_MKIND1
+
+
+      SUBROUTINE PCP_MKINDX(NP,NE,NDF,NENUM,IEPNT,ME,IEDOM,NELT,      &
+     IASIZ,IA,JA,KIWORK,IWORK,MYRANK)
+      IMPLICIT NONE
+      INTEGER NP,NE,NDF,NENUM,IEPNT(NE+1),ME(NENUM),     IEDOM(NE), &
+     NELT,IASIZ,     IA(IASIZ),JA(NP*NDF+1),KIWORK,IWORK(KIWORK),      &
+     MYRANK
+      INTEGER IP1,IP2,IP3,NB0,IERR,NPDEV,I,J
+
+! oimo
+    write(*,9292) (iepnt(i),i=1,10)
+    write(*,*) myrank,' kiwork=',kiwork
+    write(*,*) myrank,' nenum =',nenum
+    write(*,*) myrank,' ndf   =',ndf
+    write(*,*) myrank,' ne    =',ne
+    write(*,*) myrank,' np    =',np
+
+
+9292 format(10i5)
+
+!      call mpi_finalize(i)
+!      stop
+
+
+
+
+      IP1=1
+      IP2=IP1+NP
+      IP3=IP2+NP*NDF
+      DO I=1,NP
+         IWORK(I)=0
+      END DO
+      DO I=1,NE
+         IF( IEDOM(I).EQ.MYRANK ) THEN
+            DO J=IEPNT(I),IEPNT(I+1)-1
+               IWORK(ME(J))=1
+            END DO
+         END IF
+      END DO
+      NPDEV=0
+      DO I=1,NP
+         IF( IWORK(I).NE.0 ) NPDEV=NPDEV+1
+      END DO
+      NB0=(KIWORK-IP3+1)/NPDEV
+      CALL PCP_MKIND1(NP,NE,NDF,NENUM,IEPNT,ME,IEDOM,NELT,IASIZ,IA,JA,  &
+         NB0,IWORK(IP3),IWORK(IP1),IWORK(IP2),IERR,MYRANK,NPDEV)
+      IF( IERR.NE.0 ) THEN
+         WRITE(6,6100) IERR
+ 6100    FORMAT(/,'[$PCP0003];<ERROR> IN IWORK at PCP_MKINDX'      ,/, &
+     '* ERROR : INSUFFICIENT INTEGER WORK AREA SIZE *'      ,/, &
+     '* PLEASE INCREASE INTEGER ARRAY SIZE(+',I8,' WORDS)')
+         STOP
+      END IF
+ 990  CONTINUE
+      RETURN
+      END subroutine PCP_MKINDX
+      SUBROUTINE PCP_MKMATX(NODE,NDF,ME,PK1,NELT,NP,A,IA,JA)
+      IMPLICIT NONE
+      INTEGER NODE,NDF,ME(NODE),NELT,NP,IA(NELT),JA(NP*NDF+1)
+      REAL*8 A(NELT),PK1(NDF,NODE,NDF,NODE)
+      INTEGER I1,I2,J1,J2,K,K1,K2
+      DO 110 K1=1,NODE
+         DO 120 J1=1,NDF
+            I1=NDF*(ME(K1)-1)+J1
+            DO 130 K2=1,NODE
+               DO 140 J2=1,NDF
+                  I2=NDF*(ME(K2)-1)+J2
+                  DO 150 K=JA(I1),JA(I1+1)-1
+                     IF( IA(K).EQ.I2 ) THEN
+                        A(K)=A(K)+PK1(J1,K1,J2,K2)
+                        GO TO 160
+                     END IF
+ 150              CONTINUE
+                  WRITE(*,*) 'SOMETHING WRONG WITH IA,JA,A!',I1,I2
+                  WRITE(*,*) 'K1,J1,K2,J2',K1,J1,K2,J2
+                  WRITE(*,*) 'JA(I1),JA(I1+1)',JA(I1),JA(I1+1)
+                  STOP
+ 160              CONTINUE
+ 140           CONTINUE
+ 130        CONTINUE
+ 120     CONTINUE
+ 110  CONTINUE
+      RETURN
+      END subroutine PCP_MKMATX
+      SUBROUTINE PCP_UCMPR1(LP1,LP2,LRSLT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER LP1(2),LP2(2)
+      LRSLT=1
+      IF( LP1(1).LT.LP2(1) ) THEN
+         LRSLT=-1
+      ELSE IF( LP1(1).EQ.LP2(1) ) THEN
+         IF( LP1(2).LT.LP2(2) ) LRSLT=-1
+      END IF
+      RETURN
+      END subroutine PCP_UCMPR1
+      SUBROUTINE PCP_UCMPR2(LP1I,LP2I,LP1J,LP2J,LRSLT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER LP1I,LP2I,LP1J,LP2J
+      LRSLT=1
+      IF( LP1I.LT.LP1J ) LRSLT=-1
+      IF( LP1I.EQ.LP1J .AND. LP2I.LT.LP2J ) LRSLT=-1
+      RETURN
+      END subroutine PCP_UCMPR2
+      SUBROUTINE PCP_UCMPR3(LP1I,LP2I,LP1J,LP2J,LRSLT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER LP1I,LP2I,LP1J,LP2J
+      LRSLT=1
+      IF( LP1I.LT.LP1J ) LRSLT=-1
+      IF( LP1I.EQ.LP1J .AND. LP2I.LT.LP2J ) LRSLT=-1
+      RETURN
+      END subroutine PCP_UCMPR3
+      SUBROUTINE PCP_UEXCH1(LP1,LP2)
+      INTEGER LP1(3),LP2(3)
+      INTEGER K
+      K=LP1(1)
+      LP1(1)=LP2(1)
+      LP2(1)=K
+      K=LP1(2)
+      LP1(2)=LP2(2)
+      LP2(2)=K
+      K=LP1(3)
+      LP1(3)=LP2(3)
+      LP2(3)=K
+      RETURN
+      END subroutine PCP_UEXCH1
+      SUBROUTINE PCP_UEXCH2(LP1I,LP2I,LP1J,LP2J,IP1,IP2)
+      INTEGER LP1I,LP2I,LP1J,LP2J,IP1,IP2
+      INTEGER K
+      K=LP1I
+      LP1I=LP1J
+      LP1J=K
+      K=LP2I
+      LP2I=LP2J
+      LP2J=K
+      K=IP1
+      IP1=IP2
+      IP2=K
+      RETURN
+      END subroutine PCP_UEXCH2
+      SUBROUTINE PCP_UEXCH3(LP1I,LP2I,LP1J,LP2J,IP1,IP2)
+      INTEGER LP1I,LP2I,LP1J,LP2J,IP1,IP2
+      INTEGER K
+      K=LP1I
+      LP1I=LP1J
+      LP1J=K
+      K=LP2I
+      LP2I=LP2J
+      LP2J=K
+      K=IP1
+      IP1=IP2
+      IP2=K
+      RETURN
+      END subroutine PCP_UEXCH3
+      SUBROUTINE PCP_USORT1(LINPTR,NLINES)
+      INTEGER LINPTR(3,NLINES),NLINES
+      INTEGER I,J,LV(50),P,PIVLIN(2),UV(50)
+      LV(1)=1
+      UV(1)=NLINES
+      P=1
+  100 IF( P.LE.0 ) GO TO 1200
+      IF( LV(P).LT.UV(P) ) GO TO 200
+      P=P-1
+      GO TO 1100
+  200 CONTINUE
+      I=LV(P)-1
+      J=UV(P)
+      PIVLIN(1)=LINPTR(1,J)
+      PIVLIN(2)=LINPTR(2,J)
+  300 IF ( I.GE.J ) GO TO 800
+      I=I+1
+  400 CALL PCP_UCMPR1(LINPTR(1,I),PIVLIN,LFLAG)
+      IF ( LFLAG.GE.0 ) GO TO 500
+      I=I+1
+      GO TO 400
+  500 CONTINUE
+      J=J-1
+  600 IF( J.LE.I ) GO TO 700
+      CALL PCP_UCMPR1(LINPTR(1,J),PIVLIN,LFLAG)
+      IF( LFLAG.LE.0 ) GO TO 700
+      J=J-1
+      GO TO 600
+  700 CONTINUE
+      IF( I.LT.J ) CALL PCP_UEXCH1(LINPTR(1,I),LINPTR(1,J))
+      GO TO 300
+  800 CONTINUE
+      J=UV(P)
+      CALL PCP_UEXCH1(LINPTR(1,I),LINPTR(1,J))
+      IF( I-LV(P).GE.UV(P)-I ) GO TO 900
+      LV(P+1)=LV(P)
+      UV(P+1)=I-1
+      LV(P)=I+1
+      GO TO 1000
+  900 CONTINUE
+      LV(P+1)=I+1
+      UV(P+1)=UV(P)
+      UV(P)=I-1
+ 1000 CONTINUE
+      P=P+1
+ 1100 CONTINUE
+      GO TO 100
+ 1200 CONTINUE
+      RETURN
+      END subroutine PCP_USORT1
+      SUBROUTINE PCP_USORT2(LINPT1,LINPT2,LIN0,NLINES)
+      INTEGER LINPT1(NLINES),LINPT2(NLINES),LIN0(NLINES),NLINES
+      INTEGER I,J,LV(50),P,PIVLI1,PIVLI2,UV(50)
+      LV(1)=1
+      UV(1)=NLINES
+      P=1
+  100 IF( P.LE.0 ) GO TO 1200
+      IF( LV(P).LT.UV(P) ) GO TO 200
+      P=P-1
+      GO TO 1100
+  200 CONTINUE
+      I=LV(P)-1
+      J=UV(P)
+      PIVLI1=LINPT1(J)
+      PIVLI2=LINPT2(J)
+  300 IF ( I.GE.J ) GO TO 800
+      I=I+1
+  400 CALL PCP_UCMPR2(LINPT1(I),LINPT2(I),PIVLI1,PIVLI2,LFLAG)
+      IF ( LFLAG.GE.0 ) GO TO 500
+      I=I+1
+      GO TO 400
+  500 CONTINUE
+      J=J-1
+  600 IF( J.LE.I ) GO TO 700
+      CALL PCP_UCMPR2(LINPT1(J),LINPT2(J),PIVLI1,PIVLI2,LFLAG)
+      IF( LFLAG.LE.0 ) GO TO 700
+      J=J-1
+      GO TO 600
+  700 CONTINUE
+      IF( I.LT.J ) CALL PCP_UEXCH2     (LINPT1(I),LINPT2(I),LINPT1(J), &
+     LINPT2(J),LIN0(I),LIN0(J))
+      GO TO 300
+  800 CONTINUE
+      J=UV(P)
+      CALL PCP_UEXCH2     (LINPT1(I),LINPT2(I),LINPT1(J),LINPT2(J), &
+     LIN0(I),LIN0(J))
+      IF( I-LV(P).GE.UV(P)-I ) GO TO 900
+      LV(P+1)=LV(P)
+      UV(P+1)=I-1
+      LV(P)=I+1
+      GO TO 1000
+  900 CONTINUE
+      LV(P+1)=I+1
+      UV(P+1)=UV(P)
+      UV(P)=I-1
+ 1000 CONTINUE
+      P=P+1
+ 1100 CONTINUE
+      GO TO 100
+ 1200 CONTINUE
+      RETURN
+      END subroutine PCP_USORT2
+      SUBROUTINE PCP_USORT3(LINPT1,LINPT2,LIN0,NLINES)
+      INTEGER LINPT1(NLINES),LINPT2(NLINES),LIN0(NLINES),NLINES
+      INTEGER I,J,LV(50),P,PIVLI1,PIVLI2,UV(50)
+      LV(1)=1
+      UV(1)=NLINES
+      P=1
+  100 IF( P.LE.0 ) GO TO 1200
+      IF( LV(P).LT.UV(P) ) GO TO 200
+      P=P-1
+      GO TO 1100
+  200 CONTINUE
+      I=LV(P)-1
+      J=UV(P)
+      PIVLI1=LINPT1(J)
+      PIVLI2=LINPT2(J)
+  300 IF ( I.GE.J ) GO TO 800
+      I=I+1
+  400 CALL PCP_UCMPR3(LINPT1(I),LINPT2(I),PIVLI1,PIVLI2,LFLAG)
+      IF ( LFLAG.GE.0 ) GO TO 500
+      I=I+1
+      GO TO 400
+  500 CONTINUE
+      J=J-1
+  600 IF( J.LE.I ) GO TO 700
+      CALL PCP_UCMPR3(LINPT1(J),LINPT2(J),PIVLI1,PIVLI2,LFLAG)
+      IF( LFLAG.LE.0 ) GO TO 700
+      J=J-1
+      GO TO 600
+  700 CONTINUE
+      IF( I.LT.J ) CALL PCP_UEXCH3     (LINPT1(I),LINPT2(I),LINPT1(J), &
+     LINPT2(J),LIN0(I),LIN0(J))
+      GO TO 300
+  800 CONTINUE
+      J=UV(P)
+      CALL PCP_UEXCH3     (LINPT1(I),LINPT2(I),LINPT1(J),LINPT2(J), &
+     LIN0(I),LIN0(J))
+      IF( I-LV(P).GE.UV(P)-I ) GO TO 900
+      LV(P+1)=LV(P)
+      UV(P+1)=I-1
+      LV(P)=I+1
+      GO TO 1000
+  900 CONTINUE
+      LV(P+1)=I+1
+      UV(P+1)=UV(P)
+      UV(P)=I-1
+ 1000 CONTINUE
+      P=P+1
+ 1100 CONTINUE
+      GO TO 100
+ 1200 CONTINUE
+      RETURN
+      END subroutine PCP_USORT3
+      SUBROUTINE PCP_XBCGST(NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,      &
+     ROPT,IOPT,AMAT,ICOL0,ICPNT,BVEC,XSOL,     VWKL,VWKG,AMATL,AMATU, &
+     AMATD,     ISBUF,ICOLL,ICOLU,ICPNTL,ICPNTU,IRPNTL,IROWL,      &
+     MYRANK,NPROC,ICOM,ISTAT,IOPT3)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,NITER,NREST,IPRE,      &
+     NPROC,ICOL0(NELM),ICPNT(NDOF+1),ISBUF(0:NPROC-1,2),      &
+     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1),      &
+     IRPNTL(NDOF+1),IROWL(NELML),     MYRANK,ICOM,ISTAT,IOPT(10),IPRE0, &
+     IOUT,IOPT3
+      REAL*8 AMAT(NELM),BVEC(NDOF0),XSOL(NDOF0),EPS,     VWKL(NDOF,7), &
+     VWKG(NDOF0),     AMATL(NELML),AMATU(NELMU),AMATD(NDOF),ROPT(10)
+      REAL*8 BSIZE,RSIZE,SUM,SUMG,TMP1,XERR,EVEC(3)
+      INTEGER I,IERR,ITER,J,K
+      REAL*8 EPMIN,SUMIN,DIVMAX
+      DATA EPMIN  /1.0D-16/
+      DATA DIVMAX /1.0D+16/
+      EPS  =ROPT(1)
+      NITER=IOPT(2)
+      NREST=IOPT(3)
+      IPRE =IOPT(4)
+      IPRE0=IOPT(5)
+      IOUT =IOPT(8)
+      XERR=0.0D0
+      IF( IPRE0.EQ.1 ) THEN
+         CALL PCP_ITPC05        (NDOF0,NDOF,NELM,NDOFS,AMAT,BVEC,ICOL0, &
+     ICPNT)
+      END IF
+      IF(IPRE.EQ.1) THEN
+         IF( MYRANK.EQ.0 ) WRITE(6,6100)
+ 6100    FORMAT(' * I DON''T RECOMMEND NO PRECONDITION (IOPT(4)=1)'     &
+        ,/,'    BECAUSE OF ITS SLOW CONVERGENCE.')
+         DO I=1,NDOF
+            AMATD(I)=1.0D0
+         END DO
+         DO I=1,NELML
+            AMATL(I)=0.0D0
+         END DO
+         DO I=1,NELMU
+            AMATU(I)=0.0D0
+         END DO
+      ELSE IF(IPRE.EQ.2) THEN
+         CALL PCP_ITPC02(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU)
+      ELSE IF(IPRE.EQ.3) THEN
+         CALL PCP_ITPC03(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU)
+      ELSE IF(IPRE.EQ.4) THEN
+         CALL PCP_ITPC04(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU, &
+     IRPNTL,IROWL)
+      ELSE IF(IPRE.EQ.8) THEN
+         CALL PCP_ITPC06(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU, &
+     IRPNTL,IROWL)
+      ELSE
+         WRITE(6,6110) IOPT(4)
+ 6110    FORMAT(/,'[$PCP0107];<WARNING> IN IOPT at PCP_XBCGST'        , &
+     /,'* WARNING : ILLEGAL IOPT(4) ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      SUM=0.0D0
+      DO 160 I=NDOFS,NDOFS+NDOF-1
+         SUM=SUM+BVEC(I)*BVEC(I)
+ 160  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,        &
+     MPI_SUM,ICOM,IERR)
+      SUM=SUMG
+      BSIZE=SQRT(SUM) 
+      IF(BSIZE.EQ.0.0D0) THEN
+         DO 170 I=1,NDOF0
+            XSOL(I)=0.0D0
+ 170     CONTINUE
+         ISTAT=0
+         GO TO 910
+      END IF
+      CALL MPI_ALLGATHERV(     XSOL(NDOFS),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,     XSOL,ISBUF(0,1),ISBUF(0,2), &
+     MPI_DOUBLE_PRECISION,     ICOM,IERR)
+      DO 210 I=1,NDOF
+         VWKL(I,1)=0.0D0
+         DO 220 K=ICPNT(I),ICPNT(I+1)-1
+            J=ICOL0(K)
+            VWKL(I,1)=VWKL(I,1)+AMAT(K)*XSOL(J)
+ 220     CONTINUE
+ 210  CONTINUE
+      DO 230 I=1,NDOF
+         VWKL(I,1)=BVEC(NDOFS-1+I)-VWKL(I,1)
+         VWKL(I,2)=VWKL(I,1)
+         VWKL(I,3)=0.D0
+         VWKL(I,5)=0.D0
+         VWKL(I,7)=0.D0
+ 230  CONTINUE
+      SUM=0.0D0
+      DO 240 I=1,NDOF
+         SUM=SUM+VWKL(I,1)*VWKL(I,1)
+ 240  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      SUM=SUMG
+      SUMIN=SUM
+      RSIZE=SQRT(SUM) 
+      IF (RSIZE.EQ.0.0D0) THEN
+         ISTAT=0
+         GO TO 910
+      END IF
+      EVEC(1)=1.0D0
+      EVEC(2)=1.0D0
+         ITER=0 
+ 1200 CONTINUE
+         ITER=ITER+1 
+      SUM=0.0D0
+      DO 320 I=1,NDOF
+         SUM=SUM+VWKL(I,1)*VWKL(I,2)
+ 320  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      SUM=SUMG
+      IF(SUMIN.EQ.0)THEN
+         EVEC(3)=0.D0
+      ELSE
+         EVEC(3)=SUM*EVEC(2)/(SUMIN*EVEC(1))
+      ENDIF
+      SUMIN=SUM
+      DO 325 I=1,NDOF
+         VWKL(I,3)=VWKL(I,2)+EVEC(3)*(VWKL(I,3)-EVEC(1)*VWKL(I,5))
+ 325  CONTINUE
+      DO 335 I=1,NDOF
+         VWKL(I,5)=VWKL(I,3)
+ 335    CONTINUE
+      DO 330 I=1,NDOF
+         SUM=0.0D0
+         DO 340 J=ICPNTL(I),ICPNTL(I+1)-1
+            SUM=SUM+AMATL(J)*VWKL(ICOLL(J),5)
+ 340     CONTINUE
+         VWKL(I,5)=AMATD(I)*(VWKL(I,5)-SUM)
+ 330  CONTINUE
+      DO 350 I=NDOF,1,-1
+         SUM=0.0D0
+         DO 360 J=ICPNTU(I),ICPNTU(I+1)-1
+            SUM=SUM+AMATU(J)*VWKL(ICOLU(J),5)
+ 360     CONTINUE
+         VWKL(I,5)=VWKL(I,5)-AMATD(I)*SUM
+ 350  CONTINUE
+         CALL MPI_ALLGATHERV(        VWKL(1,5),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,        VWKG,ISBUF(0,1),ISBUF(0,2),         &
+     MPI_DOUBLE_PRECISION,ICOM,IERR)
+      DO 370 I=1,NDOF
+         VWKL(I,5)=0.0D0
+         DO 380 K=ICPNT(I),ICPNT(I+1)-1
+            J=ICOL0(K)
+            VWKL(I,5)=VWKL(I,5)+AMAT(K)*VWKG(J)
+ 380     CONTINUE
+ 370  CONTINUE
+      SUM=0.0D0
+      DO 390 I=1,NDOF
+         SUM=SUM+VWKL(I,1)*VWKL(I,5)
+ 390  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      SUM=SUMG
+      IF(SUM.EQ.0)THEN
+         EVEC(2)=0.D0
+      ELSE
+         EVEC(2)=SUMIN/SUM
+      ENDIF
+      DO 400 I=1,NDOF
+         VWKL(I,4)=VWKL(I,2)-EVEC(2)*VWKL(I,5)
+ 400  CONTINUE
+      DO 405 I=1,NDOF
+         VWKL(I,6)=VWKL(I,4)
+ 405    CONTINUE
+      DO 410 I=1,NDOF
+         SUM=0.0D0
+         DO 415 J=ICPNTL(I),ICPNTL(I+1)-1
+            SUM=SUM+AMATL(J)*VWKL(ICOLL(J),6)
+ 415     CONTINUE
+         VWKL(I,6)=AMATD(I)*(VWKL(I,6)-SUM)
+ 410  CONTINUE
+      DO 420 I=NDOF,1,-1
+         SUM=0.0D0
+         DO 425 J=ICPNTU(I),ICPNTU(I+1)-1
+            SUM=SUM+AMATU(J)*VWKL(ICOLU(J),6)
+ 425     CONTINUE
+         VWKL(I,6)=VWKL(I,6)-AMATD(I)*SUM
+ 420  CONTINUE
+         CALL MPI_ALLGATHERV(        VWKL(1,6),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,        VWKG,ISBUF(0,1),ISBUF(0,2),         &
+     MPI_DOUBLE_PRECISION,ICOM,IERR)
+      DO 440 I=1,NDOF
+         VWKL(I,6)=0.0D0
+         DO 430 K=ICPNT(I),ICPNT(I+1)-1
+            J=ICOL0(K)
+            VWKL(I,6)=VWKL(I,6)+AMAT(K)*VWKG(J)
+ 430     CONTINUE
+ 440  CONTINUE
+      SUM=0.0D0
+      DO 450 I=1,NDOF
+         SUM=SUM+VWKL(I,6)*VWKL(I,6)
+ 450  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      TMP1=SUMG
+      SUM=0.0D0
+      DO 460 I=1,NDOF
+         SUM=SUM+VWKL(I,6)*VWKL(I,4)
+ 460  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      SUM=SUMG
+      IF(TMP1.EQ.0)THEN
+         EVEC(1)=0.D0
+      ELSE
+         EVEC(1)=SUM/TMP1
+      ENDIF
+      DO 470 I=1,NDOF
+         VWKL(I,2) = VWKL(I,4)-EVEC(1)*VWKL(I,6)
+         VWKL(I,7) = VWKL(I,7)+EVEC(2)*VWKL(I,3)+EVEC(1)*VWKL(I,4)
+ 470  CONTINUE
+      SUM=0.0D0
+      DO 510 I=1,NDOF
+         SUM=SUM+VWKL(I,2)*VWKL(I,2)
+ 510  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      XERR=SQRT(SUMG)/BSIZE
+         IF( MYRANK.EQ.IOUT ) THEN
+            WRITE(6,6300) ITER,XERR,EPS,BSIZE
+ 6300       FORMAT('I=',I4,' ERR=',1P,D12.3,' EPS=',D12.3,' B=',D12.3)
+         END IF
+         ISTAT=-1
+         IF(ITER.GE.NITER)  ISTAT=1
+         IF(XERR.LT.EPS)    ISTAT=0
+         IF(XERR.GT.DIVMAX) ISTAT=2
+         IF(ISTAT.NE.-1) GO TO 910
+      GO TO 1200
+ 910  CONTINUE
+      IF( ISTAT.NE.0 ) THEN
+         IF( MYRANK.EQ.0 ) WRITE(6,6410) ITER,XERR,EPS
+ 6410 FORMAT(' ITER=',I5,' ,ERR=',1P,D10.3,' ,EPS=',D10.3     , &
+     ' (NOT CONVERGED)')
+         GO TO 920
+      END IF
+      IF( MYRANK.EQ.0 ) WRITE(6,6400) ITER,XERR,EPS
+ 6400 FORMAT(' ITER=',I5,' ,ERR=',1P,D10.3,' ,EPS=',D10.3     , &
+     ' (CONVERGED)')
+ 920  CONTINUE
+      DO 650 I=1,NDOF
+         SUM=0.0D0
+         DO 655 J=ICPNTL(I),ICPNTL(I+1)-1
+            SUM=SUM+AMATL(J)*VWKL(ICOLL(J),7)
+ 655     CONTINUE
+         VWKL(I,7)=AMATD(I)*(VWKL(I,7)-SUM)
+ 650  CONTINUE
+      DO 660 I=NDOF,1,-1
+         SUM=0.0D0
+         DO 665 J=ICPNTU(I),ICPNTU(I+1)-1
+            SUM=SUM+AMATU(J)*VWKL(ICOLU(J),7)
+ 665     CONTINUE
+         VWKL(I,7)=VWKL(I,7)-AMATD(I)*SUM
+ 660  CONTINUE
+      DO 670 I=1,NDOF
+         XSOL(I+NDOFS-1)=XSOL(I+NDOFS-1)+VWKL(I,7)
+ 670  CONTINUE
+      CALL MPI_ALLGATHERV(     XSOL(NDOFS),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,     XSOL,ISBUF(0,1),ISBUF(0,2), &
+     MPI_DOUBLE_PRECISION,     ICOM,IERR)
+      IOPT(10)=ITER
+      ROPT(2)=XERR
+      RETURN 
+      END  subroutine PCP_XBCGST
+      SUBROUTINE PCP_XEXMAT(NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,      &
+     ROPT,IOPT,AMAT,ICOL0,ICPNT,BVEC,XSOL,     VWKL,VWKG,AMATL,AMATU, &
+     AMATD,     ISBUF,ICOLL,ICOLU,ICPNTL,ICPNTU,IRPNTL,IROWL,      &
+     MYRANK,NPROC,ICOM,ISTAT,IOPT3)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,NITER,NREST,IPRE,      &
+     NPROC,ICOL0(NELM),ICPNT(NDOF+1),ISBUF(0:NPROC-1,2),      &
+     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1),      &
+     IRPNTL(NDOF+1),IROWL(NELML),     MYRANK,ICOM,ISTAT,IOPT(10),IPRE0, &
+     IOUT,IOPT3
+      REAL*8 AMAT(NELM),BVEC(NDOF0),XSOL(NDOF0),EPS,     VWKL(NDOF,7), &
+     VWKG(NDOF0),     AMATL(NELML),AMATU(NELMU),AMATD(NDOF),ROPT(10)
+      INTEGER I,IERR,J,K,INOUT
+      WRITE(6,*) ' * USING AN EXPLICIT METHOD *'
+      INOUT=IOPT(1)
+      DO 110 I=1,NDOF
+         AMATD(I)=0.0D0
+         DO 120 K=ICPNT(I),ICPNT(I+1)-1
+            AMATD(I)=AMATD(I)+AMAT(K)
+ 120     CONTINUE
+ 110  CONTINUE
+      IF( INOUT.EQ.-2 ) THEN
+         DO 210 I=1,NDOF
+            IF( AMATD(I).EQ.0.0D0 ) THEN
+               WRITE(6,6100) MYRANK,I
+ 6100          FORMAT(' LUMPED MASS VALUE IS EQUAL TO ZERO ;'           &
+          ,/,'MY RANK:',I3,I8,'-TH DIAGONAL')
+               STOP
+            END IF
+            XSOL(I+NDOFS-1)=BVEC(I+NDOFS-1)/AMATD(I)
+ 210     CONTINUE
+         CALL MPI_ALLGATHERV(        XSOL(NDOFS),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,        XSOL,ISBUF(0,1),ISBUF(0,2), &
+     MPI_DOUBLE_PRECISION,        ICOM,IERR)
+      ELSE IF( INOUT.EQ.-1 ) THEN
+         DO 220 I=1,NDOF
+            BVEC(I+NDOFS-1)=XSOL(I+NDOFS-1)*AMATD(I)
+ 220     CONTINUE
+         CALL MPI_ALLGATHERV(        BVEC(NDOFS),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,        BVEC,ISBUF(0,1),ISBUF(0,2), &
+     MPI_DOUBLE_PRECISION,        ICOM,IERR)
+      ELSE
+         WRITE(6,*) 'PROGRAM ERROR IN PCP?XEXMAT.',INOUT
+         STOP
+      END IF
+      RETURN 
+      END  subroutine PCP_XEXMAT
+      SUBROUTINE PCP_XGMRES(NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,      &
+     ROPT,IOPT,AMAT,ICOL0,ICPNT,BVEC,XSOL,     VWKL,VWKG,EVEC,HMAT, &
+     XXCOS,XXSIN,AMATL,AMATU,AMATD,     SUMW,SUMGW,     ISBUF,ICOLL, &
+     ICOLU,ICPNTL,ICPNTU,IRPNTL,IROWL,     MYRANK,NPROC,ICOM,ISTAT, &
+     IOPT3)
+      IMPLICIT NONE
+      INCLUDE 'mpif.h'
+      INTEGER NDOF0,NDOF,NELM,NDOFS,NELML,NELMU,NITER,NREST,IPRE,      &
+     NPROC,ICOL0(NELM),ICPNT(NDOF+1),ISBUF(0:NPROC-1,2),      &
+     ICOLL(NELML),ICOLU(NELMU),ICPNTL(NDOF+1),ICPNTU(NDOF+1),      &
+     IRPNTL(NDOF+1),IROWL(NELML),IOPT(10),IPRE0,IOUT,     MYRANK,ICOM, &
+     ISTAT,IOPT3
+      REAL*8 AMAT(NELM),BVEC(NDOF0),XSOL(NDOF0),EPS,     VWKL(NDOF, &
+     IOPT3+1),VWKG(NDOF0),EVEC(IOPT3+1),     HMAT(IOPT3+1,IOPT3), &
+     XXCOS(IOPT3),XXSIN(IOPT3),     AMATL(NELML),AMATU(NELMU), &
+     AMATD(NDOF),     SUMW(IOPT3),SUMGW(IOPT3),ROPT(10)
+      REAL*8 BSIZE,RSIZE,RSIZEI,SUM,SUMG,TMP1,XERR
+      INTEGER I,IERR,INU,ITER,J,JTER,K,IGRSH
+      REAL*8 SUMIN,DIVMAX
+      DATA SUMIN  /1.0D-32/
+      DATA DIVMAX /1.0D+16/
+      EPS  =ROPT(1)
+      NITER=IOPT(2)
+      NREST=IOPT(3)
+      IPRE =IOPT(4)
+      IPRE0=IOPT(5)
+      IGRSH=IOPT(6)
+      IOUT =IOPT(8)
+      XERR=0.0D0
+      IF( IPRE0.EQ.1 ) THEN
+         CALL PCP_ITPC05        (NDOF0,NDOF,NELM,NDOFS,AMAT,BVEC,ICOL0, &
+     ICPNT)
+      END IF
+      IF(IPRE.EQ.1) THEN
+         IF( MYRANK.EQ.0 ) WRITE(6,6100)
+ 6100    FORMAT(' * I DON''T RECOMMEND NO PRECONDITION (IOPT(4)=1)'     &
+        ,/,'    BECAUSE OF ITS SLOW CONVERGENCE.')
+         DO I=1,NDOF
+            AMATD(I)=1.0D0
+         END DO
+         DO I=1,NELML
+            AMATL(I)=0.0D0
+         END DO
+         DO I=1,NELMU
+            AMATU(I)=0.0D0
+         END DO
+      ELSE IF(IPRE.EQ.2) THEN
+         CALL PCP_ITPC02(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU)
+      ELSE IF(IPRE.EQ.3) THEN
+         CALL PCP_ITPC03(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU)
+      ELSE IF(IPRE.EQ.4) THEN
+         CALL PCP_ITPC04(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU, &
+     IRPNTL,IROWL)
+      ELSE IF(IPRE.EQ.8) THEN
+         CALL PCP_ITPC06(NDOF,NELM,NDOFS,NELML,NELMU,        AMAT, &
+     ICOL0,ICPNT,AMATL,AMATU,AMATD,        ICOLL,ICOLU,ICPNTL,ICPNTU, &
+     IRPNTL,IROWL)
+      ELSE
+         WRITE(6,6110) IOPT(4)
+ 6110    FORMAT(/,'[$PCP0108];<WARNING> IN IOPT at PCP_XGMRES'        , &
+     /,'* WARNING : ILLEGAL IOPT(4) ',I3,' WAS SPECIFIED *')
+         STOP
+      END IF
+      SUM=0.0D0
+      DO 160 I=NDOFS,NDOFS+NDOF-1
+         SUM=SUM+BVEC(I)*BVEC(I)
+ 160  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,        &
+     MPI_SUM,ICOM,IERR)
+      SUM=SUMG
+      BSIZE=SQRT(SUM) 
+      IF(BSIZE.EQ.0.0D0) THEN
+         DO 170 I=1,NDOF0
+            XSOL(I)=0.0D0
+ 170     CONTINUE
+         ISTAT=0
+         GO TO 910
+      END IF
+      ITER=0 
+ 1200 CONTINUE
+      CALL MPI_ALLGATHERV(     XSOL(NDOFS),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,     XSOL,ISBUF(0,1),ISBUF(0,2), &
+     MPI_DOUBLE_PRECISION,     ICOM,IERR)
+      DO 210 I=1,NDOF
+         VWKL(I,1)=0.0D0
+         DO 220 K=ICPNT(I),ICPNT(I+1)-1
+            J=ICOL0(K)
+            VWKL(I,1)=VWKL(I,1)+AMAT(K)*XSOL(J)
+ 220     CONTINUE
+ 210  CONTINUE
+      DO 230 I=1,NDOF
+         VWKL(I,1)=BVEC(NDOFS-1+I)-VWKL(I,1)
+ 230  CONTINUE
+      SUM=0.0D0
+      DO 240 I=1,NDOF
+         SUM=SUM+VWKL(I,1)*VWKL(I,1)
+ 240  CONTINUE
+      CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,     MPI_SUM, &
+     ICOM,IERR)
+      SUM=SUMG
+      RSIZE=SQRT(SUM) 
+      IF (RSIZE.EQ.0.0D0) THEN
+         ISTAT=0
+         GO TO 910
+      END IF
+      RSIZEI=1.0D0/RSIZE
+      DO 250 I=1,NDOF
+         VWKL(I,1)=VWKL(I,1)*RSIZEI
+ 250  CONTINUE
+      EVEC(1)=RSIZE 
+      DO 260 I=2,NREST+1
+         EVEC(I)=0.0D0
+ 260  CONTINUE
+      DO 310 INU=1,NREST
+         ITER=ITER+1 
+         DO 320 I=1,NDOF
+            VWKL(I,INU+1)=VWKL(I,INU)
+ 320     CONTINUE
+         DO 330 I=1,NDOF
+            SUM=0.0D0
+            DO 340 J=ICPNTL(I),ICPNTL(I+1)-1
+               SUM=SUM+AMATL(J)*VWKL(ICOLL(J),INU+1)
+ 340        CONTINUE
+            VWKL(I,INU+1)=AMATD(I)*(VWKL(I,INU+1)-SUM)
+ 330     CONTINUE
+         DO 350 I=NDOF,1,-1
+            SUM=0.0D0
+            DO 360 J=ICPNTU(I),ICPNTU(I+1)-1
+               SUM=SUM+AMATU(J)*VWKL(ICOLU(J),INU+1)
+ 360        CONTINUE
+            VWKL(I,INU+1)=VWKL(I,INU+1)-AMATD(I)*SUM
+ 350     CONTINUE
+         CALL MPI_ALLGATHERV(        VWKL(1,INU+1),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,        VWKG,ISBUF(0,1),ISBUF(0,2),         &
+     MPI_DOUBLE_PRECISION,ICOM,IERR)
+         DO 370 I=1,NDOF
+            VWKL(I,INU+1)=0.0D0
+            DO 380 K=ICPNT(I),ICPNT(I+1)-1
+               J=ICOL0(K)
+               VWKL(I,INU+1)=VWKL(I,INU+1)+AMAT(K)*VWKG(J)
+ 380        CONTINUE
+ 370     CONTINUE
+         IF(IGRSH.EQ.1) THEN
+            DO 415 K=1,INU 
+               SUMW(K)=0.0D0
+               DO 417 I=1,NDOF
+                  SUMW(K)=SUMW(K)+VWKL(I,INU+1)*VWKL(I,K)
+ 417           CONTINUE
+ 415        CONTINUE
+            CALL MPI_ALLREDUCE(SUMW,SUMGW,INU,            &
+     MPI_DOUBLE_PRECISION,MPI_SUM,ICOM,IERR)
+            DO 425 K=1,INU
+               HMAT(K,INU)=SUMGW(K)
+ 425        CONTINUE
+            DO 435 K=1,INU
+               DO 437 I=1,NDOF
+                  VWKL(I,INU+1)=VWKL(I,INU+1)-HMAT(K,INU)*VWKL(I,K)
+ 437           CONTINUE
+ 435        CONTINUE
+         ELSE IF(IGRSH.EQ.2) THEN
+            DO 410 K=1,INU 
+               SUM=0.0D0
+               DO 420 I=1,NDOF
+                  SUM=SUM+VWKL(I,INU+1)*VWKL(I,K)
+ 420           CONTINUE
+               CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,      &
+              MPI_SUM,ICOM,IERR)
+               HMAT(K,INU)=SUMG
+               DO 430 I=1,NDOF
+                  VWKL(I,INU+1)=VWKL(I,INU+1)-HMAT(K,INU)*VWKL(I,K)
+ 430           CONTINUE
+ 410        CONTINUE
+         ELSE 
+         WRITE(6,6120) IOPT(6)
+ 6120    FORMAT(/,'[$PCP0109];<WARNING> IN IOPT at PCP_XGMRES'        , &
+     /,'* WARNING : ILLEGAL IOPT(6) ',I3,' WAS SPECIFIED *')
+         STOP
+         END IF
+         SUM=0.0D0
+         DO 440 I=1,NDOF
+            SUM=SUM+VWKL(I,INU+1)*VWKL(I,INU+1)
+ 440     CONTINUE
+         CALL MPI_ALLREDUCE(SUM,SUMG,1,MPI_DOUBLE_PRECISION,         &
+     MPI_SUM,ICOM,IERR)
+         SUM=SUMG
+         SUM=MAX(SUM,SUMIN)
+         HMAT(INU+1,INU)=SQRT(SUM) 
+         DO 450 I=1,NDOF
+            VWKL(I,INU+1)=VWKL(I,INU+1)/HMAT(INU+1,INU)
+ 450     CONTINUE
+         DO 460 K=1,INU-1 
+            TMP1=XXCOS(K)*HMAT(K,INU)-XXSIN(K)*HMAT(K+1,INU) 
+            HMAT(K+1,INU)=XXSIN(K)*HMAT(K,INU)+XXCOS(K)*HMAT(K+1,INU)
+            HMAT(K,INU)=TMP1 
+ 460     CONTINUE
+         IF (HMAT(INU+1,INU).EQ.0.0) THEN
+            XXCOS(INU)=1.0D0
+            XXSIN(INU)=0.0D0
+         ELSE IF (ABS(HMAT(INU+1,INU)).GT.ABS(HMAT(INU,INU))) THEN
+            TMP1=-HMAT(INU,INU)/HMAT(INU+1,INU)
+            XXSIN(INU)=1.0D0/SQRT(1.0D0+TMP1**2)
+            XXCOS(INU)=XXSIN(INU)*TMP1
+         ELSE
+            TMP1=-HMAT(INU+1,INU)/HMAT(INU,INU)
+            XXCOS(INU)=1.0D0/SQRT(1.0D0+TMP1**2)
+            XXSIN(INU)=XXCOS(INU)*TMP1
+         END IF
+         HMAT(INU,INU)=        XXCOS(INU)*HMAT(INU,INU)-XXSIN(INU)* &
+     HMAT(INU+1,INU) 
+         TMP1=XXCOS(INU)*EVEC(INU)-XXSIN(INU)*EVEC(INU+1) 
+         EVEC(INU+1)=XXSIN(INU)*EVEC(INU)+XXCOS(INU)*EVEC(INU+1)
+         EVEC(INU)=TMP1 
+         XERR=ABS(EVEC(INU+1))/BSIZE 
+         IF( MYRANK.EQ.IOUT ) THEN
+         WRITE(6,6300) ITER,XERR,EPS,BSIZE
+ 6300    FORMAT(' I=',I4,' ERR=',1P,D12.3,' EPS=',D12.3,' B=',D12.3)
+         END IF
+         ISTAT=-1
+         IF(ITER.GE.NITER)  ISTAT=1
+         IF(XERR.LT.EPS)    ISTAT=0
+         IF(XERR.GT.DIVMAX) ISTAT=2
+         IF(ISTAT.NE.-1) GO TO 910
+ 310  CONTINUE
+      JTER=NREST
+      DO 510 J=JTER,1,-1 
+         EVEC(J)=EVEC(J)/HMAT(J,J)
+         DO 515 I=J-1,1,-1 
+            EVEC(I)=EVEC(I)-EVEC(J)*HMAT(I,J) 
+ 515        CONTINUE
+ 510     CONTINUE
+      DO 520 I=1,NDOF
+         VWKL(I,1)=EVEC(1)*VWKL(I,1)
+ 520  CONTINUE
+      DO 530 J=2,JTER
+         DO 535 I=1,NDOF
+            VWKL(I,1)=VWKL(I,1)+EVEC(J)*VWKL(I,J)
+ 535     CONTINUE
+ 530  CONTINUE
+      DO 540 I=1,NDOF
+         VWKL(I,2)=VWKL(I,1)
+ 540  CONTINUE
+      DO 550 I=1,NDOF
+         SUM=0.0D0
+         DO 555 J=ICPNTL(I),ICPNTL(I+1)-1
+            SUM=SUM+AMATL(J)*VWKL(ICOLL(J),2)
+ 555     CONTINUE
+         VWKL(I,2)=AMATD(I)*(VWKL(I,2)-SUM)
+ 550  CONTINUE
+      DO 560 I=NDOF,1,-1
+         SUM=0.0D0
+         DO 565 J=ICPNTU(I),ICPNTU(I+1)-1
+            SUM=SUM+AMATU(J)*VWKL(ICOLU(J),2)
+ 565     CONTINUE
+         VWKL(I,2)=VWKL(I,2)-AMATD(I)*SUM
+ 560  CONTINUE
+      DO 570 I=1,NDOF
+         XSOL(I+NDOFS-1)=XSOL(I+NDOFS-1)+VWKL(I,2)
+ 570  CONTINUE
+      GO TO 1200
+ 910  CONTINUE
+      IF( ISTAT.NE.0 ) THEN
+         IF( MYRANK.EQ.0 ) WRITE(6,6410) ITER,XERR,EPS
+ 6410 FORMAT(' ITER=',I5,' ,ERR=',1P,D10.3,' ,EPS=',D10.3     , &
+     ' (NOT CONVERGED)')
+         GO TO 920
+      END IF
+      IF( MYRANK.EQ.0 ) WRITE(6,6400) ITER,XERR,EPS
+ 6400 FORMAT(' ITER=',I5,' ,ERR=',1P,D10.3,' ,EPS=',D10.3     , &
+     ' (CONVERGED)')
+ 920  CONTINUE
+      JTER=INU
+      DO 610 J=JTER,1,-1 
+         EVEC(J)=EVEC(J)/HMAT(J,J)
+         DO 615 I=J-1,1,-1 
+            EVEC(I)=EVEC(I)-EVEC(J)*HMAT(I,J) 
+ 615     CONTINUE
+ 610  CONTINUE
+      DO 620 I=1,NDOF
+         VWKL(I,1)=EVEC(1)*VWKL(I,1)
+ 620  CONTINUE
+      DO 630 J=2,JTER
+         DO 635 I=1,NDOF
+            VWKL(I,1)=VWKL(I,1)+EVEC(J)*VWKL(I,J)
+ 635     CONTINUE
+ 630  CONTINUE
+      DO 640 I=1,NDOF
+         VWKL(I,2)=VWKL(I,1)
+ 640  CONTINUE
+      DO 650 I=1,NDOF
+         SUM=0.0D0
+         DO 655 J=ICPNTL(I),ICPNTL(I+1)-1
+            SUM=SUM+AMATL(J)*VWKL(ICOLL(J),2)
+ 655     CONTINUE
+         VWKL(I,2)=AMATD(I)*(VWKL(I,2)-SUM)
+ 650  CONTINUE
+      DO 660 I=NDOF,1,-1
+         SUM=0.0D0
+         DO 665 J=ICPNTU(I),ICPNTU(I+1)-1
+            SUM=SUM+AMATU(J)*VWKL(ICOLU(J),2)
+ 665     CONTINUE
+         VWKL(I,2)=VWKL(I,2)-AMATD(I)*SUM
+ 660  CONTINUE
+      DO 670 I=1,NDOF
+         XSOL(I+NDOFS-1)=XSOL(I+NDOFS-1)+VWKL(I,2)
+ 670  CONTINUE
+      CALL MPI_ALLGATHERV(     XSOL(NDOFS),ISBUF(MYRANK,1), &
+     MPI_DOUBLE_PRECISION,     XSOL,ISBUF(0,1),ISBUF(0,2), &
+     MPI_DOUBLE_PRECISION,     ICOM,IERR)
+      IOPT(10)=ITER
+      ROPT(2)=XERR
+      RETURN 
+      END  subroutine PCP_XGMRES
+end module pcp90
