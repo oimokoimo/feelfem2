@@ -43,7 +43,7 @@ void make_solve_lisp()
 #ifdef MSDOS
     lisp_program = fopen(DOS_LISP_TMP,"w");
 #else
-    lisp_program = popen(LISP_COMMAND,"w");   
+    lisp_program = popen(LISP_COMMAND,"w");    
 #endif
 
     /*======================*/
@@ -132,7 +132,8 @@ void make_solve_lisp()
 
 #else
 
-    pclose(lisp_program);
+    /* pclose(lisp_program); */
+    fclose(lisp_program);
 
 #endif
 
